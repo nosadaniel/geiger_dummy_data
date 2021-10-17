@@ -5,3 +5,4 @@ include: package:flutter_lints/flutter.yaml
 linter:
   rules:
     constant_identifier_names: ALL_CAPS_WITH_UNDERSCORES
+    avoid_print: true

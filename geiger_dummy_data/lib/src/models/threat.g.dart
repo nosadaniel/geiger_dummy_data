@@ -1,6 +1,6 @@
 // GENERATED CODE - DO NOT MODIFY BY HAND
 
-part of 'threat.dart';
+part of geiger_dummy_data;
 
 // **************************************************************************
 // JsonSerializableGenerator
