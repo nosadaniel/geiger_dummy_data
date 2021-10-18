@@ -29,8 +29,8 @@ class Threat {
   }
 
   /// pass [Threat] as a string
-  static List<Threat> fromJSon(String json) {
-    List<dynamic> jsonData = jsonDecode(json);
+  static List<Threat> fromJSon(String jsonArray) {
+    List<dynamic> jsonData = jsonDecode(jsonArray);
     return jsonData.map((threatMap) => Threat.fromJson(threatMap)).toList();
   }
 

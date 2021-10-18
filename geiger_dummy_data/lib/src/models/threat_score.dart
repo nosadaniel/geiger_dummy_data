@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:json_annotation/json_annotation.dart';
 
 import '/src/models/threat.dart';
@@ -16,5 +18,20 @@ class ThreatScore {
 
   Map<String, dynamic> toJson() {
     return _$ThreatScoreToJson(this);
+  }
+
+  /// convert to json string
+  static String convertToJson(List<ThreatScore> threatScores) {
+    List<Map<String, dynamic>> jsonData =
+        threatScores.map((threatScore) => threatScore.toJson()).toList();
+    return jsonEncode(jsonData);
+  }
+
+  /// pass [ThreatScore] as a string
+  static List<ThreatScore> fromJSon(String jsonArray) {
+    List<dynamic> jsonData = jsonDecode(jsonArray);
+    return jsonData
+        .map((threatMap) => ThreatScore.fromJson(threatMap))
+        .toList();
   }
 }
