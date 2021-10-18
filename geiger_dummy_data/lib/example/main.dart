@@ -15,4 +15,7 @@ void main() {
   List<Threat> threats = initialData.getThreats(
       '[{"threatId":"1","name":"phishing"},{"threatId":"2","name":"malware"}]');
   print(threats);
+
+  initialData.setCurrentGeigerUserScoreNode(users,
+      '[{"threat":{"threatId":"1","name":"phishing"}, "score":"12", "threat":{"threatId":"2","name":"malware"},"score":"22"}]');
 }

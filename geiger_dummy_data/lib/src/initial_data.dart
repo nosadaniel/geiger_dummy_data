@@ -6,6 +6,8 @@ import 'package:geiger_dummy_data/src/models/threat.dart';
 import 'package:geiger_dummy_data/src/models/user.dart';
 import 'package:geiger_localstorage/geiger_localstorage.dart';
 
+import 'models/threat_score.dart';
+
 class InitialData {
   StorageController _storageController;
   InitialData(this._storageController);
@@ -99,12 +101,73 @@ class InitialData {
     }
   }
 
-  /*void set setGeigerScoreAggregate(String jsonArray) {
-    List<Threat> threatScores = ThreatScore.fromJSon(jsonArray);
-    try{
-      _threatNode = _storageController.get(":")
+  void setCurrentGeigerUserScoreNode(
+      List<User> currentUser, String threatScoresArray) {
+    for (User user in currentUser) {
+      try {
+        _node = _storageController
+            .get(":Users:${user.userId}:gi:data:GeigerScoreUser");
+        NodeValue geigerScore = NodeValueImpl("GEIGER_score", "0");
+        _node!.addOrUpdateValue(geigerScore);
+        NodeValue geigerThreatScores =
+            NodeValueImpl("threats_score", threatScoresArray);
+        _node!.addOrUpdateValue(geigerThreatScores);
+        NodeValue geigerNumMetrics = NodeValueImpl("number_metrics",
+            ThreatScore.fromJSon(threatScoresArray).length.toString());
+        _node!.addOrUpdateValue(geigerNumMetrics);
+
+        geigerScore.setDescription("GEIGER user score");
+        geigerThreatScores.setDescription("GEIGER threat-specific user score");
+        geigerNumMetrics.setDescription(
+            "Number of metrics used in calculation of user score");
+        _storageController.update(_node!);
+        print(_node!.getValue("threats_score"));
+      } on StorageException {
+        Node userNode = NodeImpl("${user.userId}", ":Users");
+        _storageController.add(userNode);
+        Node giNode = NodeImpl("gi", ":Users:${user.userId}");
+        _storageController.add(giNode);
+        Node nodeData = NodeImpl("data", ":Users:${user.userId}:gi");
+        _storageController.add(nodeData);
+        Node userScoreNode =
+            NodeImpl("GeigerScoreUser", ":Users:${user.userId}:gi:data");
+        _storageController.add(userScoreNode);
+        NodeValue geigerScore = NodeValueImpl("GEIGER_score", "0");
+        userScoreNode.addOrUpdateValue(geigerScore);
+        NodeValue geigerThreatScores =
+            NodeValueImpl("threats_score", threatScoresArray);
+        userScoreNode.addOrUpdateValue(geigerThreatScores);
+        NodeValue geigerNumMetrics = NodeValueImpl("number_metrics",
+            ThreatScore.fromJSon(threatScoresArray).length.toString());
+        userScoreNode.addOrUpdateValue(geigerNumMetrics);
+
+        geigerScore.setDescription("GEIGER user score");
+        geigerThreatScores.setDescription("GEIGER threat-specific user score");
+        geigerNumMetrics.setDescription(
+            "Number of metrics used in calculation of user score");
+        _storageController.update(userScoreNode);
+        print(userScoreNode.getValue("threats_score"));
+      }
+    }
+    //print(_node!.getValue("threats_score")!.getValue("en"));
+  }
+  /* List<ThreatScore> getThreatScore(){
+
+  }*/
+
+  void setGeigerScoreAggregate(String ThreatScoreArray, String userArray) {
+    List<ThreatScore> threatScores = ThreatScore.fromJSon(ThreatScoreArray);
+    List<User> users = getCurrentUser(userArray);
+    for (User user in users) {
+      try {
+        _node = _storageController
+            .get(":Users:${user.userId}:gi:data:GeigerScoreAggregate");
+      } on StorageException {
+        Node _aggScoreNode =
+            NodeImpl("GeigerScoreAggregate", ":Users:${user.userId}:gi:data");
+      }
     }
   }
 
-  List<ThreatScore> get getGeigerScoreAggregate {}*/
+  //List<ThreatScore> get getGeigerScoreAggregate {}
 }
