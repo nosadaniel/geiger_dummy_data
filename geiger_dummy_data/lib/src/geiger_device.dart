@@ -1,15 +1,13 @@
 library geiger_dummy_data;
 
-import 'dart:developer';
-
 import 'package:geiger_localstorage/geiger_localstorage.dart';
 
 import 'models/device.dart';
 import 'models/threat_score.dart';
 
-class InitialData {
+class GeigerDevice {
   StorageController _storageController;
-  InitialData(this._storageController);
+  GeigerDevice(this._storageController);
   Node? _node;
 
   NodeValue? localNodeValue;
@@ -24,13 +22,15 @@ class InitialData {
 
     try {
       _node = _storageController.get(":Local");
+
+      //create new NodeValue key
       localNodeValue =
-          NodeValueImpl("currentDevice", Device.convertToJson(device));
+          NodeValueImpl("currentDeviceNew", Device.convertToJson(device));
       _node!.addOrUpdateValue(localNodeValue!);
-      //_storageController.addOrUpdate(_node!);
+      _storageController.update(_node!);
       print(_node);
-    } on StorageException {
-      log(":Local not found");
+    } catch (e) {
+      print(":Local not found");
     }
   }
 
@@ -39,7 +39,7 @@ class InitialData {
     _node = _storageController.get(":Local");
 
     String currentDevice =
-        _node!.getValue("currentDevice")!.getValue("en").toString();
+        _node!.getValue("currentDeviceNew")!.getValue("en").toString();
     return Device.fromJSon(currentDevice);
   }
 

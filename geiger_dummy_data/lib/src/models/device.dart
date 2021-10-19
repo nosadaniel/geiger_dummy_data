@@ -34,4 +34,10 @@ class Device {
     List<dynamic> jsonData = jsonDecode(deviceArray);
     return jsonData.map((device) => Device.fromJson(device)).toList();
   }
+
+  @override
+  String toString() {
+    super.toString();
+    return '{"owner":$owner, "deviceId":$deviceId, "name":$name, "type":$type}';
+  }
 }

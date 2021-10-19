@@ -1,5 +1,5 @@
 import 'package:flutter_test/flutter_test.dart';
-import 'package:geiger_dummy_data/src/initial_data.dart';
+import 'package:geiger_dummy_data/src/geiger_device.dart';
 import 'package:geiger_localstorage/geiger_localstorage.dart';
 
 void main() {
@@ -16,7 +16,7 @@ class NodeValueTest {
   static void getNodesValue(StorageController storageController) {
     group("get nodeValue", () {
       test("getCurrentUser", () {
-        InitialData initialData = InitialData(storageController);
+        GeigerDevice initialData = GeigerDevice(storageController);
       });
     });
   }
