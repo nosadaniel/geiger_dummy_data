@@ -41,12 +41,13 @@ class GeigerUser {
   }
 
   void setCurrentGeigerUserScoreNodeAndNodeValue(
-      List<User> currentUser, List<ThreatScore> threatScores) {
+      List<User> currentUser, List<ThreatScore> threatScores,
+      {String geigerScore: "0"}) {
     for (User user in currentUser) {
       try {
         _node = _storageController
             .get(":Users:${user.userId}:gi:data:GeigerScoreUser");
-        _setUserNodeValues(threatScores);
+        _setUserNodeValues(threatScores, geigerScore: geigerScore);
       } on StorageException {
         var numberMetrics = threatScores.length;
         Node userNode = NodeImpl("${user.userId}", ":Users");
@@ -58,31 +59,34 @@ class GeigerUser {
         Node userScoreNode =
             NodeImpl("GeigerScoreUser", ":Users:${user.userId}:gi:data");
         _storageController.add(userScoreNode);
-        _setUserNodeValuesException(userScoreNode, threatScores);
+        _setUserNodeValuesException(userScoreNode, threatScores,
+            geigerScore: geigerScore);
       }
     }
     //print(_node!.getValue("threats_score")!.getValue("en"));
   }
 
   void setGeigerScoreAggregate(
-      List<ThreatScore> threatScores, List<User> currentUsers) {
+      List<ThreatScore> threatScores, List<User> currentUsers,
+      {String geigerScore: "0"}) {
     for (User user in currentUsers) {
       try {
         _node = _storageController
             .get(":Users:${user.userId}:gi:data:GeigerScoreAggregate");
-        _setUserNodeValues(threatScores);
+        _setUserNodeValues(threatScores, geigerScore: geigerScore);
       } on StorageException {
         Node aggScoreNode =
             NodeImpl("GeigerScoreAggregate", ":Users:${user.userId}:gi:data");
         _storageController.addOrUpdate(aggScoreNode);
-        _geigerScore = NodeValueImpl("GEIGER_score", "0");
+
         _setUserNodeValuesException(aggScoreNode, threatScores);
       }
     }
   }
 
-  void _setUserNodeValues(List<ThreatScore> threatScores) {
-    _geigerScore = NodeValueImpl("GEIGER_score", "0");
+  void _setUserNodeValues(List<ThreatScore> threatScores,
+      {String geigerScore: "0"}) {
+    _geigerScore = NodeValueImpl("GEIGER_score", geigerScore);
     _node!.addOrUpdateValue(_geigerScore!);
     _geigerThreatScores =
         NodeValueImpl("threats_score", ThreatScore.convertToJson(threatScores));
@@ -95,8 +99,9 @@ class GeigerUser {
     print(_node);
   }
 
-  void _setUserNodeValuesException(Node aggScoreNode, threatScores) {
-    _geigerScore = NodeValueImpl("GEIGER_score", "0");
+  void _setUserNodeValuesException(Node aggScoreNode, threatScores,
+      {String geigerScore: "0"}) {
+    _geigerScore = NodeValueImpl("GEIGER_score", geigerScore);
     aggScoreNode.addOrUpdateValue(_geigerScore!);
     _geigerThreatScores =
         NodeValueImpl("threats_score", ThreatScore.convertToJson(threatScores));
