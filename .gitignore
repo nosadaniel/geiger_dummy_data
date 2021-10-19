@@ -3,3 +3,5 @@
 .idea/misc.xml
 *.db
 *.db
+*.db
+geiger_dummy_data/owner43.db
