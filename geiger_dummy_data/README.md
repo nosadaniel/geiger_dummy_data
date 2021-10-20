@@ -19,17 +19,22 @@ know whether this package might be useful for them.
 TODO: List what your package can do. Maybe include images, gifs, or videos.
 
 ## Getting started
+run the following command in your terminal, to add the package in your pubspec.yaml 
+```
+  Flutter pub add geiger_dummy_data
+```
 
 TODO: List prerequisites and provide or point to information on how to
 start using the package.
 
 ## Usage
 
-TODO: Include short and useful examples for package users. Add longer examples
+A short and useful examples for package users. Add longer examples
 to `/example` folder. 
 
 ```dart
-const like = 'sample';
+StorageController _storageController =
+      GenericController("owner", SqliteMapper("./database.db"));
 ```
 
 ## Additional information
