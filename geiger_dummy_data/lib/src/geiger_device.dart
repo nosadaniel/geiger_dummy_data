@@ -46,7 +46,7 @@ class GeigerDevice {
   /* List<ThreatScore> getThreatScore(){
 
   }*/
-
+//not tested
   void setCurrentGeigerDeviceNodeAndNodeValue(
       List<Device> currentDevice, List<ThreatScore> threatScores) {
     for (Device device in currentDevice) {

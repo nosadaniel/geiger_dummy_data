@@ -66,6 +66,7 @@ class GeigerUser {
     //print(_node!.getValue("threats_score")!.getValue("en"));
   }
 
+//not tested
   void setGeigerScoreAggregate(
       List<ThreatScore> threatScores, List<User> currentUsers,
       {String geigerScore: "0"}) {
