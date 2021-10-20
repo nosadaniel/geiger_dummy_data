@@ -1,7 +1,10 @@
 library geiger_dummy_data;
 
-/// A Calculator.
-class Calculator {
-  /// Returns [value] plus 1.
-  int addOne(int value) => value + 1;
-}
+export 'src/geiger_device.dart';
+export 'src/geiger_threat.dart';
+export 'src/geiger_user.dart';
+export 'src/models/device.dart';
+export 'src/models/role.dart';
+export 'src/models/threat.dart';
+export 'src/models/threat_score.dart';
+export 'src/models/user.dart';

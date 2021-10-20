@@ -49,7 +49,6 @@ class GeigerUser {
             .get(":Users:${user.userId}:gi:data:GeigerScoreUser");
         _setUserNodeValues(threatScores, geigerScore: geigerScore);
       } on StorageException {
-        var numberMetrics = threatScores.length;
         Node userNode = NodeImpl("${user.userId}", ":Users");
         _storageController.addOrUpdate(userNode);
         Node giNode = NodeImpl("gi", ":Users:${user.userId}");
