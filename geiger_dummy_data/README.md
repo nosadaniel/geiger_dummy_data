@@ -22,6 +22,8 @@ TODO: List what your package can do. Maybe include images, gifs, or videos.
 run the following command in your terminal, to add the package in your pubspec.yaml 
 ```
   Flutter pub add geiger_dummy_data
+  or
+  dart pub add geiger_dummy_data
 ```
 
 TODO: List prerequisites and provide or point to information on how to
