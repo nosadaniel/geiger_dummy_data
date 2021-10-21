@@ -16,12 +16,12 @@ class GeigerUser {
   NodeValue? _geigerThreatScores;
   NodeValue? _geigerNumMetrics;
 
-  /// set currentUser NodeValue in :Local
-  void set setCurrentUser(User currentUser) {
+  /// set currentUserInfo NodeValue in :Local
+  void set setCurrentUserInfo(User currentUserInfo) {
     try {
       _node = _storageController.get(":Local");
       NodeValue localNodeValue = NodeValueImpl(
-          "currentUser", User.convertToJsonCurrentUser(currentUser));
+          "currentUser", User.convertToJsonCurrentUser(currentUserInfo));
       _node!.addOrUpdateValue(localNodeValue);
       _storageController.update(_node!);
     } on StorageException {
@@ -29,18 +29,20 @@ class GeigerUser {
     }
   }
 
-  /// return list of single CurrentUser
-  User get getCurrentUser {
+  /// return User CurrentUserInfo
+  User get getCurrentUserInfo {
     _node = _storageController.get(":Local");
     String currentUser =
         _node!.getValue("currentUser")!.getValue("en").toString();
     return User.currentUserFromJSon(currentUser);
   }
 
+  /// set GeigerCurrentUserScoreNodeAndNodeValue
   void setCurrentGeigerUserScoreNodeAndNodeValue(
-      User currentUser, List<ThreatScore> threatScores,
-      {String geigerScore: "0"}) {
-    User currentUser = getCurrentUser;
+      {required User currentUser,
+      required List<ThreatScore> threatScores,
+      String geigerScore: "0"}) {
+    User currentUser = getCurrentUserInfo;
     try {
       _node = _storageController
           .get(":Users:${currentUser.userId}:gi:data:GeigerScoreUser");
@@ -62,9 +64,9 @@ class GeigerUser {
     //print(_node!.getValue("threats_score")!.getValue("en"));
   }
 
-  //get list of currentUserThreatScores
+  ///get list of currentUserThreatScores
   List<ThreatScore> get getCurrentGeigerUserThreatScores {
-    User currentUser = getCurrentUser;
+    User currentUser = getCurrentUserInfo;
     _node = _storageController
         .get(":Users:${currentUser.userId}:gi:data:GeigerScoreUser");
 
@@ -73,9 +75,9 @@ class GeigerUser {
     return ThreatScore.fromJSon(threats_score);
   }
 
-  //get CurrentGeigerUserScore
+  ///get CurrentGeigerUserScore
   String get getCurrentGeigerUserScore {
-    User currentUser = getCurrentUser;
+    User currentUser = getCurrentUserInfo;
     _node = _storageController
         .get(":Users:${currentUser.userId}:gi:data:GeigerScoreUser");
 

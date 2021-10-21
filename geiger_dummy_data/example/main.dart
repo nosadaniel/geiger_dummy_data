@@ -22,10 +22,10 @@ void main() {
   //--start of currentUser
   print("//--start of currentUser");
   //set currentUser info in :Local NodeValue called "currentUser"
-  geigerUser.setCurrentUser =
+  geigerUser.setCurrentUserInfo =
       '[{"userId":"1", "firstName":null, "lastName":null, "role":{"roleId":null, "name":null}}]';
   //get user info from :Local NodeValue called "currentUser"
-  User user = geigerUser.getCurrentUser;
+  User user = geigerUser.getCurrentUserInfo;
   print(user);
 
   print("//-- end");
@@ -36,10 +36,10 @@ void main() {
   print("//-- start of currentDevice");
   //set currentDevice info in :Local NodeValue called "currentDeviceNew"
   //can't store in currentDevice because it will run into error
-  geigerDevice.setCurrentDevice =
+  geigerDevice.setCurrentDeviceInfo =
       '[{"owner":{"userId":"1", "firstName":null, "lastName":null, "role":{"roleId":null, "name":null}},"deviceId":"d1","name":"SamSung","type":"Mobile"}]';
   //get currentDevice info from :Local NodeValue called "currentDeviceNew"
-  print(geigerDevice.getCurrentDevice());
+  print(geigerDevice.getCurrentDeviceInfo());
 
   print("//--end");
   // ----end of CurrentDevice

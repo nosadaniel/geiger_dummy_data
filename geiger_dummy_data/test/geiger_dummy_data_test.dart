@@ -31,20 +31,20 @@ class GeigerUserTest {
     group("currentUserGroupTest:", () {
       setUp(() {
         //setCurrentUser
-        geigerUser.setCurrentUser = User.currentUserFromJSon(
+        geigerUser.setCurrentUserInfo = User.currentUserFromJSon(
             '{"firstName":null, "lastName":null, "role":{"roleId":null, "name":null}}');
 
         //setCurrentGeigerUserScore
         geigerUser.setCurrentGeigerUserScoreNodeAndNodeValue(
-            geigerUser.getCurrentUser,
-            ThreatScore.fromJSon(
+            currentUser: geigerUser.getCurrentUserInfo,
+            threatScores: ThreatScore.fromJSon(
                 '[{"threat":{"threatId":"t1","name":"phishing"},"score":"25"}]'),
-            geigerScore: "50");
+            geigerScore: "90");
       });
 
       test("getCurrentUser", () {
         expect(
-            geigerUser.getCurrentUser,
+            geigerUser.getCurrentUserInfo,
             equals(User.currentUserFromJSon(
                 '{ "firstName":null, "lastName":null, "role":{"roleId":null, "name":null}}')));
       });
@@ -57,7 +57,7 @@ class GeigerUserTest {
       });
 
       test("getCurrentUserGeigerScore", () {
-        expect(geigerUser.getCurrentGeigerUserScore, equals("50"));
+        expect(geigerUser.getCurrentGeigerUserScore, equals("90"));
       });
     });
   }
@@ -68,13 +68,13 @@ class GeigerAggregateScoreTest {
   GeigerAggregateScoreTest(this._storageController);
 
   void aggregateGroupTest() {
-    group("GeigerAggregateScore", () {
+    group("GeigerAggregateGroup", () {
       setUp(() {
         //set
         GeigerAggregateScore(_storageController).setGeigerScoreAggregate(
             ThreatScore.fromJSon(
                 '[{"threat":{"threatId":"t1","name":"phishing"},"score":"25"},{"threat":{"threatId":"w1","name":"malware"},"score":"45"}]'),
-            GeigerUser(_storageController).getCurrentUser);
+            GeigerUser(_storageController).getCurrentUserInfo);
       });
 
       test("getGeigerAggregateThreatScore", () {
@@ -89,21 +89,41 @@ class GeigerAggregateScoreTest {
 
 class GeigerDeviceTest {
   StorageController _storageController;
+
   GeigerDeviceTest(this._storageController);
 
   void deviceGroupTest() {
-    group("GeigerDeviceScore", () {
+    GeigerDevice geigerDevice = GeigerDevice(_storageController);
+    group("GeigerDeviceGroupTest", () {
       setUp(() {
-        GeigerDevice(_storageController).setCurrentDevice =
-            Device.currentDeviceFromJSon(
-                '{"owner":{"firstName":null, "lastName":null, "role":{"roleId":null, "name":null}},"name":"Iphone","type":"mobile"}');
+        // set currentDevice
+        geigerDevice.setCurrentDeviceInfo = Device.currentDeviceFromJSon(
+            '{"owner":{"firstName":null, "lastName":null, "role":{"roleId":null, "name":null}},"name":"Iphone","type":"mobile"}');
+
+        // set list of threats for currentDevice
+        geigerDevice.setCurrentGeigerScoreDeviceNodeAndNodeValue(
+            geigerScore: "89",
+            currentDevice: geigerDevice.getCurrentDeviceInfo,
+            threatScores: ThreatScore.fromJSon(
+                '[{"threat":{"threatId":"t1","name":"phishing"},"score":"25"},{"threat":{"threatId":"w1","name":"malware"},"score":"45"},{"threat":{"threatId":"c1","name":"cyber Attack"},"score":"50"}]'));
       });
 
       test("getGeigerCurrentDevice", () {
         expect(
-            GeigerDevice(_storageController).getCurrentDevice,
+            geigerDevice.getCurrentDeviceInfo,
             equals(Device.currentDeviceFromJSon(
                 '{"owner":{"firstName":null, "lastName":null, "role":{"roleId":null, "name":null}},"name":"Iphone","type":"mobile"}')));
+      });
+
+      test("getGeigerCurrentDeviceThreatScore", () {
+        expect(
+            geigerDevice.getCurrentDeviceThreatScores,
+            equals(ThreatScore.fromJSon(
+                '[{"threat":{"threatId":"t1","name":"phishing"},"score":"25"},{"threat":{"threatId":"w1","name":"malware"},"score":"45"},{"threat":{"threatId":"c1","name":"cyber Attack"},"score":"50"}]')));
+      });
+
+      test("getCurrentDeviceGeigerScore", () {
+        expect(geigerDevice.getCurrentGeigerDeviceScore, equals("89"));
       });
     });
   }

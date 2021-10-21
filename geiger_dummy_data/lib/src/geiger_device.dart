@@ -16,14 +16,14 @@ class GeigerDevice {
   NodeValue? _geigerThreatScores;
   NodeValue? _geigerNumMetrics;
 
-  /// set currentDevice NodeValue in :Local
-  void set setCurrentDevice(Device currentDevice) {
+  /// set currentDeviceInfo NodeValue in :Local
+  void set setCurrentDeviceInfo(Device currentDeviceInfo) {
     try {
       _node = _storageController.get(":Local");
 
       //create new NodeValue key
-      localNodeValue = NodeValueImpl(
-          "currentDeviceNew", Device.convertToJsonCurrentDevice(currentDevice));
+      localNodeValue = NodeValueImpl("currentDeviceNew",
+          Device.convertToJsonCurrentDevice(currentDeviceInfo));
       _node!.addOrUpdateValue(localNodeValue!);
       _storageController.update(_node!);
       print(_node);
@@ -32,8 +32,8 @@ class GeigerDevice {
     }
   }
 
-  /// return list of single CurrentDevice
-  Device get getCurrentDevice {
+  /// return Device CurrentDevice
+  Device get getCurrentDeviceInfo {
     _node = _storageController.get(":Local");
 
     String currentDevice =
@@ -41,10 +41,7 @@ class GeigerDevice {
     return Device.currentDeviceFromJSon(currentDevice);
   }
 
-  /* List<ThreatScore> getThreatScore(){
-
-  }*/
-//not tested
+  /// set GeigerScoreCurrentDeviceNodeAndNodeValue
   void setCurrentGeigerScoreDeviceNodeAndNodeValue(
       {required Device currentDevice,
       required List<ThreatScore> threatScores,
@@ -68,9 +65,31 @@ class GeigerDevice {
     }
   }
 
+  ///get list of currentDeviceThreatScores
+  List<ThreatScore> get getCurrentDeviceThreatScores {
+    Device currentDevice = getCurrentDeviceInfo;
+    _node = _storageController
+        .get(":Devices:${currentDevice.deviceId}:gi:data:GeigerScoreDevice");
+
+    String threats_score =
+        _node!.getValue("threats_score")!.getValue("en").toString();
+    return ThreatScore.fromJSon(threats_score);
+  }
+
+  ///get CurrentGeigerDeviceScore
+  String get getCurrentGeigerDeviceScore {
+    Device currentDevice = getCurrentDeviceInfo;
+    _node = _storageController
+        .get(":Devices:${currentDevice.deviceId}:gi:data:GeigerScoreDevice");
+
+    String geigerScore =
+        _node!.getValue("GEIGER_score")!.getValue("en").toString();
+    return geigerScore;
+  }
+
   void _setDeviceNodeValues(List<ThreatScore> threatScores,
       {String geigerScore: "0"}) {
-    _geigerScore = NodeValueImpl("GEIGER_score", "0");
+    _geigerScore = NodeValueImpl("GEIGER_score", geigerScore);
     _node!.addOrUpdateValue(_geigerScore!);
     _geigerThreatScores =
         NodeValueImpl("threats_score", ThreatScore.convertToJson(threatScores));

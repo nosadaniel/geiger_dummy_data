@@ -27,7 +27,7 @@ class GeigerAggregateScore {
   }
 
   List<ThreatScore> get getGeigerScoreAggregate {
-    User currentUser = GeigerUser(_storageController).getCurrentUser;
+    User currentUser = GeigerUser(_storageController).getCurrentUserInfo;
     _node = _storageController
         .get(":Users:${currentUser.userId}:gi:data:GeigerScoreAggregate");
 
