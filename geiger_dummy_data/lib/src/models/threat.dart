@@ -8,8 +8,8 @@ part 'threat.g.dart';
 
 @JsonSerializable(explicitToJson: true)
 class Threat {
-  String threatId;
-  String name;
+  final String threatId;
+  final String name;
 
   Threat({required this.threatId, required this.name});
 

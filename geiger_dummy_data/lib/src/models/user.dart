@@ -30,28 +30,36 @@ class User extends Equatable {
     return _$UserToJson(this);
   }
 
-  /// convert to json string
-  static String convertToJson(List<User> users) {
+  /// convert from jsonUserArray to String
+  static String convertToJsonUserArray(List<User> users) {
     List<Map<String, dynamic>> jsonData =
         users.map((user) => user.toJson()).toList();
     return jsonEncode(jsonData);
   }
 
-  /// pass list of User as a string
-  static List<User> fromJSonUser(String jsonArray) {
+  /// converts jsonUserArrayString to List<User>
+  static List<User> fromJSonUserList(String jsonArray) {
     List<dynamic> jsonData = jsonDecode(jsonArray);
     return jsonData.map((user) => User.fromJson(user)).toList();
   }
 
-  /// pass single User as a strong
+  /// convert from JsonUserString to User
   static User currentUserFromJSon(String json) {
     var jsonData = jsonDecode(json);
     return User.fromJson(jsonData);
   }
 
-  //makes output data readable
+  /// convert from User to userString
+  static String convertToJsonCurrentUser(User currentUser) {
+    var jsonData = jsonEncode(currentUser);
+    return jsonData;
+  }
+
   @override
-  bool get stringify => true;
+  String toString() {
+    super.toString();
+    return '{"userId":$userId,firstName":$firstName, "lastName":$lastName, "role":$role}';
+  }
 
   @override
   List<Object?> get props =>

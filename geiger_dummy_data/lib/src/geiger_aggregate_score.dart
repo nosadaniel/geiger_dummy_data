@@ -11,7 +11,6 @@ class GeigerAggregateScore {
   NodeValue? _geigerNumMetrics;
   Node? _node;
 
-  //not tested
   void setGeigerScoreAggregate(List<ThreatScore> threatScores, User currentUser,
       {String geigerScore: "0"}) {
     try {

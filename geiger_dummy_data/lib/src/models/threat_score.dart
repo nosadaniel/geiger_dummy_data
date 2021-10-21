@@ -9,8 +9,8 @@ part 'threat_score.g.dart';
 
 @JsonSerializable(explicitToJson: true)
 class ThreatScore extends Equatable {
-  Threat threat;
-  String score;
+  final Threat threat;
+  final String score;
   ThreatScore({required this.threat, required this.score});
 
   factory ThreatScore.fromJson(Map<String, dynamic> json) {
@@ -37,7 +37,10 @@ class ThreatScore extends Equatable {
   }
 
   @override
-  bool get stringify => true;
+  String toString() {
+    super.toString();
+    return '{"threat": $threat, "score":$score}';
+  }
 
   @override
   List<Object?> get props => [threat, score];

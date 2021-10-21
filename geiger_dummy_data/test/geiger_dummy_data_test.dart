@@ -10,25 +10,29 @@ void main() {
 
   // geigerUserTest
   GeigerUserTest geigerUserTest = GeigerUserTest(_storageController);
-  geigerUserTest.currentUserGroupTest();
+  geigerUserTest.userGroupTest();
 
   //aggregateTest
   GeigerAggregateScoreTest geigerAggregateScoreTest =
       GeigerAggregateScoreTest(_storageController);
-  geigerAggregateScoreTest.aggregateScoreTest();
+  geigerAggregateScoreTest.aggregateGroupTest();
+
+  //geigerDeviceTest
+  GeigerDeviceTest geigerDeviceTest = GeigerDeviceTest(_storageController);
+  geigerDeviceTest.deviceGroupTest();
 }
 
 class GeigerUserTest {
   StorageController _storageController;
   GeigerUserTest(this._storageController);
 
-  void currentUserGroupTest() {
+  void userGroupTest() {
     GeigerUser geigerUser = GeigerUser(_storageController);
     group("currentUserGroupTest:", () {
       setUp(() {
         //setCurrentUser
-        geigerUser.setCurrentUser =
-            '{"firstName":null, "lastName":null, "role":{"roleId":null, "name":null}}';
+        geigerUser.setCurrentUser = User.currentUserFromJSon(
+            '{"firstName":null, "lastName":null, "role":{"roleId":null, "name":null}}');
 
         //setCurrentGeigerUserScore
         geigerUser.setCurrentGeigerUserScoreNodeAndNodeValue(
@@ -63,7 +67,7 @@ class GeigerAggregateScoreTest {
   StorageController _storageController;
   GeigerAggregateScoreTest(this._storageController);
 
-  void aggregateScoreTest() {
+  void aggregateGroupTest() {
     group("GeigerAggregateScore", () {
       setUp(() {
         //set
@@ -78,6 +82,28 @@ class GeigerAggregateScoreTest {
             GeigerAggregateScore(_storageController).getGeigerScoreAggregate,
             equals(ThreatScore.fromJSon(
                 '[{"threat":{"threatId":"t1","name":"phishing"},"score":"25"},{"threat":{"threatId":"w1","name":"malware"},"score":"45"}]')));
+      });
+    });
+  }
+}
+
+class GeigerDeviceTest {
+  StorageController _storageController;
+  GeigerDeviceTest(this._storageController);
+
+  void deviceGroupTest() {
+    group("GeigerDeviceScore", () {
+      setUp(() {
+        GeigerDevice(_storageController).setCurrentDevice =
+            Device.currentDeviceFromJSon(
+                '{"owner":{"firstName":null, "lastName":null, "role":{"roleId":null, "name":null}},"name":"Iphone","type":"mobile"}');
+      });
+
+      test("getGeigerCurrentDevice", () {
+        expect(
+            GeigerDevice(_storageController).getCurrentDevice,
+            equals(Device.currentDeviceFromJSon(
+                '{"owner":{"firstName":null, "lastName":null, "role":{"roleId":null, "name":null}},"name":"Iphone","type":"mobile"}')));
       });
     });
   }
