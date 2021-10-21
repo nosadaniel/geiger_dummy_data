@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:equatable/equatable.dart';
 import 'package:geiger_dummy_data/geiger_dummy_data.dart';
 import 'package:json_annotation/json_annotation.dart';
@@ -17,6 +19,21 @@ class ThreatWeight extends Equatable {
 
   Map<String, dynamic> toJson() {
     return _$ThreatWeightToJson(this);
+  }
+
+  /// converts ThreatWeightList to String
+  static String convertToJson(List<ThreatWeight> threatWeights) {
+    List<Map<String, dynamic>> jsonData =
+        threatWeights.map((threatWeight) => threatWeight.toJson()).toList();
+    return jsonEncode(jsonData);
+  }
+
+  /// converts jsonThreatWeightListString to List<ThreatWeight>
+  static List<ThreatWeight> fromJSon(String jsonArray) {
+    List<dynamic> jsonData = jsonDecode(jsonArray);
+    return jsonData
+        .map((threatWeight) => ThreatWeight.fromJson(threatWeight))
+        .toList();
   }
 
   @override

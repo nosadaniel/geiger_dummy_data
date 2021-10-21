@@ -10,16 +10,18 @@ Recommendation _$RecommendationFromJson(Map<String, dynamic> json) =>
     Recommendation(
       json['recommendationId'] as String,
       json['recommendationType'] as String,
-      ThreatWeight.fromJson(json['threatWeight'] as Map<String, dynamic>),
-      json['short_description'] as String,
-      json['long_description'] as String?,
+      (json['threatWeight'] as List<dynamic>)
+          .map((e) => ThreatWeight.fromJson(e as Map<String, dynamic>))
+          .toList(),
+      json['shortDescription'] as String,
+      json['longDescription'] as String?,
     );
 
 Map<String, dynamic> _$RecommendationToJson(Recommendation instance) =>
     <String, dynamic>{
       'recommendationId': instance.recommendationId,
       'recommendationType': instance.recommendationType,
-      'threatWeight': instance.threatWeight.toJson(),
-      'short_description': instance.short_description,
-      'long_description': instance.long_description,
+      'threatWeight': instance.threatWeight.map((e) => e.toJson()).toList(),
+      'shortDescription': instance.shortDescription,
+      'longDescription': instance.longDescription,
     };

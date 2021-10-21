@@ -30,14 +30,14 @@ class User extends Equatable {
     return _$UserToJson(this);
   }
 
-  /// convert from jsonUserArray to String
+  /// convert from users List to String
   static String convertToJsonUserArray(List<User> users) {
     List<Map<String, dynamic>> jsonData =
         users.map((user) => user.toJson()).toList();
     return jsonEncode(jsonData);
   }
 
-  /// converts jsonUserArrayString to List<User>
+  /// converts jsonUserListString to List<User>
   static List<User> fromJSonUserList(String jsonArray) {
     List<dynamic> jsonData = jsonDecode(jsonArray);
     return jsonData.map((user) => User.fromJson(user)).toList();

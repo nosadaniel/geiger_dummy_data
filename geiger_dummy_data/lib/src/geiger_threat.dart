@@ -10,9 +10,7 @@ class GeigerThreat {
   Node? _node;
 
   /// set all threat in Global:threats node
-  void set setGlobalThreatsNode(String ThreatsArray) {
-    List<Threat> threats = Threat.fromJSon(ThreatsArray);
-
+  void set setGlobalThreatsNode(List<Threat> threats) {
     try {
       for (Threat threat in threats) {
         _node = _storageController.get(':Global:threats:${threat.threatId}');

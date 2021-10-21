@@ -21,14 +21,14 @@ class ThreatScore extends Equatable {
     return _$ThreatScoreToJson(this);
   }
 
-  /// convert to json string
+  /// converts ThreatsList to String
   static String convertToJson(List<ThreatScore> threatScores) {
     List<Map<String, dynamic>> jsonData =
         threatScores.map((threatScore) => threatScore.toJson()).toList();
     return jsonEncode(jsonData);
   }
 
-  /// pass [ThreatScore] as a string
+  /// converts jsonThreatScoreListString to List<ThreatScore>
   static List<ThreatScore> fromJSon(String jsonArray) {
     List<dynamic> jsonData = jsonDecode(jsonArray);
     return jsonData

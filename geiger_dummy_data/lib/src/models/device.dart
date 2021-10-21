@@ -23,14 +23,14 @@ class Device extends Equatable {
     return _$DeviceToJson(this);
   }
 
-  /// convert from jsonDeviceArray to String
+  /// convert from devices List to String
   static String convertToJson(List<Device> devices) {
     List<Map<String, dynamic>> jsonData =
         devices.map((device) => device.toJson()).toList();
     return jsonEncode(jsonData);
   }
 
-  /// converts jsonDeviceArrayString to List<Device>
+  /// converts jsonDeviceListString to List<Device>
   static List<Device> fromJSon(String deviceArray) {
     List<dynamic> jsonData = jsonDecode(deviceArray);
     return jsonData.map((device) => Device.fromJson(device)).toList();
