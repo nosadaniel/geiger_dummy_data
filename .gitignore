@@ -5,3 +5,4 @@
 *.db
 *.db
 geiger_dummy_data/owner43.db
+.DS_Store

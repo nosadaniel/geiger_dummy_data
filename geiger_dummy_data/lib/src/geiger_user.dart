@@ -17,71 +17,70 @@ class GeigerUser {
   NodeValue? _geigerNumMetrics;
 
   /// set currentUser NodeValue in :Local
-  void set setCurrentUser(String currentUserArray) {
-    List<User> users = User.fromJSon(currentUserArray);
-
+  void set setCurrentUser(String currentUser) {
     try {
       _node = _storageController.get(":Local");
-      NodeValue localNodeValue =
-          NodeValueImpl("currentUser", User.convertToJson(users));
+      NodeValue localNodeValue = NodeValueImpl("currentUser", currentUser);
       _node!.addOrUpdateValue(localNodeValue);
       _storageController.update(_node!);
-      print(_node);
     } on StorageException {
       log(":Local not found");
     }
   }
 
   /// return list of single CurrentUser
-  List<User> getCurrentUser() {
+  User get getCurrentUser {
     _node = _storageController.get(":Local");
     String currentUser =
         _node!.getValue("currentUser")!.getValue("en").toString();
-    return User.fromJSon(currentUser);
+    return User.currentUserFromJSon(currentUser);
   }
 
   void setCurrentGeigerUserScoreNodeAndNodeValue(
-      List<User> currentUser, List<ThreatScore> threatScores,
+      User currentUser, List<ThreatScore> threatScores,
       {String geigerScore: "0"}) {
-    for (User user in currentUser) {
-      try {
-        _node = _storageController
-            .get(":Users:${user.userId}:gi:data:GeigerScoreUser");
-        _setUserNodeValues(threatScores, geigerScore: geigerScore);
-      } on StorageException {
-        Node userNode = NodeImpl("${user.userId}", ":Users");
-        _storageController.addOrUpdate(userNode);
-        Node giNode = NodeImpl("gi", ":Users:${user.userId}");
-        _storageController.addOrUpdate(giNode);
-        Node nodeData = NodeImpl("data", ":Users:${user.userId}:gi");
-        _storageController.addOrUpdate(nodeData);
-        Node userScoreNode =
-            NodeImpl("GeigerScoreUser", ":Users:${user.userId}:gi:data");
-        _storageController.add(userScoreNode);
-        _setUserNodeValuesException(userScoreNode, threatScores,
-            geigerScore: geigerScore);
-      }
+    User currentUser = getCurrentUser;
+    try {
+      _node = _storageController
+          .get(":Users:${currentUser.userId}:gi:data:GeigerScoreUser");
+      _setUserNodeValues(threatScores, geigerScore: geigerScore);
+    } on StorageException {
+      Node userNode = NodeImpl("${currentUser.userId}", ":Users");
+      _storageController.addOrUpdate(userNode);
+      Node giNode = NodeImpl("gi", ":Users:${currentUser.userId}");
+      _storageController.addOrUpdate(giNode);
+      Node nodeData = NodeImpl("data", ":Users:${currentUser.userId}:gi");
+      _storageController.addOrUpdate(nodeData);
+      Node userScoreNode =
+          NodeImpl("GeigerScoreUser", ":Users:${currentUser.userId}:gi:data");
+      _storageController.add(userScoreNode);
+      _setUserNodeValuesException(userScoreNode, threatScores,
+          geigerScore: geigerScore);
     }
+
     //print(_node!.getValue("threats_score")!.getValue("en"));
   }
 
-//not tested
-  void setGeigerScoreAggregate(
-      List<ThreatScore> threatScores, List<User> currentUsers,
-      {String geigerScore: "0"}) {
-    for (User user in currentUsers) {
-      try {
-        _node = _storageController
-            .get(":Users:${user.userId}:gi:data:GeigerScoreAggregate");
-        _setUserNodeValues(threatScores, geigerScore: geigerScore);
-      } on StorageException {
-        Node aggScoreNode =
-            NodeImpl("GeigerScoreAggregate", ":Users:${user.userId}:gi:data");
-        _storageController.addOrUpdate(aggScoreNode);
+  //get list of currentUserThreatScores
+  List<ThreatScore> get getCurrentGeigerUserThreatScores {
+    User currentUser = getCurrentUser;
+    _node = _storageController
+        .get(":Users:${currentUser.userId}:gi:data:GeigerScoreUser");
 
-        _setUserNodeValuesException(aggScoreNode, threatScores);
-      }
-    }
+    String threats_score =
+        _node!.getValue("threats_score")!.getValue("en").toString();
+    return ThreatScore.fromJSon(threats_score);
+  }
+
+  //get CurrentGeigerUserScore
+  String get getCurrentGeigerUserScore {
+    User currentUser = getCurrentUser;
+    _node = _storageController
+        .get(":Users:${currentUser.userId}:gi:data:GeigerScoreUser");
+
+    String geigerScore =
+        _node!.getValue("GEIGER_score")!.getValue("en").toString();
+    return geigerScore;
   }
 
   void _setUserNodeValues(List<ThreatScore> threatScores,
@@ -96,7 +95,6 @@ class GeigerUser {
     _node!.addOrUpdateValue(_geigerNumMetrics!);
 
     _storageController.update(_node!);
-    print(_node);
   }
 
   void _setUserNodeValuesException(Node aggScoreNode, threatScores,
@@ -109,7 +107,9 @@ class GeigerUser {
     _geigerNumMetrics =
         NodeValueImpl("number_metrics", threatScores.length.toString());
     aggScoreNode.addOrUpdateValue(_geigerNumMetrics!);
-
-    print(aggScoreNode);
   }
 }
+
+//Todo
+//Can't be Done: let ids be autogenerated except being explicitly defined
+//Note: can only be done during initialization

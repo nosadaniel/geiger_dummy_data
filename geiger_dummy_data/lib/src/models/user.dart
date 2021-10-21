@@ -1,20 +1,26 @@
 import 'dart:convert';
 
+import 'package:equatable/equatable.dart';
 import 'package:geiger_dummy_data/src/models/role.dart';
 import 'package:json_annotation/json_annotation.dart';
 
 part 'user.g.dart';
 
 @JsonSerializable(explicitToJson: true)
-class User {
-  String userId;
-  String? firstName;
-  String? lastName;
-  String? knowledgeLevel;
-  Role? role;
+//Equatable makes it easy to compare objects
+class User extends Equatable {
+  final String userId;
+  final String? firstName;
+  final String? lastName;
+  final String? knowledgeLevel;
+  final Role? role;
 
-  User(this.userId,
-      {this.firstName, this.lastName, this.knowledgeLevel, this.role});
+  User(
+      {this.userId: "123user",
+      this.firstName,
+      this.lastName,
+      this.knowledgeLevel,
+      this.role});
 
   factory User.fromJson(Map<String, dynamic> json) {
     return _$UserFromJson(json);
@@ -31,15 +37,23 @@ class User {
     return jsonEncode(jsonData);
   }
 
-  /// pass [ThreatScore] as a string
-  static List<User> fromJSon(String jsonArray) {
+  /// pass list of User as a string
+  static List<User> fromJSonUser(String jsonArray) {
     List<dynamic> jsonData = jsonDecode(jsonArray);
     return jsonData.map((user) => User.fromJson(user)).toList();
   }
 
-  @override
-  String toString() {
-    super.toString();
-    return '{"userId":$userId, "firstName":$firstName, "lastName":$lastName, "role":$role}';
+  /// pass single User as a strong
+  static User currentUserFromJSon(String json) {
+    var jsonData = jsonDecode(json);
+    return User.fromJson(jsonData);
   }
+
+  //makes output data readable
+  @override
+  bool get stringify => true;
+
+  @override
+  List<Object?> get props =>
+      [userId, firstName, lastName, knowledgeLevel, role];
 }

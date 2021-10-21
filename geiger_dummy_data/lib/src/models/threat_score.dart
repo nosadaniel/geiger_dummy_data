@@ -1,5 +1,6 @@
 import 'dart:convert';
 
+import 'package:equatable/equatable.dart';
 import 'package:json_annotation/json_annotation.dart';
 
 import '/src/models/threat.dart';
@@ -7,7 +8,7 @@ import '/src/models/threat.dart';
 part 'threat_score.g.dart';
 
 @JsonSerializable(explicitToJson: true)
-class ThreatScore {
+class ThreatScore extends Equatable {
   Threat threat;
   String score;
   ThreatScore({required this.threat, required this.score});
@@ -34,4 +35,10 @@ class ThreatScore {
         .map((threatMap) => ThreatScore.fromJson(threatMap))
         .toList();
   }
+
+  @override
+  bool get stringify => true;
+
+  @override
+  List<Object?> get props => [threat, score];
 }

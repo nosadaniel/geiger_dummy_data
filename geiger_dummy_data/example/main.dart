@@ -1,3 +1,4 @@
+import 'package:geiger_dummy_data/src/geiger_aggregate_score.dart';
 import 'package:geiger_dummy_data/src/geiger_device.dart';
 import 'package:geiger_dummy_data/src/geiger_threat.dart';
 import 'package:geiger_dummy_data/src/geiger_user.dart';
@@ -15,15 +16,17 @@ void main() {
   GeigerUser geigerUser = GeigerUser(_storageController);
   //threat
   GeigerThreat geigerThreat = GeigerThreat(_storageController);
-
+  //aggre
+  GeigerAggregateScore geigerAggregateScore =
+      GeigerAggregateScore(_storageController);
   //--start of currentUser
   print("//--start of currentUser");
   //set currentUser info in :Local NodeValue called "currentUser"
   geigerUser.setCurrentUser =
       '[{"userId":"1", "firstName":null, "lastName":null, "role":{"roleId":null, "name":null}}]';
   //get user info from :Local NodeValue called "currentUser"
-  List<User> users = geigerUser.getCurrentUser();
-  print(users);
+  User user = geigerUser.getCurrentUser;
+  print(user);
 
   print("//-- end");
   // --- end of currentuser
@@ -57,7 +60,7 @@ void main() {
   print("// ---start GeigerUserScore");
   //set currentUser threat score in Users:uuid:gi:data:GeigerUserScore
   geigerUser.setCurrentGeigerUserScoreNodeAndNodeValue(
-      users,
+      user,
       ThreatScore.fromJSon(
           '[{"threat":{"threatId":"1","name":"phishing"}, "score":"12"}, {"threat":{"threatId":"2","name":"malware"},"score":"662"},{"threat":{"threatId":"2","name":"malware"},"score":"662"}]'));
   print("//-end");
@@ -67,9 +70,9 @@ void main() {
   // --- start GeigerScoreAggregate
   print("// --start GeigerScoreAggregate");
   // set currentUser aggregate score in Users:uuid:gi:data:GeigerScoreAggregate
-  geigerUser.setGeigerScoreAggregate(
+  geigerAggregateScore.setGeigerScoreAggregate(
       ThreatScore.fromJSon(
           '[{"threat":{"threatId":"2","name":"malware"},"score":"662"}]'),
-      users);
+      user);
   print("//-end");
 }
