@@ -1,13 +1,14 @@
 import 'dart:convert';
 
+import 'package:equatable/equatable.dart';
 import 'package:json_annotation/json_annotation.dart';
 
 part 'role.g.dart';
 
 @JsonSerializable(explicitToJson: true)
-class Role {
-  String? roleId;
-  String? name;
+class Role extends Equatable {
+  final String? roleId;
+  final String? name;
 
   Role({this.roleId, this.name});
 
@@ -37,4 +38,8 @@ class Role {
     super.toString();
     return '{"roleId":$roleId, "name":$name}';
   }
+
+  @override
+  // TODO: implement props
+  List<Object?> get props => [roleId, name];
 }

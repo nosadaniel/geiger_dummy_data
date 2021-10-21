@@ -8,3 +8,6 @@ class GeigerConstant {
     return Uuid().v1();
   }
 }
+
+enum Type { device, user }
+enum Weight { High, Medium, Low }

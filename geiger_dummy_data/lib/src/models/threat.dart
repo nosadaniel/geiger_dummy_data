@@ -2,12 +2,13 @@ library geiger_dummy_data;
 
 import 'dart:convert';
 
+import 'package:equatable/equatable.dart';
 import 'package:json_annotation/json_annotation.dart';
 
 part 'threat.g.dart';
 
 @JsonSerializable(explicitToJson: true)
-class Threat {
+class Threat extends Equatable {
   final String threatId;
   final String name;
 
@@ -39,4 +40,8 @@ class Threat {
     super.toString();
     return "{threatId:$threatId,name:$name}";
   }
+
+  @override
+  // TODO: implement props
+  List<Object?> get props => [threatId, name];
 }

@@ -2,6 +2,7 @@ import 'package:geiger_dummy_data/src/geiger_aggregate_score.dart';
 import 'package:geiger_dummy_data/src/geiger_device.dart';
 import 'package:geiger_dummy_data/src/geiger_threat.dart';
 import 'package:geiger_dummy_data/src/geiger_user.dart';
+import 'package:geiger_dummy_data/src/models/device.dart';
 import 'package:geiger_dummy_data/src/models/threat.dart';
 import 'package:geiger_dummy_data/src/models/threat_score.dart';
 import 'package:geiger_dummy_data/src/models/user.dart';
@@ -22,8 +23,8 @@ void main() {
   //--start of currentUser
   print("//--start of currentUser");
   //set currentUser info in :Local NodeValue called "currentUser"
-  geigerUser.setCurrentUserInfo =
-      '[{"userId":"1", "firstName":null, "lastName":null, "role":{"roleId":null, "name":null}}]';
+  geigerUser.setCurrentUserInfo = User.currentUserFromJSon(
+      '[{"userId":"1", "firstName":null, "lastName":null, "role":{"roleId":null, "name":null}}]');
   //get user info from :Local NodeValue called "currentUser"
   User user = geigerUser.getCurrentUserInfo;
   print(user);
@@ -36,10 +37,10 @@ void main() {
   print("//-- start of currentDevice");
   //set currentDevice info in :Local NodeValue called "currentDeviceNew"
   //can't store in currentDevice because it will run into error
-  geigerDevice.setCurrentDeviceInfo =
-      '[{"owner":{"userId":"1", "firstName":null, "lastName":null, "role":{"roleId":null, "name":null}},"deviceId":"d1","name":"SamSung","type":"Mobile"}]';
+  geigerDevice.setCurrentDeviceInfo = Device.currentDeviceFromJSon(
+      '[{"owner":{"userId":"1", "firstName":null, "lastName":null, "role":{"roleId":null, "name":null}},"deviceId":"d1","name":"SamSung","type":"Mobile"}]');
   //get currentDevice info from :Local NodeValue called "currentDeviceNew"
-  print(geigerDevice.getCurrentDeviceInfo());
+  print(geigerDevice.getCurrentDeviceInfo);
 
   print("//--end");
   // ----end of CurrentDevice
@@ -60,8 +61,8 @@ void main() {
   print("// ---start GeigerUserScore");
   //set currentUser threat score in Users:uuid:gi:data:GeigerUserScore
   geigerUser.setCurrentGeigerUserScoreNodeAndNodeValue(
-      user,
-      ThreatScore.fromJSon(
+      currentUser: user,
+      threatScores: ThreatScore.fromJSon(
           '[{"threat":{"threatId":"1","name":"phishing"}, "score":"12"}, {"threat":{"threatId":"2","name":"malware"},"score":"662"},{"threat":{"threatId":"2","name":"malware"},"score":"662"}]'));
   print("//-end");
 
