@@ -1,2 +1,8 @@
 
 *.xml
+.packages
+*.Ly9AZGFydD0yLjEy
+.DS_Store
+*.dill
+*.snapshot
+*.json
