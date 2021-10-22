@@ -1,6 +1,7 @@
 import 'dart:convert';
 
 import 'package:equatable/equatable.dart';
+import 'package:geiger_dummy_data/src/constant/constant.dart';
 import 'package:json_annotation/json_annotation.dart';
 
 part 'role.g.dart';
@@ -10,7 +11,7 @@ class Role extends Equatable {
   final String? roleId;
   final String? name;
 
-  Role({this.roleId, this.name});
+  Role({String? roleId, this.name}) : roleId = roleId ?? GeigerConstant.uuid;
 
   factory Role.fromJson(Map<String, dynamic> json) {
     return _$RoleFromJson(json);

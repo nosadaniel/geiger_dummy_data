@@ -1,6 +1,7 @@
 import 'dart:convert';
 
 import 'package:equatable/equatable.dart';
+import 'package:geiger_dummy_data/src/constant/constant.dart';
 import 'package:geiger_dummy_data/src/models/threat_weight.dart';
 import 'package:json_annotation/json_annotation.dart';
 
@@ -8,14 +9,19 @@ part 'recommendation.g.dart';
 
 @JsonSerializable(explicitToJson: true)
 class Recommendation extends Equatable {
-  final String recommendationId;
+  final String? recommendationId;
   final String recommendationType;
   final List<ThreatWeight> threatWeight;
   final String shortDescription;
   final String? longDescription;
 
-  Recommendation(this.recommendationId, this.recommendationType,
-      this.threatWeight, this.shortDescription, this.longDescription);
+  Recommendation(
+      {String? recommendationId,
+      required this.recommendationType,
+      required this.threatWeight,
+      required this.shortDescription,
+      this.longDescription})
+      : recommendationId = recommendationId ?? GeigerConstant.uuid;
 
   factory Recommendation.fromJson(Map<String, dynamic> json) {
     return _$RecommendationFromJson(json);

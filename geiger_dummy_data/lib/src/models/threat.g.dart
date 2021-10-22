@@ -7,7 +7,7 @@ part of geiger_dummy_data;
 // **************************************************************************
 
 Threat _$ThreatFromJson(Map<String, dynamic> json) => Threat(
-      threatId: json['threatId'] as String,
+      threatId: json['threatId'] as String?,
       name: json['name'] as String,
     );
 

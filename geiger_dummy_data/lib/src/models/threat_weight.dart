@@ -11,7 +11,7 @@ class ThreatWeight extends Equatable {
   final Threat threat;
   final String weight;
 
-  ThreatWeight(this.threat, this.weight);
+  ThreatWeight({required this.threat, required this.weight});
 
   factory ThreatWeight.fromJson(Map<String, dynamic> json) {
     return _$ThreatWeightFromJson(json);

@@ -8,13 +8,13 @@ part of 'recommendation.dart';
 
 Recommendation _$RecommendationFromJson(Map<String, dynamic> json) =>
     Recommendation(
-      json['recommendationId'] as String,
-      json['recommendationType'] as String,
-      (json['threatWeight'] as List<dynamic>)
+      recommendationId: json['recommendationId'] as String?,
+      recommendationType: json['recommendationType'] as String,
+      threatWeight: (json['threatWeight'] as List<dynamic>)
           .map((e) => ThreatWeight.fromJson(e as Map<String, dynamic>))
           .toList(),
-      json['shortDescription'] as String,
-      json['longDescription'] as String?,
+      shortDescription: json['shortDescription'] as String,
+      longDescription: json['longDescription'] as String?,
     );
 
 Map<String, dynamic> _$RecommendationToJson(Recommendation instance) =>

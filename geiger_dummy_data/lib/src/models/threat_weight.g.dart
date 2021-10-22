@@ -7,8 +7,8 @@ part of 'threat_weight.dart';
 // **************************************************************************
 
 ThreatWeight _$ThreatWeightFromJson(Map<String, dynamic> json) => ThreatWeight(
-      Threat.fromJson(json['threat'] as Map<String, dynamic>),
-      json['weight'] as String,
+      threat: Threat.fromJson(json['threat'] as Map<String, dynamic>),
+      weight: json['weight'] as String,
     );
 
 Map<String, dynamic> _$ThreatWeightToJson(ThreatWeight instance) =>

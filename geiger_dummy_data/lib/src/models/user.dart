@@ -1,6 +1,7 @@
 import 'dart:convert';
 
 import 'package:equatable/equatable.dart';
+import 'package:geiger_dummy_data/src/constant/constant.dart';
 import 'package:geiger_dummy_data/src/models/role.dart';
 import 'package:json_annotation/json_annotation.dart';
 
@@ -9,18 +10,19 @@ part 'user.g.dart';
 @JsonSerializable(explicitToJson: true)
 //Equatable makes it easy to compare objects
 class User extends Equatable {
-  final String userId;
+  final String? userId;
   final String? firstName;
   final String? lastName;
   final String? knowledgeLevel;
   final Role? role;
 
   User(
-      {this.userId: "123user",
+      {final String? userId,
       this.firstName,
       this.lastName,
       this.knowledgeLevel,
-      this.role});
+      this.role})
+      : userId = userId ?? GeigerConstant.uuid;
 
   factory User.fromJson(Map<String, dynamic> json) {
     return _$UserFromJson(json);

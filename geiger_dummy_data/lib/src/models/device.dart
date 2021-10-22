@@ -1,6 +1,7 @@
 import 'dart:convert';
 
 import 'package:equatable/equatable.dart';
+import 'package:geiger_dummy_data/src/constant/constant.dart';
 import 'package:geiger_dummy_data/src/models/user.dart';
 import 'package:json_annotation/json_annotation.dart';
 
@@ -8,12 +9,13 @@ part 'device.g.dart';
 
 @JsonSerializable(explicitToJson: true)
 class Device extends Equatable {
-  final String deviceId;
+  final String? deviceId;
   final User owner;
   final String? name;
   final String? type;
 
-  Device(this.owner, {this.deviceId: "dec123", this.name, this.type});
+  Device({required this.owner, String? deviceId, this.name, this.type})
+      : deviceId = deviceId ?? GeigerConstant.uuid;
 
   factory Device.fromJson(Map<String, dynamic> json) {
     return _$DeviceFromJson(json);

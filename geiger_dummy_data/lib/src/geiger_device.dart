@@ -113,3 +113,9 @@ class GeigerDevice {
     deviceScoreNode.addOrUpdateValue(_geigerNumMetrics!);
   }
 }
+//Todo
+//Ask martin to remove currentDevice Nodevalue
+// I can't override it except I use another Nodevalue name
+
+//Note: I can override when data is first populated but error pop up on refresh.
+//Error message: can't retrive data from :device:path

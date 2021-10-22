@@ -3,16 +3,18 @@ library geiger_dummy_data;
 import 'dart:convert';
 
 import 'package:equatable/equatable.dart';
+import 'package:geiger_dummy_data/src/constant/constant.dart';
 import 'package:json_annotation/json_annotation.dart';
 
 part 'threat.g.dart';
 
 @JsonSerializable(explicitToJson: true)
 class Threat extends Equatable {
-  final String threatId;
+  final String? threatId;
   final String name;
 
-  Threat({required this.threatId, required this.name});
+  Threat({String? threatId, required this.name})
+      : threatId = threatId ?? GeigerConstant.uuid;
 
   factory Threat.fromJson(Map<String, dynamic> map) {
     return _$ThreatFromJson(map);
