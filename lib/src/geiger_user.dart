@@ -110,6 +110,7 @@ class GeigerUser {
     _geigerNumMetrics =
         NodeValueImpl("number_metrics", threatScores.length.toString());
     userScoreNode.addOrUpdateValue(_geigerNumMetrics!);
+    _storageController.update(userScoreNode);
   }
 }
 

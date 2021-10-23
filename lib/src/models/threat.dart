@@ -47,3 +47,6 @@ class Threat extends Equatable {
   // TODO: implement props
   List<Object?> get props => [threatId, name];
 }
+
+//Todo
+// throw FormatException for every model converter.

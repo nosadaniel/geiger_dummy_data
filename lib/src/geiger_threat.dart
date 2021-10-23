@@ -25,7 +25,7 @@ class GeigerThreat {
       for (Threat threat in threats) {
         Node threatIdNode = NodeImpl("${threat.threatId}", ":Global:threats");
         //create :Global:threats:$threatId
-        _storageController.add(threatIdNode);
+        _storageController.addOrUpdate(threatIdNode);
         //create a NodeValue
         _setThreatsNodeValueException(threat, threatIdNode);
       }
@@ -33,7 +33,7 @@ class GeigerThreat {
   }
 
   ///from return list of threats from localStorage
-  List<Threat> getThreats() {
+  List<Threat> get getThreats {
     List<Threat> t = [];
     _node = _storageController.get(":Global:threats");
 
@@ -53,7 +53,6 @@ class GeigerThreat {
     // add NodeValue to threatChildNode
     _node!.addOrUpdateValue(threatNodeValueName);
     _storageController.update(_node!);
-    print(_node);
   }
 
   void _setThreatsNodeValueException(Threat threat, Node threatIdNode) {

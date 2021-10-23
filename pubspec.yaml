@@ -1,5 +1,5 @@
 name: geiger_dummy_data
-description: Provide functionality for easy retrieval  and passing of data in a specific structure, to the geiger local storage.
+description: Provide functionality for easy retrieval  and passing of data in specific structure, into the geiger local storage.
 version: 0.0.1
 repository: https://github.com/nosadaniel/geiger_dummy_data
 documentation: https://github.com/cyber-geiger/toolbox-storage/wiki

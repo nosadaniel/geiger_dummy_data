@@ -51,7 +51,7 @@ void main() {
   print(geigerThreat.setGlobalThreatsNode = Threat.fromJSon(
       '[{"threatId":"1","name":"phishing"},{"threatId":"2","name":"malware"}]'));
   //get List<Threat> of threat
-  List<Threat> threats = geigerThreat.getThreats();
+  List<Threat> threats = geigerThreat.getThreats;
   print(threats);
 
   print("//--end");

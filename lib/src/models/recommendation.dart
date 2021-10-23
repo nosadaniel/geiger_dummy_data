@@ -11,14 +11,14 @@ part 'recommendation.g.dart';
 class Recommendation extends Equatable {
   final String? recommendationId;
   final String recommendationType;
-  final List<ThreatWeight> threatWeight;
+  final List<ThreatsWeight?> threatsWeight;
   final String shortDescription;
   final String? longDescription;
 
   Recommendation(
       {String? recommendationId,
       required this.recommendationType,
-      required this.threatWeight,
+      required this.threatsWeight,
       required this.shortDescription,
       this.longDescription})
       : recommendationId = recommendationId ?? GeigerConstant.uuid;
@@ -48,11 +48,15 @@ class Recommendation extends Equatable {
   }
 
   @override
-  // TODO: implement props
+  String toString() {
+    return '{"recommendationId":$recommendationId,"recommendationType":$recommendationType,"threatsWeight":$threatsWeight,"shortDescription":$shortDescription,"longDescription":$longDescription}';
+  }
+
+  @override
   List<Object?> get props => [
         recommendationId,
         recommendationType,
-        threatWeight,
+        threatsWeight,
         shortDescription,
         longDescription
       ];
