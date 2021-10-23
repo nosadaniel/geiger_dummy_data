@@ -31,6 +31,8 @@ class GeigerRecommendation {
           }
           //create a NodeValue
           _setThreatsNodeValue(recommendation, threatsWeight);
+          //empty threats to avoid duplications
+          threatsWeight = [];
         } else {
           throw FormatException(
               'length of weights must to be equal to length of threats');
@@ -53,6 +55,8 @@ class GeigerRecommendation {
           }
           _setThreatsNodeValueException(
               recommendation, recomIdNode, threatsWeight);
+          //empty threats to avoid duplications
+          threatsWeight = [];
         } else {
           throw WeightLengthException();
         }

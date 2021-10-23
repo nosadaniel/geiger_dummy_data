@@ -10,3 +10,4 @@
 *.dart
 *.deps
 *.part
+*.db
