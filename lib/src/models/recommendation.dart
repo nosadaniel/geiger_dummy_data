@@ -1,8 +1,8 @@
 import 'dart:convert';
 
 import 'package:equatable/equatable.dart';
-import 'package:geiger_dummy_data/src/constant/constant.dart';
-import 'package:geiger_dummy_data/src/models/threat_weight.dart';
+import '../constant/constant.dart';
+import '../models/threat_weight.dart';
 import 'package:json_annotation/json_annotation.dart';
 
 part 'recommendation.g.dart';

@@ -1,4 +1,3 @@
-import 'package:geiger_dummy_data/src/constant/constant.dart';
 import 'package:geiger_dummy_data/src/exceptions/weight_length_exception.dart';
 
 import '/src/models/recommendation.dart';

@@ -5,6 +5,7 @@ import 'package:geiger_localstorage/geiger_localstorage.dart';
 import 'models/device.dart';
 import 'models/threat_score.dart';
 
+///device Node
 class GeigerDevice {
   StorageController _storageController;
   GeigerDevice(this._storageController);
@@ -16,7 +17,7 @@ class GeigerDevice {
   NodeValue? _geigerThreatScores;
   NodeValue? _geigerNumMetrics;
 
-  /// set currentDeviceInfo NodeValue in :Local
+  /// set currentDeviceInfo in currentDevice NodeValue key in :Local
   void set setCurrentDeviceInfo(Device currentDeviceInfo) {
     try {
       _node = _storageController.get(":Local");
@@ -32,7 +33,7 @@ class GeigerDevice {
     }
   }
 
-  /// return Device CurrentDevice
+  /// return CurrentDevice from currentDeviceNew NodeValue key from :Local
   Device get getCurrentDeviceInfo {
     _node = _storageController.get(":Local");
 
@@ -65,7 +66,8 @@ class GeigerDevice {
     }
   }
 
-  ///get list of currentDeviceThreatScores
+  ///get list of DeviceThreatScores
+  /// but a single DeviceThreatScores in the list will be returned
   List<ThreatScore> get getCurrentDeviceThreatScores {
     Device currentDevice = getCurrentDeviceInfo;
     _node = _storageController

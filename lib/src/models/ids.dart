@@ -1,3 +1,5 @@
+library geiger_dummy_data;
+
 import 'package:equatable/equatable.dart';
 import 'package:json_annotation/json_annotation.dart';
 import 'package:uuid/uuid.dart';

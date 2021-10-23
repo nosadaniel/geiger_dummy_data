@@ -2,7 +2,7 @@ import 'dart:convert';
 
 import 'package:equatable/equatable.dart';
 import 'package:geiger_dummy_data/geiger_dummy_data.dart';
-import 'package:geiger_dummy_data/src/constant/constant.dart';
+
 import 'package:json_annotation/json_annotation.dart';
 
 part 'threat_weight.g.dart';

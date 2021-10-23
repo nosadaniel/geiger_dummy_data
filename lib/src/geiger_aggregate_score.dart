@@ -1,7 +1,10 @@
+library geiger_dummy_data;
+
 import 'package:geiger_localstorage/geiger_localstorage.dart';
 
 import '../geiger_dummy_data.dart';
 
+/// GeigerAggregateScore Node path
 class GeigerAggregateScore {
   StorageController _storageController;
   GeigerAggregateScore(this._storageController);
@@ -11,6 +14,7 @@ class GeigerAggregateScore {
   NodeValue? _geigerNumMetrics;
   Node? _node;
 
+  /// set GeigerAggregateScore Node in :Users:uuid:gi:data node path
   void setGeigerScoreAggregate(List<ThreatScore> threatScores, User currentUser,
       {String geigerScore: "0"}) {
     try {
@@ -26,6 +30,7 @@ class GeigerAggregateScore {
     }
   }
 
+  /// get threats_score from :Users:uuid:gi:data:GeigerScoreAggregate
   List<ThreatScore> get getGeigerScoreAggregate {
     User currentUser = GeigerUser(_storageController).getCurrentUserInfo;
     _node = _storageController
