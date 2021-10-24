@@ -123,7 +123,7 @@ class GeigerRecommendation {
   List<ThreatRecommendation> getThreatRecommendation(
       {required Threat threat, required String recommendationType}) {
     List<ThreatRecommendation> t = [];
-    List<Recommendation> recommendations = getRecommendations;
+
     _node = _storageController.get(":Global:recommendations");
     for (String recId in _node!.getChildNodesCsv().split(",")) {
       Node recNode = _storageController.get(":Global:recommendations:$recId");
