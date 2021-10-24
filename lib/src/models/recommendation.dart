@@ -2,8 +2,10 @@ import 'dart:convert';
 
 import 'package:equatable/equatable.dart';
 import '../constant/constant.dart';
-import '../models/threat_weight.dart';
+import '../models/related_threat_weight.dart';
 import 'package:json_annotation/json_annotation.dart';
+
+import 'describe_short_long.dart';
 
 part 'recommendation.g.dart';
 
@@ -11,16 +13,14 @@ part 'recommendation.g.dart';
 class Recommendation extends Equatable {
   final String? recommendationId;
   final String recommendationType;
-  final List<ThreatsWeight?> threatsWeight;
-  final String shortDescription;
-  final String? longDescription;
+  final List<RelatedThreatsWeight> relatedThreatsWeight;
+  final DescriptionShortLong description;
 
   Recommendation(
       {String? recommendationId,
       required this.recommendationType,
-      required this.threatsWeight,
-      required this.shortDescription,
-      this.longDescription})
+      required this.relatedThreatsWeight,
+      required this.description})
       : recommendationId = recommendationId ?? GeigerConstant.uuid;
 
   factory Recommendation.fromJson(Map<String, dynamic> json) {
@@ -49,15 +49,10 @@ class Recommendation extends Equatable {
 
   @override
   String toString() {
-    return '{"recommendationId":$recommendationId,"recommendationType":$recommendationType,"threatsWeight":$threatsWeight,"shortDescription":$shortDescription,"longDescription":$longDescription}';
+    return '{"recommendationId":$recommendationId,"recommendationType":$recommendationType,"threatsWeight":$relatedThreatsWeight,"description":$description}';
   }
 
   @override
-  List<Object?> get props => [
-        recommendationId,
-        recommendationType,
-        threatsWeight,
-        shortDescription,
-        longDescription
-      ];
+  List<Object?> get props =>
+      [recommendationId, recommendationType, relatedThreatsWeight, description];
 }
