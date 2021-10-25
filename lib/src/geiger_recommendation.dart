@@ -1,12 +1,12 @@
-import 'package:geiger_dummy_data/src/models/describe_short_long.dart';
-
-import '../geiger_dummy_data.dart';
-import '/src/models/recommendation.dart';
+library geiger_dummy_data;
 
 import 'package:geiger_localstorage/geiger_localstorage.dart';
 
-import 'models/threat_recommendation.dart';
-import 'models/threat_weight.dart';
+import '../src/models/describe_short_long.dart';
+import '../src/models/threat.dart';
+import '../src/models/recommendation.dart';
+import '../src/models/threat_recommendation.dart';
+import '../src/models/threat_weight.dart';
 
 class GeigerRecommendation {
   StorageController _storageController;

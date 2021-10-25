@@ -1,7 +1,8 @@
 library geiger_dummy_data;
 
-import 'package:geiger_dummy_data/src/models/threat.dart';
 import 'package:geiger_localstorage/geiger_localstorage.dart';
+
+import '../src/models/threat.dart';
 
 class GeigerThreat {
   StorageController _storageController;

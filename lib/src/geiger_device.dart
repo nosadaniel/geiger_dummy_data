@@ -2,8 +2,8 @@ library geiger_dummy_data;
 
 import 'package:geiger_localstorage/geiger_localstorage.dart';
 
-import 'models/device.dart';
-import 'models/threat_score.dart';
+import '../src/models/device.dart';
+import '../src/models/threat_score.dart';
 
 ///device Node
 class GeigerDevice {

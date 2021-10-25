@@ -4,10 +4,9 @@ import 'dart:developer';
 
 import 'package:geiger_localstorage/geiger_localstorage.dart';
 
-import '../geiger_dummy_data.dart';
-import 'models/threat_score.dart';
-
-import 'models/user.dart';
+import '../src/models/threat_score.dart';
+import '../src/models/threat.dart';
+import '../src/models/user.dart';
 
 class GeigerUser {
   StorageController _storageController;
@@ -87,6 +86,8 @@ class GeigerUser {
         _node!.getValue("GEIGER_score")!.getValue("en").toString();
     return geigerScore;
   }
+
+  void set setGeigerUserRecommendation(Threat threat) {}
 
   void _setUserNodeValues(List<ThreatScore> threatScores,
       {String geigerScore: "0"}) {

@@ -1,9 +1,11 @@
+library geiger_dummy_data;
+
 import 'dart:convert';
 
 import 'package:json_annotation/json_annotation.dart';
 import 'package:equatable/equatable.dart';
 
-import '../../geiger_dummy_data.dart';
+import '/src/models/threat.dart';
 
 part 'threat_weight.g.dart';
 

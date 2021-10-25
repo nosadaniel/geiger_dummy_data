@@ -1,10 +1,9 @@
 library geiger_dummy_data;
 
 import 'dart:convert';
-
+import 'package:json_annotation/json_annotation.dart';
 import 'package:equatable/equatable.dart';
 import '../constant/constant.dart';
-import 'package:json_annotation/json_annotation.dart';
 
 part 'role.g.dart';
 
