@@ -39,7 +39,7 @@ class Threat extends Equatable {
   @override
   String toString() {
     super.toString();
-    return "{threatId:$threatId,name:$name}";
+    return '{"threatId":$threatId,"name":$name}';
   }
 
   @override

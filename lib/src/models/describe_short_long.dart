@@ -26,7 +26,7 @@ class DescriptionShortLong extends Equatable {
   @override
   String toString() {
     super.toString();
-    return '{"shortDescription":$shortDescription, longDescription":$longDescription}';
+    return '{"shortDescription":$shortDescription, "longDescription":$longDescription}';
   }
 
   @override

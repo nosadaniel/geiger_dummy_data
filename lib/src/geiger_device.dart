@@ -2,8 +2,11 @@ library geiger_dummy_data;
 
 import 'package:geiger_localstorage/geiger_localstorage.dart';
 
+import '../geiger_dummy_data.dart';
 import '../src/models/device.dart';
 import '../src/models/threat_score.dart';
+import '../src/models/threat.dart';
+import '../src/geiger_recommendation.dart';
 
 ///device Node
 class GeigerDevice {
@@ -66,9 +69,8 @@ class GeigerDevice {
     }
   }
 
-  ///get list of DeviceThreatScores
-  /// but a single DeviceThreatScores in the list will be returned
-  List<ThreatScore> get getCurrentDeviceThreatScores {
+  ///get list of currentDeviceGeigerThreatScores
+  List<ThreatScore> get getCurrentDeviceGeigerThreatScores {
     Device currentDevice = getCurrentDeviceInfo;
     _node = _storageController
         .get(":Devices:${currentDevice.deviceId}:gi:data:GeigerScoreDevice");
@@ -87,6 +89,45 @@ class GeigerDevice {
     String geigerScore =
         _node!.getValue("GEIGER_score")!.getValue("en").toString();
     return geigerScore;
+  }
+
+  /// set GeigerDeviceRecommendation
+  void set setCurrentDeviceGeigerRecommendation(Threat threat) {
+    Device currentDevice = getCurrentDeviceInfo;
+    List<ThreatRecommendation> threatRecommendations =
+        GeigerRecommendation(_storageController).getThreatRecommendation(
+            threat: threat, recommendationType: "device");
+    try {
+      _node = _storageController
+          .get(":Devices:${currentDevice.deviceId}:gi:data:recommendations");
+
+      NodeValue threatRecomValue = NodeValueImpl("${threat.threatId}",
+          ThreatRecommendation.convertToJson(threatRecommendations));
+
+      _node!.addOrUpdateValue(threatRecomValue);
+      _storageController.update(_node!);
+    } on StorageException {
+      Node userRecommendationNode = NodeImpl(
+          "recommendations", ":Devices:${currentDevice.deviceId}:gi:data");
+      _storageController.add(userRecommendationNode);
+
+      NodeValue threatRecomValue = NodeValueImpl("${threat.threatId}",
+          ThreatRecommendation.convertToJson(threatRecommendations));
+
+      userRecommendationNode.addOrUpdateValue(threatRecomValue);
+      _storageController.update(userRecommendationNode);
+    }
+  }
+
+  List<ThreatRecommendation> getCurrentDeviceThreatRecommendation(
+      Threat threat) {
+    Device currentDevice = getCurrentDeviceInfo;
+    _node = _storageController
+        .get(":Devices:${currentDevice.deviceId}:gi:data:recommendations");
+    String threatRecommendations =
+        _node!.getValue("${threat.threatId}")!.getValue("en").toString();
+
+    return ThreatRecommendation.fromJSon(threatRecommendations);
   }
 
   void _setDeviceNodeValues(List<ThreatScore> threatScores,
@@ -121,3 +162,7 @@ class GeigerDevice {
 
 //Note: I can override when data is first populated but error pop up on refresh.
 //Error message: can't retrive data from :device:path
+
+//Todo
+//implemented device recommendations in GeigerScoreDevice Node
+//implementedRecommendations NodeValue and store implemented recommendationId in the nodevalue

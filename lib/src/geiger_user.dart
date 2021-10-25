@@ -2,6 +2,8 @@ library geiger_dummy_mapper;
 
 import 'dart:developer';
 
+import 'package:geiger_dummy_data/geiger_dummy_data.dart';
+import '../src/geiger_recommendation.dart';
 import 'package:geiger_localstorage/geiger_localstorage.dart';
 
 import '../src/models/threat_score.dart';
@@ -65,17 +67,6 @@ class GeigerUser {
     //print(_node!.getValue("threats_score")!.getValue("en"));
   }
 
-  ///get list of currentUserThreatScores
-  List<ThreatScore> get getCurrentGeigerUserThreatScores {
-    User currentUser = getCurrentUserInfo;
-    _node = _storageController
-        .get(":Users:${currentUser.userId}:gi:data:GeigerScoreUser");
-
-    String threats_score =
-        _node!.getValue("threats_score")!.getValue("en").toString();
-    return ThreatScore.fromJSon(threats_score);
-  }
-
   ///get CurrentGeigerUserScore
   String get getCurrentGeigerUserScore {
     User currentUser = getCurrentUserInfo;
@@ -86,8 +77,6 @@ class GeigerUser {
         _node!.getValue("GEIGER_score")!.getValue("en").toString();
     return geigerScore;
   }
-
-  void set setGeigerUserRecommendation(Threat threat) {}
 
   void _setUserNodeValues(List<ThreatScore> threatScores,
       {String geigerScore: "0"}) {
@@ -115,6 +104,56 @@ class GeigerUser {
     userScoreNode.addOrUpdateValue(_geigerNumMetrics!);
     _storageController.update(userScoreNode);
   }
+
+  /// set GeigerUserRecommendation
+  void set setCurrentUserGeigerThreatRecommendation(Threat threat) {
+    User currentUser = getCurrentUserInfo;
+    List<ThreatRecommendation> threatRecommendations =
+        GeigerRecommendation(_storageController).getThreatRecommendation(
+            threat: threat, recommendationType: "user");
+    try {
+      _node = _storageController
+          .get(":Users:${currentUser.userId}:gi:data:recommendations");
+
+      NodeValue threatRecomValue = NodeValueImpl("${threat.threatId}",
+          ThreatRecommendation.convertToJson(threatRecommendations));
+
+      _node!.addOrUpdateValue(threatRecomValue);
+      _storageController.update(_node!);
+    } on StorageException {
+      Node userRecommendationNode =
+          NodeImpl("recommendations", ":Users:${currentUser.userId}:gi:data");
+      _storageController.add(userRecommendationNode);
+
+      NodeValue threatRecomValue = NodeValueImpl("${threat.threatId}",
+          ThreatRecommendation.convertToJson(threatRecommendations));
+
+      userRecommendationNode.addOrUpdateValue(threatRecomValue);
+      _storageController.update(userRecommendationNode);
+    }
+  }
+
+  List<ThreatRecommendation> getCurrentUserGeigerThreatRecommendation(
+      Threat threat) {
+    User currentUser = getCurrentUserInfo;
+    _node = _storageController
+        .get(":Users:${currentUser.userId}:gi:data:recommendations");
+    String threatRecommendations =
+        _node!.getValue("${threat.threatId}")!.getValue("en").toString();
+
+    return ThreatRecommendation.fromJSon(threatRecommendations);
+  }
+
+// ///get list of currentUserThreatScores
+// List<ThreatScore> get getCurrentGeigerUserThreatScores {
+//   User currentUser = getCurrentUserInfo;
+//   _node = _storageController
+//       .get(":Users:${currentUser.userId}:gi:data:GeigerScoreUser");
+//
+//   String threats_score =
+//       _node!.getValue("threats_score")!.getValue("en").toString();
+//   return ThreatScore.fromJSon(threats_score);
+// }
 }
 
 //Todo

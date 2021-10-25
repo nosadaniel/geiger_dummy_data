@@ -151,6 +151,9 @@ class GeigerRecommendation {
 }
 
 //Todo
+//issue Recommendation and ThreatRecommendation models have issue comparing.
+
+//Todo
 //Done:Run test for setGlobalRecommendationsNode
 // but fails when comparing
 
