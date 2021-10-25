@@ -44,7 +44,6 @@ class Threat extends Equatable {
   }
 
   @override
-  // TODO: implement props
   List<Object?> get props => [threatId, name];
 }
 

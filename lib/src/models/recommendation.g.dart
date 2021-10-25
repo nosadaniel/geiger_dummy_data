@@ -11,7 +11,7 @@ Recommendation _$RecommendationFromJson(Map<String, dynamic> json) =>
       recommendationId: json['recommendationId'] as String?,
       recommendationType: json['recommendationType'] as String,
       relatedThreatsWeight: (json['relatedThreatsWeight'] as List<dynamic>)
-          .map((e) => RelatedThreatsWeight.fromJson(e as Map<String, dynamic>))
+          .map((e) => ThreatWeight.fromJson(e as Map<String, dynamic>))
           .toList(),
       description: DescriptionShortLong.fromJson(
           json['description'] as Map<String, dynamic>),

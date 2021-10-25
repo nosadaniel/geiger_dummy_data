@@ -1,8 +1,9 @@
 import 'dart:convert';
 
 import 'package:equatable/equatable.dart';
+import 'package:geiger_dummy_data/src/models/threat_weight.dart';
 import '../constant/constant.dart';
-import '../models/related_threat_weight.dart';
+
 import 'package:json_annotation/json_annotation.dart';
 
 import 'describe_short_long.dart';
@@ -13,7 +14,7 @@ part 'recommendation.g.dart';
 class Recommendation extends Equatable {
   final String? recommendationId;
   final String recommendationType;
-  final List<RelatedThreatsWeight> relatedThreatsWeight;
+  final List<ThreatWeight> relatedThreatsWeight;
   final DescriptionShortLong description;
 
   Recommendation(
@@ -49,7 +50,8 @@ class Recommendation extends Equatable {
 
   @override
   String toString() {
-    return '{"recommendationId":$recommendationId,"recommendationType":$recommendationType,"threatsWeight":$relatedThreatsWeight,"description":$description}';
+    super.toString();
+    return '{"recommendationId":$recommendationId,"recommendationType":$recommendationType,"relatedThreatsWeight":$relatedThreatsWeight,"description":$description}';
   }
 
   @override

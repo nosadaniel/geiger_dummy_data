@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:json_annotation/json_annotation.dart';
 import 'package:equatable/equatable.dart';
 
@@ -20,6 +22,21 @@ class ThreatWeight extends Equatable {
     return _$ThreatWeightToJson(this);
   }
 
+  /// converts ThreatWeightList to String
+  static String convertToJson(List<ThreatWeight> threatWeights) {
+    List<Map<String, dynamic>> jsonData =
+        threatWeights.map((threatWeight) => threatWeight.toJson()).toList();
+    return jsonEncode(jsonData);
+  }
+
+  /// converts jsonThreatListString to List<ThreatWeight>
+  static List<ThreatWeight> fromJSon(String jsonArray) {
+    List<dynamic> jsonData = jsonDecode(jsonArray);
+    return jsonData
+        .map((threatWeight) => ThreatWeight.fromJson(threatWeight))
+        .toList();
+  }
+
   @override
   String toString() {
     super.toString();
@@ -27,6 +44,5 @@ class ThreatWeight extends Equatable {
   }
 
   @override
-  // TODO: implement props
   List<Object?> get props => [threat, weight];
 }
