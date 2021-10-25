@@ -5,7 +5,7 @@ repository: https://github.com/nosadaniel/geiger_dummy_data
 documentation: https://github.com/cyber-geiger/toolbox-storage/wiki
 
 environment:
-  sdk: ">=2.12.0 <3.0.0"
+  sdk: ">=2.14.3 <3.0.0"
 
 dependencies:
   equatable: ^2.0.3
