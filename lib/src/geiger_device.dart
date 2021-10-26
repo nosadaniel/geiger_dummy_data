@@ -79,7 +79,7 @@ class GeigerDevice {
 
     String threats_score =
         _node!.getValue("threats_score")!.getValue("en").toString();
-    return ThreatScore.fromJSon(threats_score);
+    return ThreatScore.convertFromJson(threats_score);
   }
 
   ///get CurrentGeigerDeviceScore
@@ -129,7 +129,7 @@ class GeigerDevice {
     String threatRecommendations =
         _node!.getValue("${threat.threatId}")!.getValue("en").toString();
 
-    return ThreatRecommendation.fromJSon(threatRecommendations);
+    return ThreatRecommendation.convertFromJson(threatRecommendations);
   }
 
   /// set ImplementedRecommendation for device
@@ -143,10 +143,8 @@ class GeigerDevice {
       implementedRecommendations
           .add(ImplementedRecommendation(recommendationId: recommendationId));
 
-      NodeValue implementedRecom = NodeValueImpl(
-          "implementedRecommendations",
-          ImplementedRecommendation.convertToJsonCurrentUser(
-              implementedRecommendations));
+      NodeValue implementedRecom = NodeValueImpl("implementedRecommendations",
+          ImplementedRecommendation.convertToJson(implementedRecommendations));
       _node!.addOrUpdateValue(implementedRecom);
 
       _storageController.update(_node!);

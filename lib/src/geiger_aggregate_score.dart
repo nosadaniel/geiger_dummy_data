@@ -38,7 +38,7 @@ class GeigerAggregateScore {
 
     String threats_score =
         _node!.getValue("threats_score")!.getValue("en").toString();
-    return ThreatScore.fromJSon(threats_score);
+    return ThreatScore.convertFromJson(threats_score);
   }
 
   void _setUserNodeValues(List<ThreatScore> threatScores,

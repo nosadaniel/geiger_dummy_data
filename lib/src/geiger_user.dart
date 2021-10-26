@@ -24,8 +24,8 @@ class GeigerUser {
   void set setCurrentUserInfo(User currentUserInfo) {
     try {
       _node = _storageController.get(":Local");
-      NodeValue localNodeValue = NodeValueImpl(
-          "currentUser", User.convertToJsonCurrentUser(currentUserInfo));
+      NodeValue localNodeValue =
+          NodeValueImpl("currentUser", User.convertUserToJson(currentUserInfo));
       _node!.addOrUpdateValue(localNodeValue);
       _storageController.update(_node!);
     } on StorageException {
@@ -38,7 +38,7 @@ class GeigerUser {
     _node = _storageController.get(":Local");
     String currentUser =
         _node!.getValue("currentUser")!.getValue("en").toString();
-    return User.currentUserFromJSon(currentUser);
+    return User.convertUserFromJson(currentUser);
   }
 
   /// set GeigerCurrentUserScoreNodeAndNodeValue
@@ -142,7 +142,7 @@ class GeigerUser {
     String threatRecommendations =
         _node!.getValue("${threat.threatId}")!.getValue("en").toString();
 
-    return ThreatRecommendation.fromJSon(threatRecommendations);
+    return ThreatRecommendation.convertFromJson(threatRecommendations);
   }
 
   /// set ImplementedRecommendation for device
@@ -156,10 +156,8 @@ class GeigerUser {
       implementedRecommendations
           .add(ImplementedRecommendation(recommendationId: recommendationId));
 
-      NodeValue implementedRecom = NodeValueImpl(
-          "implementedRecommendations",
-          ImplementedRecommendation.convertToJsonCurrentUser(
-              implementedRecommendations));
+      NodeValue implementedRecom = NodeValueImpl("implementedRecommendations",
+          ImplementedRecommendation.convertToJson(implementedRecommendations));
       _node!.addOrUpdateValue(implementedRecom);
 
       _storageController.update(_node!);

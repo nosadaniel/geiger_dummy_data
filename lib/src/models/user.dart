@@ -1,6 +1,7 @@
 library geiger_dummy_data;
 
 import 'dart:convert';
+import '/src/exceptions/custom_format_exception.dart';
 import 'package:json_annotation/json_annotation.dart';
 import 'package:equatable/equatable.dart';
 import 'package:geiger_dummy_data/src/constant/constant.dart';
@@ -33,29 +34,52 @@ class User extends Equatable {
     return _$UserToJson(this);
   }
 
-  /// convert from users List to String
-  static String convertToJsonUserArray(List<User> users) {
-    List<Map<String, dynamic>> jsonData =
-        users.map((user) => user.toJson()).toList();
-    return jsonEncode(jsonData);
+  /// convert from User List to User json
+  static String convertUsersToJson(List<User> users) {
+    try {
+      // encode to json
+      List<Map<String, dynamic>> jsonData =
+          users.map((user) => user.toJson()).toList();
+      return jsonEncode(jsonData);
+    } on FormatException {
+      throw CustomFormatException(
+          message: "Fails to Convert List<User> $users to json");
+    }
   }
 
-  /// converts jsonUserListString to List<User>
-  static List<User> fromJSonUserList(String jsonArray) {
-    List<dynamic> jsonData = jsonDecode(jsonArray);
-    return jsonData.map((user) => User.fromJson(user)).toList();
+  /// converts User List Json to List<User>
+  static List<User> convertUsersFromJson(String userJson) {
+    try {
+      List<dynamic> jsonData = jsonDecode(userJson);
+      return jsonData.map((user) => User.fromJson(user)).toList();
+    } on FormatException {
+      throw CustomFormatException(
+          message:
+              '\n that is the wrong format for User: \n $userJson \n right String format:\n [{"userId":"value","firstName":"value", "lastName":"value", "role":{"roleId":"value", "name":"value"}}] \n Note: ids are optional');
+    }
   }
 
-  /// convert from JsonUserString to User
-  static User currentUserFromJSon(String json) {
-    var jsonData = jsonDecode(json);
-    return User.fromJson(jsonData);
+  /// convert from UserJson  to User
+  static User convertUserFromJson(String json) {
+    try {
+      var jsonData = jsonDecode(json);
+      return User.fromJson(jsonData);
+    } on FormatException {
+      throw CustomFormatException(
+          message:
+              '\n that is the wrong format for User: \n $json \n right String format:\n {"userId":"value","firstName":"value", "lastName":"value", "role":{"roleId":"value", "name":"value"}} \n Note: ids are optional');
+    }
   }
 
-  /// convert from User to userString
-  static String convertToJsonCurrentUser(User currentUser) {
-    var jsonData = jsonEncode(currentUser);
-    return jsonData;
+  /// convert from User to UserJson
+  static String convertUserToJson(User currentUser) {
+    try {
+      var jsonData = jsonEncode(currentUser);
+      return jsonData;
+    } on FormatException {
+      throw CustomFormatException(
+          message: "Fails to Convert User $currentUser to json");
+    }
   }
 
   @override

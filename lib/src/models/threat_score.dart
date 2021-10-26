@@ -3,6 +3,7 @@ library geiger_dummy_data;
 import 'dart:convert';
 
 import 'package:equatable/equatable.dart';
+import '/src/exceptions/custom_format_exception.dart';
 import 'package:json_annotation/json_annotation.dart';
 
 import '/src/models/threat.dart';
@@ -23,19 +24,30 @@ class ThreatScore extends Equatable {
     return _$ThreatScoreToJson(this);
   }
 
-  /// converts ThreatsList to String
+  /// convert from ThreatScore List to threatScore json
   static String convertToJson(List<ThreatScore> threatScores) {
-    List<Map<String, dynamic>> jsonData =
-        threatScores.map((threatScore) => threatScore.toJson()).toList();
-    return jsonEncode(jsonData);
+    try {
+      List<Map<String, dynamic>> jsonData =
+          threatScores.map((threatScore) => threatScore.toJson()).toList();
+      return jsonEncode(jsonData);
+    } on FormatException {
+      throw CustomFormatException(
+          message: "Fails to Convert List<ThreatScore> $threatScores to json");
+    }
   }
 
-  /// converts jsonThreatScoreListString to List<ThreatScore>
-  static List<ThreatScore> fromJSon(String jsonArray) {
-    List<dynamic> jsonData = jsonDecode(jsonArray);
-    return jsonData
-        .map((threatMap) => ThreatScore.fromJson(threatMap))
-        .toList();
+  /// converts json ThreatList to List<ThreatScore>
+  static List<ThreatScore> convertFromJson(String threatScoreJson) {
+    try {
+      List<dynamic> jsonData = jsonDecode(threatScoreJson);
+      return jsonData
+          .map((threatMap) => ThreatScore.fromJson(threatMap))
+          .toList();
+    } on FormatException {
+      throw CustomFormatException(
+          message:
+              '\n that is the wrong format for ThreatScore:\n $threatScoreJson \n right String format:\n [{"threat":{"threatId":"value","name":"value"}, "score":"value"}] \n Note: threatId is optional');
+    }
   }
 
   @override
