@@ -29,8 +29,8 @@ class GeigerDevice {
       _node = _storageController.get(":Local");
 
       //create new NodeValue key
-      localNodeValue = NodeValueImpl("currentDeviceNew",
-          Device.convertToJsonCurrentDevice(currentDeviceInfo));
+      localNodeValue = NodeValueImpl(
+          "currentDeviceNew", Device.convertDeviceToJson(currentDeviceInfo));
       _node!.addOrUpdateValue(localNodeValue!);
       _storageController.update(_node!);
     } catch (e) {
@@ -44,7 +44,7 @@ class GeigerDevice {
 
     String currentDevice =
         _node!.getValue("currentDeviceNew")!.getValue("en").toString();
-    return Device.currentDeviceFromJSon(currentDevice);
+    return Device.convertDeviceFromJson(currentDevice);
   }
 
   /// set GeigerScoreCurrentDeviceNodeAndNodeValue

@@ -1,96 +1,74 @@
 import "package:geiger_dummy_data/geiger_dummy_data.dart";
 import 'package:geiger_localstorage/geiger_localstorage.dart';
 
-
-
 void main() {
   //initialize database
   StorageController _storageController =
-  GenericController("Example", SqliteMapper("./database.db"));
+      GenericController("Example", SqliteMapper("./database.db"));
 
-  //set and get threats for :Global:threats
+  //set and get threat
   GeigerThreat _geigerThreat = GeigerThreat(_storageController);
+  //set and get current user
+  GeigerUser _geigerUser = GeigerUser(_storageController);
+  //set and get current device
+  GeigerDevice _geigerDevice = GeigerDevice(_storageController);
 
+  //store and retrieve threats from :Global:threats
   // return a List of Threat object containing threatId and name.
-  List<Threat> getThreat() {
+  List<Threat> getThreatInfo() {
     try {
       return _geigerThreat.getThreats;
     } catch (e) {
-      //set using Threat object to convert your json
+      //threat Json format  '[{"threatId": "t1", name":"phishing"},{"threatId":"t2","name":"malware"}]'
+      //Threat to convert your json to Threat object
       // threatId is optional: is auto generated.
-      _geigerThreat.setGlobalThreatsNode =
+      List<Threat> threatData =
           Threat.convertFromJson('[{"name":"phishing"},{"name":"malware"}]');
+
+      //store threat in :Global:threats:
+      _geigerThreat.setGlobalThreatsNode = threatData;
+
       return _geigerThreat.getThreats;
     }
   }
-  // print display output terminal
-  print(getThreat());
 
+  //store and retrieve currentUserInfo from :Local "currentUser" NodeValue
+  User getCurrentUser() {
+    try {
+      return _geigerUser.getCurrentUserInfo;
+    } catch (e) {
+      //set current user info
+      User userData = User.convertUserFromJson(
+          '{"firstName":"John", "lastName":"Doe", "role":{ "name":"CEO"}}');
 
+      //store current user info
+      _geigerUser.setCurrentUserInfo = userData;
+      return _geigerUser.getCurrentUserInfo;
+    }
+  }
 
+  //store  and retrieve currentDeviceInfo from :Local "currentDeviceNew NodeValue
+  Device getCurrentDevice() {
+    try {
+      return _geigerDevice.getCurrentDeviceInfo;
+    } catch (e) {
+      //set current device info
+      // format
+      Device deviceData = Device.convertDeviceFromJson(
+          '{"owner":${User.convertUserToJson(getCurrentUser())},"name":"Iphone","type":"mobile"}');
 
-  /*//device
-  GeigerDevice geigerDevice = GeigerDevice(_storageController);
-  //user
-  GeigerUser geigerUser = GeigerUser(_storageController);
+      //store current user info
+      _geigerDevice.setCurrentDeviceInfo = deviceData;
+      return _geigerDevice.getCurrentDeviceInfo;
+    }
+  }
 
-  //aggre
-  GeigerAggregateScore geigerAggregateScore =
-      GeigerAggregateScore(_storageController);
-  //--start of currentUser
-  print("//--start of currentUser");
-  //set currentUser info in :Local NodeValue called "currentUser"
-  geigerUser.setCurrentUserInfo = User.convertUserFromJson(
-      '[{"userId":"1", "firstName":null, "lastName":null, "role":{"roleId":null, "name":null}}]');
-  //get user info from :Local NodeValue called "currentUser"
-  User user = geigerUser.getCurrentUserInfo;
-  print(user);
+  // display terminal threat info
+  print(getThreatInfo());
 
-  print("//-- end");
-  // --- end of currentuser
+  // display current user info in terminal
+  print(getCurrentUser());
 
-  //---start of currentDevice
-
-  print("//-- start of currentDevice");
-  //set currentDevice info in :Local NodeValue called "currentDeviceNew"
-  //can't store in currentDevice because it will run into error
-  geigerDevice.setCurrentDeviceInfo = Device.currentDeviceFromJSon(
-      '[{"owner":{"userId":"1", "firstName":null, "lastName":null, "role":{"roleId":null, "name":null}},"deviceId":"d1","name":"SamSung","type":"Mobile"}]');
-  //get currentDevice info from :Local NodeValue called "currentDeviceNew"
-  print(geigerDevice.getCurrentDeviceInfo);
-
-  print("//--end");
-  // ----end of CurrentDevice
-
-  // ----- start threats
-  print("//-- start of threats");
-  //set String of Threats in :Global:Threats
-  print(geigerThreat.setGlobalThreatsNode = Threat.convertFromJson(
-      '[{"threatId":"1","name":"phishing"},{"threatId":"2","name":"malware"}]'));
-  //get List<Threat> of threat
-  List<Threat> threats = geigerThreat.getThreats;
-  print(threats);
-
-  print("//--end");
-  // ----- end threats
-
-  // ---- start GeigerUserScore
-  print("// ---start GeigerUserScore");
-  //set currentUser threat score in Users:uuid:gi:data:GeigerUserScore
-  geigerUser.setCurrentGeigerUserScoreNodeAndNodeValue(
-      currentUser: user,
-      threatScores: ThreatScore.convertFromJson(
-          '[{"threat":{"threatId":"1","name":"phishing"}, "score":"12"}, {"threat":{"threatId":"2","name":"malware"},"score":"662"},{"threat":{"threatId":"2","name":"malware"},"score":"662"}]'));
-  print("//-end");
-
-  // -- end GeigerUserScore
-
-  // --- start GeigerScoreAggregate
-  print("// --start GeigerScoreAggregate");
-  // set currentUser aggregate score in Users:uuid:gi:data:GeigerScoreAggregate
-  geigerAggregateScore.setGeigerScoreAggregate(
-      ThreatScore.convertFromJson(
-          '[{"threat":{"threatId":"2","name":"malware"},"score":"662"}]'),
-      user);
-  print("//-end");*/
+  //display current device info in terminal
+  print(getCurrentDevice());
 }

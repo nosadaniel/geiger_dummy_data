@@ -1,15 +1,4 @@
-<!-- 
-This README describes the package. If you publish this package to pub.dev,
-this README's contents appear on the landing page for your package.
 
-For information about how to write a good package README, see the guide for
-[writing package pages](https://dart.dev/guides/libraries/writing-package-pages). 
-
-For general information about developing packages, see the Dart guide for
-[creating packages](https://dart.dev/guides/libraries/create-library-packages)
-and the Flutter guide for
-[developing packages and plugins](https://flutter.dev/developing-packages). 
--->
 ## Authors
 - [Nosa Daniel Ahanor @FHNW](https://github.com/nosadaniel)
 
@@ -24,42 +13,75 @@ This repository contains classes that provides methods to easily set and get dat
  - Auto generation of uuids for userId, deviceId, threatId, recommendationId, roleId, etc.
  - Access to Data models
 ## Getting started
-run the following command in your terminal, to add the package in your pubspec.yaml 
+Run the following command in your terminal, to add the package in your pubspec.yaml 
 ```
   Flutter pub add geiger_dummy_data
   or
   dart pub add geiger_dummy_data
 ```
 
+## Additional information for flutter users
+Also run the following command in your terminal, to add the package in your pubspec.yaml
+```
+ flutter pub add sqlite3_flutter_libs
+ flutter pub add sqflite 
+ 
+ 
+```
 ## Usage
 
-A short and useful examples for package users. Check`/example` folder for more details. 
+A short and useful examples for package users. Check `/example` folder for more details. 
 
 ```dart
 import "package:geiger_dummy_data/geiger_dummy_data.dart";
 import 'package:geiger_localstorage/geiger_localstorage.dart';
 
+//flutter users only: uncomment the import lines below
+// import 'package:path/path.dart';
+// import 'package:sqflite/sqflite.dart';
+
+
+
 void main() {
+
+
+
+  //flutter user only
+  //initialize database
+  void _iniDatabase() async{
+    String dbPath = join(await getDatabasesPath(), 'database.db');
+    StorageController _storageController = GenericController('Example', SqliteMapper(dbPath));
+  }
   
+  
+  //dart users
   //initialize database
   StorageController _storageController =
   GenericController("Example", SqliteMapper("./database.db"));
+  
+  
 
-  //set and get threats for :Global:threats
+  //set and get threats from :Global:threats
   GeigerThreat _geigerThreat = GeigerThreat(_storageController);
+
+  //store and retrieve threats from :Global:threats
   // return a List of Threat object containing threatId and name.
-  List<Threat> getThreat() {
+  List<Threat> getThreatInfo() {
     try {
       return _geigerThreat.getThreats;
     } catch (e) {
-      //set using Threat object to convert your json
+      //threat Json format  '[{"threatId": "t1", name":"phishing"},{"threatId":"t2","name":"malware"}]'
+      //Threat to convert your json to Threat object
       // threatId is optional: is auto generated.
-      _geigerThreat.setGlobalThreatsNode =
-          Threat.convertFromJson('[{"name":"phishing"},{"name":"malware"}]');
+      List<Threat> threatData =
+      Threat.convertFromJson('[{"name":"phishing"},{"name":"malware"}]');
+
+      //store threat in :Global:threats:
+      _geigerThreat.setGlobalThreatsNode = threatData;
       return _geigerThreat.getThreats;
     }
   }
-  // print display output terminal
+  // display in terminal
   print(getThreat());
 }
 
@@ -77,7 +99,7 @@ TODO:
  - Provide more data models
  - docs
 
-## Additional information
+
 
 TODO: This project is open to contribution and improvements
 

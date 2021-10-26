@@ -45,7 +45,7 @@ class Device extends Equatable {
   }
 
   /// converts Device List Json to List<Device>
-  static List<Device> fromJSon(String deviceJson) {
+  static List<Device> convertDevicesFromJson(String deviceJson) {
     try {
       List<dynamic> jsonData = jsonDecode(deviceJson);
       return jsonData.map((device) => Device.fromJson(device)).toList();
@@ -57,7 +57,7 @@ class Device extends Equatable {
   }
 
   /// convert from JsonDeviceJson to Device
-  static Device currentDeviceFromJSon(String json) {
+  static Device convertDeviceFromJson(String json) {
     try {
       var jsonData = jsonDecode(json);
       return Device.fromJson(jsonData);
@@ -69,7 +69,7 @@ class Device extends Equatable {
   }
 
   /// convert from Device to deviceJson
-  static String convertToJsonCurrentDevice(Device currentDevice) {
+  static String convertDeviceToJson(Device currentDevice) {
     try {
       var jsonData = jsonEncode(currentDevice);
       return jsonData;

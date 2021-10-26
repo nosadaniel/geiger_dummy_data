@@ -1,5 +1,7 @@
 library geiger_dummy_data;
 
+import 'dart:developer';
+
 import 'package:geiger_localstorage/geiger_localstorage.dart';
 
 import '../src/models/threat.dart';
@@ -62,6 +64,6 @@ class GeigerThreat {
     // add NodeValue to threatChildNode
     threatIdNode.addOrUpdateValue(threatNodeValueName);
     _storageController.update(threatIdNode);
-    print(threatIdNode);
+    log(threatIdNode.toString());
   }
 }

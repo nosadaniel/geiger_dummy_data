@@ -157,7 +157,7 @@ class GeigerDeviceTest {
     group("GeigerDeviceGroupTest", () {
       setUp(() {
         // set currentDevice
-        geigerDevice.setCurrentDeviceInfo = Device.currentDeviceFromJSon(
+        geigerDevice.setCurrentDeviceInfo = Device.convertDeviceFromJson(
             '{"owner":${User.convertUserToJson(geigerUser.getCurrentUserInfo)},"deviceId":"d62f5015-c790-48ae-83d0-2ae2f4a073ce","name":"Iphone","type":"mobile"}');
 
         // set list of threats for currentDevice
@@ -180,7 +180,7 @@ class GeigerDeviceTest {
       test("getGeigerCurrentDeviceInfo", () {
         expect(
             geigerDevice.getCurrentDeviceInfo,
-            equals(Device.currentDeviceFromJSon(
+            equals(Device.convertDeviceFromJson(
                 '{"owner":${User.convertUserToJson(geigerUser.getCurrentUserInfo)},"deviceId":"d62f5015-c790-48ae-83d0-2ae2f4a073ce","name":"Iphone","type":"mobile"}')));
       });
 
