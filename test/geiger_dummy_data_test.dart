@@ -108,6 +108,15 @@ class GeigerUserTest {
             equals(ThreatRecommendation.fromJSon(
                 '[{"recommendationId":"123rec", "weight":{"threat":{"threatId":"t2","name":"malware"}, "weight":"medium" }, "descriptionShortLong":{"shortDescription":"Email filtering", "longDescription":"very long"}}]')));
       });
+
+      test("setUserImplementedRecommendation", () {
+        String r = geigerUser
+            .getCurrentUserGeigerThreatRecommendation(
+                Threat(threatId: "t2", name: "malware"))[0]
+            .recommendationId;
+        expect(geigerUser.setUserImplementedRecommendation(recommendationId: r),
+            equals(true));
+      });
     });
   }
 }
@@ -193,6 +202,17 @@ class GeigerDeviceTest {
                 Threat(threatId: "t2", name: "malware")),
             equals(ThreatRecommendation.fromJSon(
                 '[{"recommendationId":"124rec", "weight":{"threat":{"threatId":"t2","name":"malware"}, "weight":"Low" }, "descriptionShortLong":{"shortDescription":"cyber","longDescription":"very long2"} }]')));
+      });
+
+      test("setDeviceImplementedRecommendation", () {
+        String r = geigerDevice
+            .getCurrentDeviceThreatRecommendation(
+                Threat(threatId: "t2", name: "malware"))[0]
+            .recommendationId;
+        expect(
+            geigerDevice.setDeviceImplementedRecommendation(
+                recommendationId: r),
+            equals(true));
       });
     });
   }

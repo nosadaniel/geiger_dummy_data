@@ -9,6 +9,7 @@ import 'package:geiger_localstorage/geiger_localstorage.dart';
 import '../src/models/threat_score.dart';
 import '../src/models/threat.dart';
 import '../src/models/user.dart';
+import 'models/implemented_recommendation.dart';
 
 class GeigerUser {
   StorageController _storageController;
@@ -142,6 +143,31 @@ class GeigerUser {
         _node!.getValue("${threat.threatId}")!.getValue("en").toString();
 
     return ThreatRecommendation.fromJSon(threatRecommendations);
+  }
+
+  /// set ImplementedRecommendation for device
+  bool setUserImplementedRecommendation({required String recommendationId}) {
+    List<ImplementedRecommendation> implementedRecommendations = [];
+    //get currentDevice info
+    User currentUser = getCurrentUserInfo;
+    try {
+      _node = _storageController
+          .get(":Users:${currentUser.userId}:gi:data:GeigerScoreUser");
+      implementedRecommendations
+          .add(ImplementedRecommendation(recommendationId: recommendationId));
+
+      NodeValue implementedRecom = NodeValueImpl(
+          "implementedRecommendations",
+          ImplementedRecommendation.convertToJsonCurrentUser(
+              implementedRecommendations));
+      _node!.addOrUpdateValue(implementedRecom);
+
+      _storageController.update(_node!);
+      return true;
+    } catch (e) {
+      log("failed to addOrUpdate implementedRecommendations NodeValue");
+      return false;
+    }
   }
 
 // ///get list of currentUserThreatScores

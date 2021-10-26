@@ -1,5 +1,8 @@
 library geiger_dummy_data;
 
+import 'dart:developer';
+
+import 'package:geiger_dummy_data/src/models/implemented_recommendation.dart';
 import 'package:geiger_localstorage/geiger_localstorage.dart';
 
 import '../geiger_dummy_data.dart';
@@ -129,6 +132,31 @@ class GeigerDevice {
     return ThreatRecommendation.fromJSon(threatRecommendations);
   }
 
+  /// set ImplementedRecommendation for device
+  bool setDeviceImplementedRecommendation({required String recommendationId}) {
+    List<ImplementedRecommendation> implementedRecommendations = [];
+    //get currentDevice info
+    Device currentDevice = getCurrentDeviceInfo;
+    try {
+      _node = _storageController
+          .get(":Devices:${currentDevice.deviceId}:gi:data:GeigerScoreDevice");
+      implementedRecommendations
+          .add(ImplementedRecommendation(recommendationId: recommendationId));
+
+      NodeValue implementedRecom = NodeValueImpl(
+          "implementedRecommendations",
+          ImplementedRecommendation.convertToJsonCurrentUser(
+              implementedRecommendations));
+      _node!.addOrUpdateValue(implementedRecom);
+
+      _storageController.update(_node!);
+      return true;
+    } catch (e) {
+      log("failed to addOrUpdate implementedRecommendations NodeValue");
+      return false;
+    }
+  }
+
   void _setDeviceNodeValues(List<ThreatScore> threatScores,
       {String geigerScore: "0"}) {
     _geigerScore = NodeValueImpl("GEIGER_score", geigerScore);
@@ -161,7 +189,3 @@ class GeigerDevice {
 
 //Note: I can override when data is first populated but error pop up on refresh.
 //Error message: can't retrive data from :device:path
-
-//Todo
-//implemented device recommendations in GeigerScoreDevice Node
-//implementedRecommendations NodeValue and store implemented recommendationId in the nodevalue
