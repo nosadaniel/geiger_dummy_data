@@ -2,7 +2,7 @@ library geiger_dummy_data;
 
 import 'dart:developer';
 
-import 'package:geiger_dummy_data/src/models/implemented_recommendation.dart';
+import '/src/models/implemented_recommendation.dart';
 import 'package:geiger_localstorage/geiger_localstorage.dart';
 
 import '../geiger_dummy_data.dart';

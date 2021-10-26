@@ -14,9 +14,12 @@ export 'src/models/recommendation.dart';
 export 'src/models/implemented_recommendation.dart';
 export 'src/models/describe_short_long.dart';
 
-
 export 'src/geiger_user.dart';
 export 'src/geiger_device.dart';
 export 'src/geiger_threat.dart';
 export 'src/geiger_aggregate_score.dart';
 export 'src/geiger_recommendation.dart';
+
+export '/src/constant/constant.dart';
+export '/src/exceptions/custom_format_exception.dart';
+export '/src/exceptions/custom_invalid_map_key_exception.dart';

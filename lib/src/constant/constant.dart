@@ -1,3 +1,5 @@
+library geiger_dummy_data;
+
 import 'package:uuid/uuid.dart';
 
 class GeigerConstant {

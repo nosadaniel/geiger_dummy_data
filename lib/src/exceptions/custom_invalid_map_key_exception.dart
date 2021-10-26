@@ -1,3 +1,5 @@
+library geiger_dummy_data;
+
 class CustomInvalidMapKeyException implements Exception {
   final Object message;
 
