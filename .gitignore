@@ -6,11 +6,9 @@
 *.dill
 *.snapshot
 *.json
-.dart_tool/build/entrypoint/.packageLocations
 *.dart
 *.dart_tool
-*.packages
 *.deps
 *.part
 *.db
-*.Ly9AZGFydD0yLjE0
+*.idea
