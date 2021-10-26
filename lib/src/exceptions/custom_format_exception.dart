@@ -6,6 +6,6 @@ class CustomFormatException implements Exception {
   @override
   String toString() {
     super.toString();
-    return "Oops wrong input format: $message";
+    return "Oops WRONG INPUT FORMAT: $message";
   }
 }

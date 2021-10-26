@@ -2,6 +2,8 @@ library geiger_dummy_data;
 
 import 'dart:convert';
 
+import '/src/exceptions/custom_invalid_map_key_exception.dart';
+
 import '/src/exceptions/custom_format_exception.dart';
 
 import '/src/models/describe_short_long.dart';
@@ -24,7 +26,11 @@ class ThreatRecommendation extends Equatable {
       required this.descriptionShortLong});
 
   factory ThreatRecommendation.fromJson(Map<String, dynamic> json) {
-    return _$ThreatRecommendationFromJson(json);
+    try {
+      return _$ThreatRecommendationFromJson(json);
+    } catch (e) {
+      throw CustomInvalidMapKeyException(message: e);
+    }
   }
 
   Map<String, dynamic> toJson() {

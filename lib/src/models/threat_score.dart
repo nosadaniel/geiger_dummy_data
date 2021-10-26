@@ -3,6 +3,7 @@ library geiger_dummy_data;
 import 'dart:convert';
 
 import 'package:equatable/equatable.dart';
+import '/src/exceptions/custom_invalid_map_key_exception.dart';
 import '/src/exceptions/custom_format_exception.dart';
 import 'package:json_annotation/json_annotation.dart';
 
@@ -17,7 +18,11 @@ class ThreatScore extends Equatable {
   ThreatScore({required this.threat, required this.score});
 
   factory ThreatScore.fromJson(Map<String, dynamic> json) {
-    return _$ThreatScoreFromJson(json);
+    try {
+      return _$ThreatScoreFromJson(json);
+    } catch (e) {
+      throw CustomInvalidMapKeyException(message: e);
+    }
   }
 
   Map<String, dynamic> toJson() {

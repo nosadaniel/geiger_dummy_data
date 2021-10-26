@@ -1,6 +1,8 @@
 library geiger_dummy_data;
 
 import 'dart:convert';
+import '/src/exceptions/custom_invalid_map_key_exception.dart';
+
 import '/src/exceptions/custom_format_exception.dart';
 import 'package:json_annotation/json_annotation.dart';
 import 'package:equatable/equatable.dart';
@@ -17,7 +19,11 @@ class Threat extends Equatable {
       : threatId = threatId ?? GeigerConstant.uuid;
 
   factory Threat.fromJson(Map<String, dynamic> map) {
-    return _$ThreatFromJson(map);
+    try {
+      return _$ThreatFromJson(map);
+    } catch (e) {
+      throw CustomInvalidMapKeyException(message: e);
+    }
   }
 
   Map<String, dynamic> toJson() {

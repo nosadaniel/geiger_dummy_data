@@ -2,6 +2,7 @@ library geiger_dummy_data;
 
 import 'dart:convert';
 import 'package:equatable/equatable.dart';
+import '/src/exceptions/custom_invalid_map_key_exception.dart';
 import '/src/exceptions/custom_format_exception.dart';
 import '../constant/constant.dart';
 import '../models/user.dart';
@@ -20,7 +21,11 @@ class Device extends Equatable {
       : deviceId = deviceId ?? GeigerConstant.uuid;
 
   factory Device.fromJson(Map<String, dynamic> json) {
-    return _$DeviceFromJson(json);
+    try {
+      return _$DeviceFromJson(json);
+    } catch (e) {
+      throw CustomInvalidMapKeyException(message: e);
+    }
   }
 
   Map<String, dynamic> toJson() {

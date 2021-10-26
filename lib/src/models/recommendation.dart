@@ -3,6 +3,7 @@ library geiger_dummy_data;
 import 'dart:convert';
 
 import 'package:equatable/equatable.dart';
+import '/src/exceptions/custom_invalid_map_key_exception.dart';
 import '/src/exceptions/custom_format_exception.dart';
 import 'package:json_annotation/json_annotation.dart';
 import '/src/models/threat_weight.dart';
@@ -27,7 +28,11 @@ class Recommendation extends Equatable {
       : recommendationId = recommendationId ?? GeigerConstant.uuid;
 
   factory Recommendation.fromJson(Map<String, dynamic> json) {
-    return _$RecommendationFromJson(json);
+    try {
+      return _$RecommendationFromJson(json);
+    } catch (e) {
+      throw CustomInvalidMapKeyException(message: e);
+    }
   }
 
   Map<String, dynamic> toJson() {

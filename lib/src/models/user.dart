@@ -1,6 +1,8 @@
 library geiger_dummy_data;
 
 import 'dart:convert';
+import '/src/exceptions/custom_invalid_map_key_exception.dart';
+
 import '/src/exceptions/custom_format_exception.dart';
 import 'package:json_annotation/json_annotation.dart';
 import 'package:equatable/equatable.dart';
@@ -27,7 +29,11 @@ class User extends Equatable {
       : userId = userId ?? GeigerConstant.uuid;
 
   factory User.fromJson(Map<String, dynamic> json) {
-    return _$UserFromJson(json);
+    try {
+      return _$UserFromJson(json);
+    } catch (e) {
+      throw CustomInvalidMapKeyException(message: e);
+    }
   }
 
   Map<String, dynamic> toJson() {

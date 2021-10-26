@@ -1,5 +1,7 @@
 import 'dart:convert';
 
+import '/src/exceptions/custom_invalid_map_key_exception.dart';
+
 import '/src/exceptions/custom_format_exception.dart';
 import 'package:json_annotation/json_annotation.dart';
 import 'package:equatable/equatable.dart';
@@ -13,7 +15,11 @@ class ImplementedRecommendation extends Equatable {
   ImplementedRecommendation({required this.recommendationId});
 
   factory ImplementedRecommendation.fromJson(Map<String, dynamic> json) {
-    return _$ImplementedRecommendationFromJson(json);
+    try {
+      return _$ImplementedRecommendationFromJson(json);
+    } catch (e) {
+      throw CustomInvalidMapKeyException(message: e);
+    }
   }
 
   Map<String, dynamic> toJson() {
