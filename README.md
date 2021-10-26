@@ -10,16 +10,19 @@ For general information about developing packages, see the Dart guide for
 and the Flutter guide for
 [developing packages and plugins](https://flutter.dev/developing-packages). 
 -->
+## Authors
+- [Nosa Daniel Ahanor <FHNW>](https://github.com/nosadaniel)
+
 #GEIGER DUMMY DATA
 
 This repository contains classes that provides methods to easily set and get data from the Node paths provided in the Geiger Indicator docs.
 
 ## Features
- - set and Receive data as a json object.
- - Access to functionality that helps you to serialize and deserialize your data.
- - Set data in Node path, already provided in the geiger indicator docs.
+ - Receive data as a json object from a specific NodeValue path.
+ - Access to functionality to help you serialized and deserialized data.
+ - Set data according the Node path already defined in the geiger indicator docs.
  - Auto generation of uuids for userId, deviceId, threatId, recommendationId, roleId, etc.
-
+ - Access to Data models
 ## Getting started
 run the following command in your terminal, to add the package in your pubspec.yaml 
 ```
@@ -62,10 +65,17 @@ void main() {
 
 
 ```
-TODO: 
+TODO:
+ - Provide more functionality to set data and in the following Node path.
+ - :EnterPrise:users
+ - :Global:profile
+ - :Local:plugin
+ - :Users:userId:data:metrics
+ - :Device:deviceId:data:metrics
+ - Provide more data models
+ - docs
 
 ## Additional information
 
-TODO: Tell users more about the package: where to find more information, how to 
-contribute to the package, how to file issues, what response they can expect 
-from the package authors, and more.
+TODO: This project is open to contribution and improvements
+
