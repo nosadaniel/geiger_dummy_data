@@ -10,13 +10,15 @@ For general information about developing packages, see the Dart guide for
 and the Flutter guide for
 [developing packages and plugins](https://flutter.dev/developing-packages). 
 -->
+#GEIGER DUMMY DATA
 
-TODO: Put a short description of the package here that helps potential users
-know whether this package might be useful for them.
+This repository contains classes that provides methods to easily set and get data from the Node paths provided in the Geiger Indicator docs.
 
 ## Features
-
-TODO: List what your package can do. Maybe include images, gifs, or videos.
+ - set and Receive data as a json object.
+ - Access to functionality that helps you to serialize and deserialize your data.
+ - Set data in Node path, already provided in the geiger indicator docs.
+ - Auto generation of uuids for userId, deviceId, threatId, recommendationId, roleId, etc.
 
 ## Getting started
 run the following command in your terminal, to add the package in your pubspec.yaml 
@@ -26,18 +28,41 @@ run the following command in your terminal, to add the package in your pubspec.y
   dart pub add geiger_dummy_data
 ```
 
-TODO: List prerequisites and provide or point to information on how to
-start using the package.
-
 ## Usage
 
-A short and useful examples for package users. Add longer examples
-to `/example` folder. 
+A short and useful examples for package users. Check`/example` folder for more details. 
 
 ```dart
-StorageController _storageController =
-      GenericController("owner", SqliteMapper("./database.db"));
+import "package:geiger_dummy_data/geiger_dummy_data.dart";
+import 'package:geiger_localstorage/geiger_localstorage.dart';
+
+void main() {
+  
+  //initialize database
+  StorageController _storageController =
+  GenericController("Example", SqliteMapper("./database.db"));
+
+  //set and get threats for :Global:threats
+  GeigerThreat _geigerThreat = GeigerThreat(_storageController);
+  // return a List of Threat object containing threatId and name.
+  List<Threat> getThreat() {
+    try {
+      return _geigerThreat.getThreats;
+    } catch (e) {
+      //set using Threat object to convert your json
+      // threatId is optional: is auto generated.
+      _geigerThreat.setGlobalThreatsNode =
+          Threat.convertFromJson('[{"name":"phishing"},{"name":"malware"}]');
+      return _geigerThreat.getThreats;
+    }
+  }
+  // print display output terminal
+  print(getThreat());
+}
+
+
 ```
+TODO: 
 
 ## Additional information
 
