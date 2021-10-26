@@ -6,7 +6,7 @@
 *.dill
 *.snapshot
 *.json
-*.dart
+*
 *.dart_tool
 *.deps
 *.part
