@@ -30,7 +30,6 @@ class GeigerDevice {
           Device.convertToJsonCurrentDevice(currentDeviceInfo));
       _node!.addOrUpdateValue(localNodeValue!);
       _storageController.update(_node!);
-      print(_node);
     } catch (e) {
       print(":Local not found");
     }
