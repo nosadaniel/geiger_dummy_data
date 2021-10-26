@@ -11,7 +11,7 @@ and the Flutter guide for
 [developing packages and plugins](https://flutter.dev/developing-packages). 
 -->
 ## Authors
-- [Nosa Daniel Ahanor <FHNW>](https://github.com/nosadaniel)
+- [Nosa Daniel Ahanor @FHNW](https://github.com/nosadaniel)
 
 #GEIGER DUMMY DATA
 
