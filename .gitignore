@@ -5,8 +5,6 @@
 .DS_Store
 *.dill
 *.snapshot
-*.json
-*
 *.dart_tool
 *.deps
 *.part
