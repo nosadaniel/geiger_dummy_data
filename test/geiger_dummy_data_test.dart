@@ -32,9 +32,9 @@ void main() {
 
   //geigerRecommendation
   //Test passed but failed to compare
-  // GeigerRecommendationTest geigerRecommendationTest =
-  //     GeigerRecommendationTest(_storageController);
-  // geigerRecommendationTest.recommendationGroupTest();
+  GeigerRecommendationTest geigerRecommendationTest =
+      GeigerRecommendationTest(_storageController);
+  geigerRecommendationTest.recommendationGroupTest();
 }
 
 class GeigerThreatTest {
@@ -232,14 +232,14 @@ class GeigerRecommendationTest {
         //set recommendations
         geigerRecommendation.setGlobalRecommendationsNode(
             recommendations: Recommendation.fromJSon(
-                '[{"recommendationId":"123rec","recommendationType":"user", "relatedThreatsWeight":[{"threat":{"threatId":"t1","name":"phishing"},"weight":"High"},{"threat":{"threatId":"t2","name":"malware"},"weight":"Low"}],"description":{"shortDescription":"Email filtering"}},{"recommendationId":"124rec","recommendationType":"user", "relatedThreatsWeight":[{"threat":{"threatId":"t3","name":"phishing web"},"weight":"High"},{"threat":{"threatId":"t2","name":"malware"},"weight":"Low"}],"description":{"shortDescription":"cyber"}}]'));
+                '[{"recommendationId":"123rec","recommendationType":"user", "relatedThreatsWeight":[{"threat":{"threatId":"t1","name":"phishing"},"weight":"High"},{"threat":{"threatId":"t2","name":"malware"},"weight":"Low"}],"description":{"shortDescription":"Email filtering","longDescription":"very long1"}},{"recommendationId":"124rec","recommendationType":"device", "relatedThreatsWeight":[{"threat":{"threatId":"t3","name":"phishing web"},"weight":"High"},{"threat":{"threatId":"t2","name":"malware"},"weight":"Low"}],"description":{"shortDescription":"cyber","longDescription":"very long2"}}]'));
       });
 
       test("getRecommendation", () {
         expect(
             geigerRecommendation.getRecommendations,
             equals(Recommendation.fromJSon(
-                '[{"recommendationId":"123rec","recommendationType":"user", "relatedThreatsWeight":[{"threat":{"threatId":"t1","name":"phishing"},"weight":"High"},{"threat":{"threatId":"t2","name":"malware"},"weight":"Low"}],"description":{"shortDescription":"Email filtering"}},{"recommendationId":"124rec","recommendationType":"device", "relatedThreatsWeight":[{"threat":{"threatId":"t3","name":"phishing web"},"weight":"High"},{"threat":{"threatId":"t2","name":"malware"},"weight":"Low"}],"description":{"shortDescription":"cyber"}}]')));
+                '[{"recommendationId":"123rec","recommendationType":"user", "relatedThreatsWeight":[{"threat":{"threatId":"t1","name":"phishing"},"weight":"High"},{"threat":{"threatId":"t2","name":"malware"},"weight":"Low"}],"description":{"shortDescription":"Email filtering","longDescription":"very long1"}},{"recommendationId":"124rec","recommendationType":"device", "relatedThreatsWeight":[{"threat":{"threatId":"t3","name":"phishing web"},"weight":"High"},{"threat":{"threatId":"t2","name":"malware"},"weight":"Low"}],"description":{"shortDescription":"cyber", "longDescription":"very long2"}}]')));
       });
 
       test("getThreatRecommendations", () {
@@ -248,7 +248,7 @@ class GeigerRecommendationTest {
                 threat: Threat.fromJson({"threatId": "t2", "name": "malware"}),
                 recommendationType: "user"),
             equals(ThreatRecommendation.fromJSon(
-                '[{"recommendationId":"123rec", "weight":{"threat":{"threatId":"t2","name":"malware"}, "weight":"Low" }, "descriptionShortLong":{"shortDescription":"Email filtering"}},{"recommendationId":"124rec", "weight":{"threat":{"threatId":"t2","name":"malware"}, "weight":"Low" }, "descriptionShortLong":{"shortDescription":"cyber"} }]')));
+                '[{"recommendationId":"123rec", "weight":{"threat":{"threatId":"t2","name":"malware"}, "weight":"Low" }, "descriptionShortLong":{"shortDescription":"Email filtering","longDescription":"very long1"} }]')));
       });
     });
   }

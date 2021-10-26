@@ -8,6 +8,7 @@
 *.json
 .dart_tool/build/entrypoint/.packageLocations
 *.dart
+*.dart_tool
 *.deps
 *.part
 *.db
