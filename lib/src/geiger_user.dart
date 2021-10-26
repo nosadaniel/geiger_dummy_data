@@ -28,6 +28,7 @@ class GeigerUser {
           NodeValueImpl("currentUser", User.convertUserToJson(currentUserInfo));
       _node!.addOrUpdateValue(localNodeValue);
       _storageController.update(_node!);
+      log(_node!.toString());
     } on StorageException {
       log(":Local not found");
     }
