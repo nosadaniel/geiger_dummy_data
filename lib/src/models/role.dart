@@ -1,6 +1,8 @@
 library geiger_dummy_data;
 
 import 'dart:convert';
+import '/src/exceptions/custom_format_exception.dart';
+import '/src/exceptions/custom_invalid_map_key_exception.dart';
 import 'package:json_annotation/json_annotation.dart';
 import 'package:equatable/equatable.dart';
 import '../constant/constant.dart';
@@ -15,7 +17,11 @@ class Role extends Equatable {
   Role({String? roleId, this.name}) : roleId = roleId ?? GeigerConstant.uuid;
 
   factory Role.fromJson(Map<String, dynamic> json) {
-    return _$RoleFromJson(json);
+    try {
+      return _$RoleFromJson(json);
+    } catch (e) {
+      throw CustomInvalidMapKeyException(message: e);
+    }
   }
 
   Map<String, dynamic> toJson() {
@@ -24,15 +30,26 @@ class Role extends Equatable {
 
   /// convert to json string
   static String convertToJson(List<Role> roles) {
-    List<Map<String, dynamic>> jsonData =
-        roles.map((role) => role.toJson()).toList();
-    return jsonEncode(jsonData);
+    try {
+      List<Map<String, dynamic>> jsonData =
+          roles.map((role) => role.toJson()).toList();
+      return jsonEncode(jsonData);
+    } on FormatException {
+      throw CustomFormatException(
+          message: "Fails to Convert List<Role> $roles to String");
+    }
   }
 
   /// pass [role] as a string
-  static List<Role> fromJSon(String jsonArray) {
-    List<dynamic> jsonData = jsonDecode(jsonArray);
-    return jsonData.map((role) => Role.fromJson(role)).toList();
+  static List<Role> fromJSon(String roleJson) {
+    try {
+      List<dynamic> jsonData = jsonDecode(roleJson);
+      return jsonData.map((role) => Role.fromJson(role)).toList();
+    } on FormatException {
+      throw CustomFormatException(
+          message:
+              '\n that is the wrong format for Role: $roleJson \n right String format:\n [{"roleId":"id","name":"threatName"}] \n Note: roleId is optional');
+    }
   }
 
   @override

@@ -23,7 +23,7 @@ void main() {
   //--start of currentUser
   print("//--start of currentUser");
   //set currentUser info in :Local NodeValue called "currentUser"
-  geigerUser.setCurrentUserInfo = User.currentUserFromJSon(
+  geigerUser.setCurrentUserInfo = User.convertUserFromJson(
       '[{"userId":"1", "firstName":null, "lastName":null, "role":{"roleId":null, "name":null}}]');
   //get user info from :Local NodeValue called "currentUser"
   User user = geigerUser.getCurrentUserInfo;
@@ -48,7 +48,7 @@ void main() {
   // ----- start threats
   print("//-- start of threats");
   //set String of Threats in :Global:Threats
-  print(geigerThreat.setGlobalThreatsNode = Threat.fromJSon(
+  print(geigerThreat.setGlobalThreatsNode = Threat.convertFromJson(
       '[{"threatId":"1","name":"phishing"},{"threatId":"2","name":"malware"}]'));
   //get List<Threat> of threat
   List<Threat> threats = geigerThreat.getThreats;
@@ -62,7 +62,7 @@ void main() {
   //set currentUser threat score in Users:uuid:gi:data:GeigerUserScore
   geigerUser.setCurrentGeigerUserScoreNodeAndNodeValue(
       currentUser: user,
-      threatScores: ThreatScore.fromJSon(
+      threatScores: ThreatScore.convertFromJson(
           '[{"threat":{"threatId":"1","name":"phishing"}, "score":"12"}, {"threat":{"threatId":"2","name":"malware"},"score":"662"},{"threat":{"threatId":"2","name":"malware"},"score":"662"}]'));
   print("//-end");
 
@@ -72,7 +72,7 @@ void main() {
   print("// --start GeigerScoreAggregate");
   // set currentUser aggregate score in Users:uuid:gi:data:GeigerScoreAggregate
   geigerAggregateScore.setGeigerScoreAggregate(
-      ThreatScore.fromJSon(
+      ThreatScore.convertFromJson(
           '[{"threat":{"threatId":"2","name":"malware"},"score":"662"}]'),
       user);
   print("//-end");

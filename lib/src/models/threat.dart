@@ -1,6 +1,9 @@
 library geiger_dummy_data;
 
 import 'dart:convert';
+import '/src/exceptions/custom_invalid_map_key_exception.dart';
+
+import '/src/exceptions/custom_format_exception.dart';
 import 'package:json_annotation/json_annotation.dart';
 import 'package:equatable/equatable.dart';
 import '../constant/constant.dart';
@@ -16,35 +19,47 @@ class Threat extends Equatable {
       : threatId = threatId ?? GeigerConstant.uuid;
 
   factory Threat.fromJson(Map<String, dynamic> map) {
-    return _$ThreatFromJson(map);
+    try {
+      return _$ThreatFromJson(map);
+    } catch (e) {
+      throw CustomInvalidMapKeyException(message: e);
+    }
   }
 
   Map<String, dynamic> toJson() {
     return _$ThreatToJson(this);
   }
 
-  /// convert from threats List to String
+  /// convert from threats List to Threat json
   static String convertToJson(List<Threat> threats) {
-    List<Map<String, dynamic>> jsonData =
-        threats.map((threat) => threat.toJson()).toList();
-    return jsonEncode(jsonData);
+    try {
+      List<Map<String, dynamic>> jsonData =
+          threats.map((threat) => threat.toJson()).toList();
+      return jsonEncode(jsonData);
+    } on FormatException {
+      throw CustomFormatException(
+          message: "Fails to Convert List<Threat> $threats to json");
+    }
   }
 
-  /// converts jsonThreatListString to List<Threat>
-  static List<Threat> fromJSon(String jsonArray) {
-    List<dynamic> jsonData = jsonDecode(jsonArray);
-    return jsonData.map((threatMap) => Threat.fromJson(threatMap)).toList();
+  /// converts jsonThreatListJson to List<Threat>
+  static List<Threat> convertFromJson(String threatJson) {
+    try {
+      List<dynamic> jsonData = jsonDecode(threatJson);
+      return jsonData.map((threatMap) => Threat.fromJson(threatMap)).toList();
+    } on FormatException {
+      throw CustomFormatException(
+          message:
+              '\n that is the wrong format for Threat \n $threatJson \n right String format [{"threatId":"value","name":"value"}] \n Note: threatId is optional');
+    }
   }
 
   @override
   String toString() {
     super.toString();
-    return "{threatId:$threatId,name:$name}";
+    return '{"threatId":$threatId,"name":$name}';
   }
 
   @override
   List<Object?> get props => [threatId, name];
 }
-
-//Todo
-// throw FormatException for every model converter.

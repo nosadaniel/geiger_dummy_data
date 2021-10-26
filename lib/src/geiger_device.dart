@@ -1,9 +1,15 @@
 library geiger_dummy_data;
 
+import 'dart:developer';
+
+import 'package:geiger_dummy_data/src/models/implemented_recommendation.dart';
 import 'package:geiger_localstorage/geiger_localstorage.dart';
 
+import '../geiger_dummy_data.dart';
 import '../src/models/device.dart';
 import '../src/models/threat_score.dart';
+import '../src/models/threat.dart';
+import '../src/geiger_recommendation.dart';
 
 ///device Node
 class GeigerDevice {
@@ -27,7 +33,6 @@ class GeigerDevice {
           Device.convertToJsonCurrentDevice(currentDeviceInfo));
       _node!.addOrUpdateValue(localNodeValue!);
       _storageController.update(_node!);
-      print(_node);
     } catch (e) {
       print(":Local not found");
     }
@@ -66,16 +71,15 @@ class GeigerDevice {
     }
   }
 
-  ///get list of DeviceThreatScores
-  /// but a single DeviceThreatScores in the list will be returned
-  List<ThreatScore> get getCurrentDeviceThreatScores {
+  ///get list of currentDeviceGeigerThreatScores
+  List<ThreatScore> get getCurrentDeviceGeigerThreatScores {
     Device currentDevice = getCurrentDeviceInfo;
     _node = _storageController
         .get(":Devices:${currentDevice.deviceId}:gi:data:GeigerScoreDevice");
 
     String threats_score =
         _node!.getValue("threats_score")!.getValue("en").toString();
-    return ThreatScore.fromJSon(threats_score);
+    return ThreatScore.convertFromJson(threats_score);
   }
 
   ///get CurrentGeigerDeviceScore
@@ -87,6 +91,68 @@ class GeigerDevice {
     String geigerScore =
         _node!.getValue("GEIGER_score")!.getValue("en").toString();
     return geigerScore;
+  }
+
+  /// set GeigerDeviceRecommendation
+  void set setCurrentDeviceGeigerRecommendation(Threat threat) {
+    Device currentDevice = getCurrentDeviceInfo;
+    List<ThreatRecommendation> threatRecommendations =
+        GeigerRecommendation(_storageController).getThreatRecommendation(
+            threat: threat, recommendationType: "device");
+    try {
+      _node = _storageController
+          .get(":Devices:${currentDevice.deviceId}:gi:data:recommendations");
+
+      NodeValue threatRecomValue = NodeValueImpl("${threat.threatId}",
+          ThreatRecommendation.convertToJson(threatRecommendations));
+
+      _node!.addOrUpdateValue(threatRecomValue);
+      _storageController.update(_node!);
+    } on StorageException {
+      Node userRecommendationNode = NodeImpl(
+          "recommendations", ":Devices:${currentDevice.deviceId}:gi:data");
+      _storageController.add(userRecommendationNode);
+
+      NodeValue threatRecomValue = NodeValueImpl("${threat.threatId}",
+          ThreatRecommendation.convertToJson(threatRecommendations));
+
+      userRecommendationNode.addOrUpdateValue(threatRecomValue);
+      _storageController.update(userRecommendationNode);
+    }
+  }
+
+  List<ThreatRecommendation> getCurrentDeviceThreatRecommendation(
+      Threat threat) {
+    Device currentDevice = getCurrentDeviceInfo;
+    _node = _storageController
+        .get(":Devices:${currentDevice.deviceId}:gi:data:recommendations");
+    String threatRecommendations =
+        _node!.getValue("${threat.threatId}")!.getValue("en").toString();
+
+    return ThreatRecommendation.convertFromJson(threatRecommendations);
+  }
+
+  /// set ImplementedRecommendation for device
+  bool setDeviceImplementedRecommendation({required String recommendationId}) {
+    List<ImplementedRecommendation> implementedRecommendations = [];
+    //get currentDevice info
+    Device currentDevice = getCurrentDeviceInfo;
+    try {
+      _node = _storageController
+          .get(":Devices:${currentDevice.deviceId}:gi:data:GeigerScoreDevice");
+      implementedRecommendations
+          .add(ImplementedRecommendation(recommendationId: recommendationId));
+
+      NodeValue implementedRecom = NodeValueImpl("implementedRecommendations",
+          ImplementedRecommendation.convertToJson(implementedRecommendations));
+      _node!.addOrUpdateValue(implementedRecom);
+
+      _storageController.update(_node!);
+      return true;
+    } catch (e) {
+      log("failed to addOrUpdate implementedRecommendations NodeValue");
+      return false;
+    }
   }
 
   void _setDeviceNodeValues(List<ThreatScore> threatScores,

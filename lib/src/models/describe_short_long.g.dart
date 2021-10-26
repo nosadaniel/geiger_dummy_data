@@ -1,6 +1,6 @@
 // GENERATED CODE - DO NOT MODIFY BY HAND
 
-part of 'describe_short_long.dart';
+part of geiger_dummy_data;
 
 // **************************************************************************
 // JsonSerializableGenerator

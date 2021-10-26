@@ -2,6 +2,8 @@ library geiger_dummy_data;
 
 import 'dart:convert';
 import 'package:equatable/equatable.dart';
+import '/src/exceptions/custom_invalid_map_key_exception.dart';
+import '/src/exceptions/custom_format_exception.dart';
 import '../constant/constant.dart';
 import '../models/user.dart';
 import 'package:json_annotation/json_annotation.dart';
@@ -19,36 +21,62 @@ class Device extends Equatable {
       : deviceId = deviceId ?? GeigerConstant.uuid;
 
   factory Device.fromJson(Map<String, dynamic> json) {
-    return _$DeviceFromJson(json);
+    try {
+      return _$DeviceFromJson(json);
+    } catch (e) {
+      throw CustomInvalidMapKeyException(message: e);
+    }
   }
 
   Map<String, dynamic> toJson() {
     return _$DeviceToJson(this);
   }
 
-  /// convert from devices List to String
-  static String convertToJson(List<Device> devices) {
-    List<Map<String, dynamic>> jsonData =
-        devices.map((device) => device.toJson()).toList();
-    return jsonEncode(jsonData);
+  /// convert from Device List to Device json
+  static String convertDevicesToJson(List<Device> devices) {
+    try {
+      List<Map<String, dynamic>> jsonData =
+          devices.map((device) => device.toJson()).toList();
+      return jsonEncode(jsonData);
+    } on FormatException {
+      throw CustomFormatException(
+          message: "Fails to Convert List<Device> $devices to json");
+    }
   }
 
-  /// converts jsonDeviceListString to List<Device>
-  static List<Device> fromJSon(String deviceArray) {
-    List<dynamic> jsonData = jsonDecode(deviceArray);
-    return jsonData.map((device) => Device.fromJson(device)).toList();
+  /// converts Device List Json to List<Device>
+  static List<Device> fromJSon(String deviceJson) {
+    try {
+      List<dynamic> jsonData = jsonDecode(deviceJson);
+      return jsonData.map((device) => Device.fromJson(device)).toList();
+    } on FormatException {
+      throw CustomFormatException(
+          message:
+              '\n that is the wrong format for Device: \n $deviceJson \n right String format:\n [{"owner":"{"userId":"value","firstName":"value", "lastName":"value", "role":{"roleId":"value", "name":"value"}}","deviceId":"value","name":"value","type":"value"}] \n Note: ids are optional');
+    }
   }
 
-  /// convert from JsonDeviceString to User
+  /// convert from JsonDeviceJson to Device
   static Device currentDeviceFromJSon(String json) {
-    var jsonData = jsonDecode(json);
-    return Device.fromJson(jsonData);
+    try {
+      var jsonData = jsonDecode(json);
+      return Device.fromJson(jsonData);
+    } on FormatException {
+      throw CustomFormatException(
+          message:
+              '\n that is the wrong format for Device: \n $json \n right String format: {"owner":"{"userId":"value","firstName":"value", "lastName":"value", "role":{"roleId":"value", "name":"value"}}","deviceId":"value","name":"value","type":"value"}} \n Note: ids are optional');
+    }
   }
 
-  /// convert from Device to deviceString
+  /// convert from Device to deviceJson
   static String convertToJsonCurrentDevice(Device currentDevice) {
-    var jsonData = jsonEncode(currentDevice);
-    return jsonData;
+    try {
+      var jsonData = jsonEncode(currentDevice);
+      return jsonData;
+    } on FormatException {
+      throw CustomFormatException(
+          message: "Fails to Convert Device $currentDevice to json");
+    }
   }
 
   @override
