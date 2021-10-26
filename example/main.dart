@@ -1,22 +1,39 @@
-import 'package:geiger_dummy_data/src/geiger_aggregate_score.dart';
-import 'package:geiger_dummy_data/src/geiger_device.dart';
-import 'package:geiger_dummy_data/src/geiger_threat.dart';
-import 'package:geiger_dummy_data/src/geiger_user.dart';
-import 'package:geiger_dummy_data/src/models/device.dart';
-import 'package:geiger_dummy_data/src/models/threat.dart';
-import 'package:geiger_dummy_data/src/models/threat_score.dart';
-import 'package:geiger_dummy_data/src/models/user.dart';
+import "package:geiger_dummy_data/geiger_dummy_data.dart";
 import 'package:geiger_localstorage/geiger_localstorage.dart';
 
+
+
 void main() {
+  //initialize database
   StorageController _storageController =
-      GenericController("owner43", SqliteMapper("./owner43.db"));
-  //device
+  GenericController("Example", SqliteMapper("./database.db"));
+
+  //set and get threats for :Global:threats
+  GeigerThreat _geigerThreat = GeigerThreat(_storageController);
+
+  // return a List of Threat object containing threatId and name.
+  List<Threat> getThreat() {
+    try {
+      return _geigerThreat.getThreats;
+    } catch (e) {
+      //set using Threat object to convert your json
+      // threatId is optional: is auto generated.
+      _geigerThreat.setGlobalThreatsNode =
+          Threat.convertFromJson('[{"name":"phishing"},{"name":"malware"}]');
+      return _geigerThreat.getThreats;
+    }
+  }
+  // print display output terminal
+  print(getThreat());
+
+
+
+
+  /*//device
   GeigerDevice geigerDevice = GeigerDevice(_storageController);
   //user
   GeigerUser geigerUser = GeigerUser(_storageController);
-  //threat
-  GeigerThreat geigerThreat = GeigerThreat(_storageController);
+
   //aggre
   GeigerAggregateScore geigerAggregateScore =
       GeigerAggregateScore(_storageController);
@@ -75,5 +92,5 @@ void main() {
       ThreatScore.convertFromJson(
           '[{"threat":{"threatId":"2","name":"malware"},"score":"662"}]'),
       user);
-  print("//-end");
+  print("//-end");*/
 }

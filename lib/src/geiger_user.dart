@@ -2,11 +2,11 @@ library geiger_dummy_mapper;
 
 import 'dart:developer';
 
-import 'package:geiger_dummy_data/geiger_dummy_data.dart';
 import '../src/geiger_recommendation.dart';
 import 'package:geiger_localstorage/geiger_localstorage.dart';
 
 import '../src/models/threat_score.dart';
+import '../src/models/threat_recommendation.dart';
 import '../src/models/threat.dart';
 import '../src/models/user.dart';
 import 'models/implemented_recommendation.dart';
