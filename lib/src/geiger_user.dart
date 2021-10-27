@@ -136,7 +136,7 @@ class GeigerUser {
   }
 
   List<ThreatRecommendation> getCurrentUserGeigerThreatRecommendation(
-      Threat threat) {
+      {required Threat threat}) {
     User currentUser = getCurrentUserInfo;
     _node = _storageController
         .get(":Users:${currentUser.userId}:gi:data:recommendations");
