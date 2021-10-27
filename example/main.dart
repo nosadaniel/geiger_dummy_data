@@ -4,7 +4,7 @@ import 'package:geiger_localstorage/geiger_localstorage.dart';
 void main() {
   //initialize database
   StorageController _storageController =
-      GenericController("Example", SqliteMapper("./database.db"));
+      GenericController("Example", SqliteMapper("./example.db"));
 
   //set and get threat
   GeigerThreat _geigerThreat = GeigerThreat(_storageController);
