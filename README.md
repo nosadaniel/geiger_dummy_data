@@ -82,7 +82,7 @@ void main() {
     }
   }
   // display in terminal
-  print(getThreat());
+  print(getThreatInfo());
 }
 
 
