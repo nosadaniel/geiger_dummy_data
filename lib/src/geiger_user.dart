@@ -12,7 +12,7 @@ import '../src/models/user.dart';
 import 'models/implemented_recommendation.dart';
 
 class GeigerUser {
-  StorageController _storageController;
+  late StorageController _storageController;
 
   GeigerUser(this._storageController);
   Node? _node;
