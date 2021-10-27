@@ -122,7 +122,7 @@ class GeigerDevice {
   }
 
   List<ThreatRecommendation> getCurrentDeviceThreatRecommendation(
-      Threat threat) {
+      {required Threat threat}) {
     Device currentDevice = getCurrentDeviceInfo;
     _node = _storageController
         .get(":Devices:${currentDevice.deviceId}:gi:data:recommendations");

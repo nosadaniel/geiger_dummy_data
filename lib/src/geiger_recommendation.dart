@@ -16,8 +16,7 @@ class GeigerRecommendation {
 
   /// set all recommendations in Global:recommendations node
   // Not tested
-  void setGlobalRecommendationsNode(
-      {required List<Recommendation> recommendations}) {
+  void set setGlobalRecommendationsNode(List<Recommendation> recommendations) {
     try {
       for (Recommendation recommendation in recommendations) {
         _node = _storageController

@@ -14,9 +14,11 @@ class GeigerAggregateScore {
   NodeValue? _geigerNumMetrics;
   Node? _node;
 
-  /// set GeigerAggregateScore Node in :Users:uuid:gi:data node path
-  void setGeigerScoreAggregate(List<ThreatScore> threatScores, User currentUser,
-      {String geigerScore: "0"}) {
+  /// set GeigerAggregateScore Node in :Users:uuid:gi:data:GeigerScoreAggregate node path
+  void setGeigerScoreAggregate(
+      {required List<ThreatScore> threatScores,
+      required User currentUser,
+      String geigerScore: "0"}) {
     try {
       _node = _storageController
           .get(":Users:${currentUser.userId}:gi:data:GeigerScoreAggregate");
