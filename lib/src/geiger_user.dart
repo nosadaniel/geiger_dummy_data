@@ -53,12 +53,6 @@ class GeigerUser {
           .get(":Users:${currentUser.userId}:gi:data:GeigerScoreUser");
       _setUserNodeValues(threatScores, geigerScore: geigerScore);
     } on StorageException {
-      Node userNode = NodeImpl("${currentUser.userId}", ":Users");
-      _storageController.addOrUpdate(userNode);
-      Node giNode = NodeImpl("gi", ":Users:${currentUser.userId}");
-      _storageController.addOrUpdate(giNode);
-      Node nodeData = NodeImpl("data", ":Users:${currentUser.userId}:gi");
-      _storageController.addOrUpdate(nodeData);
       Node userScoreNode =
           NodeImpl("GeigerScoreUser", ":Users:${currentUser.userId}:gi:data");
       _storageController.add(userScoreNode);
@@ -182,6 +176,9 @@ class GeigerUser {
 }
 
 //Todo
+
+// write throw exception for all getters if object is not
+// found
 
 //add the following line of code below to geiger-toolbox ui
 

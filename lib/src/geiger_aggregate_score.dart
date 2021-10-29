@@ -24,6 +24,13 @@ class GeigerAggregateScore {
           .get(":Users:${currentUser.userId}:gi:data:GeigerScoreAggregate");
       _setUserNodeValues(threatScores, geigerScore: geigerScore);
     } on StorageException {
+      Node userNode = NodeImpl("${currentUser.userId}", ":Users");
+      _storageController.addOrUpdate(userNode);
+      Node giNode = NodeImpl("gi", ":Users:${currentUser.userId}");
+      _storageController.addOrUpdate(giNode);
+      Node nodeData = NodeImpl("data", ":Users:${currentUser.userId}:gi");
+      _storageController.addOrUpdate(nodeData);
+
       Node aggScoreNode = NodeImpl(
           "GeigerScoreAggregate", ":Users:${currentUser.userId}:gi:data");
       _storageController.add(aggScoreNode);
