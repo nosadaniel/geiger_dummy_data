@@ -72,6 +72,12 @@ class GeigerUserTest {
         geigerUser.setCurrentUserInfo = User.convertUserFromJson(
             '{"userId":"25bc506d-938a-4cde-954d-d1f733a90092","firstName":"matthew", "lastName":null, "role":{"roleId":"a39e473b-bc9e-43aa-a210-da85d8c9792b", "name":null}}');
 
+        //set
+        GeigerAggregateScore(_storageController).setGeigerScoreAggregate(
+            threatScores: ThreatScore.convertFromJson(
+                '[{"threat":{"threatId":"dd8fdb40-022d-41e8-ac21-51d5113b308b","name":"phishing"},"score":"25"},{"threat":{"threatId":"w1","name":"malware"},"score":"45"}]'),
+            currentUser: GeigerUser(_storageController).getCurrentUserInfo);
+
         //setCurrentGeigerUserScore
         geigerUser.setCurrentGeigerUserScoreNodeAndNodeValue(
             currentUser: geigerUser.getCurrentUserInfo,
