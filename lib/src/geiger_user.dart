@@ -2,12 +2,13 @@ library geiger_dummy_mapper;
 
 import 'dart:developer';
 
-import '../src/geiger_recommendation.dart';
 import 'package:geiger_localstorage/geiger_localstorage.dart';
+import 'package:intl/locale.dart';
 
-import '../src/models/threat_score.dart';
-import '../src/models/threat_recommendation.dart';
+import '../src/geiger_recommendation.dart';
 import '../src/models/threat.dart';
+import '../src/models/threat_recommendation.dart';
+import '../src/models/threat_score.dart';
 import '../src/models/user.dart';
 import 'models/implemented_recommendation.dart';
 
@@ -94,11 +95,16 @@ class GeigerUser {
     userScoreNode.addOrUpdateValue(_geigerScore!);
     _geigerThreatScores =
         NodeValueImpl("threats_score", ThreatScore.convertToJson(threatScores));
+    //german translations
+    _geigerThreatScores!.setValue(
+        ThreatScore.convertToJson(threatScores), Locale.parse('de-de'));
+
     userScoreNode.addOrUpdateValue(_geigerThreatScores!);
     _geigerNumMetrics =
         NodeValueImpl("number_metrics", threatScores.length.toString());
     userScoreNode.addOrUpdateValue(_geigerNumMetrics!);
     _storageController.update(userScoreNode);
+    print(userScoreNode);
   }
 
   /// set GeigerUserRecommendation
