@@ -114,48 +114,6 @@ class GeigerUser {
     return ThreatScore.convertFromJson(threats_score);
   }
 
-  void _setUserNodeValues(Locale? language, List<ThreatScore> threatScores,
-      {String geigerScore: "0"}) {
-    _geigerScore = NodeValueImpl("GEIGER_score", geigerScore);
-    _node!.addOrUpdateValue(_geigerScore!);
-    _geigerThreatScores =
-        NodeValueImpl("threats_score", ThreatScore.convertToJson(threatScores));
-
-    if (language != null) {
-      //translations
-      _geigerThreatScores!
-          .setValue(ThreatScore.convertToJson(threatScores), language);
-    }
-
-    _node!.addOrUpdateValue(_geigerThreatScores!);
-    _geigerNumMetrics =
-        NodeValueImpl("number_metrics", threatScores.length.toString());
-    _node!.addOrUpdateValue(_geigerNumMetrics!);
-
-    _storageController.update(_node!);
-  }
-
-  void _setUserNodeValuesException(
-      Locale? language, Node userScoreNode, threatScores,
-      {String geigerScore: "0"}) {
-    _geigerScore = NodeValueImpl("GEIGER_score", geigerScore);
-    userScoreNode.addOrUpdateValue(_geigerScore!);
-    _geigerThreatScores =
-        NodeValueImpl("threats_score", ThreatScore.convertToJson(threatScores));
-    if (language != null) {
-      //translations
-      _geigerThreatScores!
-          .setValue(ThreatScore.convertToJson(threatScores), language);
-    }
-
-    userScoreNode.addOrUpdateValue(_geigerThreatScores!);
-    _geigerNumMetrics =
-        NodeValueImpl("number_metrics", threatScores.length.toString());
-    userScoreNode.addOrUpdateValue(_geigerNumMetrics!);
-    _storageController.update(userScoreNode);
-    print(userScoreNode);
-  }
-
   /// set GeigerUserRecommendation
   void setCurrentUserGeigerThreatRecommendation(
       {Locale? language, required Threat threat}) {
@@ -169,6 +127,13 @@ class GeigerUser {
 
       NodeValue threatRecomValue = NodeValueImpl("${threat.threatId}",
           ThreatRecommendation.convertToJson(threatRecommendations));
+
+      if (language != null) {
+        //translations
+        threatRecomValue.setValue(
+            ThreatRecommendation.convertToJson(threatRecommendations),
+            language);
+      }
 
       _node!.addOrUpdateValue(threatRecomValue);
       _storageController.update(_node!);
@@ -226,6 +191,48 @@ class GeigerUser {
       log("failed to addOrUpdate implementedRecommendations NodeValue");
       return false;
     }
+  }
+
+  void _setUserNodeValues(Locale? language, List<ThreatScore> threatScores,
+      {String geigerScore: "0"}) {
+    _geigerScore = NodeValueImpl("GEIGER_score", geigerScore);
+    _node!.addOrUpdateValue(_geigerScore!);
+    _geigerThreatScores =
+        NodeValueImpl("threats_score", ThreatScore.convertToJson(threatScores));
+
+    if (language != null) {
+      //translations
+      _geigerThreatScores!
+          .setValue(ThreatScore.convertToJson(threatScores), language);
+    }
+
+    _node!.addOrUpdateValue(_geigerThreatScores!);
+    _geigerNumMetrics =
+        NodeValueImpl("number_metrics", threatScores.length.toString());
+    _node!.addOrUpdateValue(_geigerNumMetrics!);
+
+    _storageController.update(_node!);
+  }
+
+  void _setUserNodeValuesException(
+      Locale? language, Node userScoreNode, threatScores,
+      {String geigerScore: "0"}) {
+    _geigerScore = NodeValueImpl("GEIGER_score", geigerScore);
+    userScoreNode.addOrUpdateValue(_geigerScore!);
+    _geigerThreatScores =
+        NodeValueImpl("threats_score", ThreatScore.convertToJson(threatScores));
+    if (language != null) {
+      //translations
+      _geigerThreatScores!
+          .setValue(ThreatScore.convertToJson(threatScores), language);
+    }
+
+    userScoreNode.addOrUpdateValue(_geigerThreatScores!);
+    _geigerNumMetrics =
+        NodeValueImpl("number_metrics", threatScores.length.toString());
+    userScoreNode.addOrUpdateValue(_geigerNumMetrics!);
+    _storageController.update(userScoreNode);
+    print(userScoreNode);
   }
 
 // ///get list of currentUserThreatScores

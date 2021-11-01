@@ -114,7 +114,8 @@ class GeigerUserTest {
 
       test("getGeigerAggregateThreatScore", () {
         expect(
-            GeigerAggregateScore(_storageController).getGeigerScoreAggregate,
+            GeigerAggregateScore(_storageController)
+                .getGeigerScoreAggregate(language: "de-ch"),
             equals(ThreatScore.convertFromJson(
                 '[{"threat":{"threatId":"dd8fdb40-022d-41e8-ac21-51d5113b308b","name":"phishing"},"score":"25"},{"threat":{"threatId":"w1","name":"malware"},"score":"45"}]')));
       });
