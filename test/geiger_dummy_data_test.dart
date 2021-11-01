@@ -8,10 +8,11 @@ import 'package:geiger_localstorage/geiger_localstorage.dart';
 import 'package:geiger_dummy_data/src/models/threat.dart';
 import 'package:geiger_dummy_data/src/models/threat_recommendation.dart';
 import 'package:test/test.dart';
+import 'package:intl/locale.dart';
 
 void main() {
   StorageController _storageController =
-      GenericController("test", SqliteMapper("./test.db"));
+      GenericController("test", SqliteMapper("./test.sqlite"));
 
   //geigerThreat
   GeigerThreatTest geigerThreatTest = GeigerThreatTest(_storageController);
@@ -20,11 +21,6 @@ void main() {
   //geigerUserTest
   GeigerUserTest geigerUserTest = GeigerUserTest(_storageController);
   geigerUserTest.userGroupTest();
-
-  //aggregateTest
-  GeigerAggregateScoreTest geigerAggregateScoreTest =
-      GeigerAggregateScoreTest(_storageController);
-  geigerAggregateScoreTest.aggregateGroupTest();
 
   //geigerDeviceTest
   GeigerDeviceTest geigerDeviceTest = GeigerDeviceTest(_storageController);
@@ -72,18 +68,20 @@ class GeigerUserTest {
         geigerUser.setCurrentUserInfo = User.convertUserFromJson(
             '{"userId":"25bc506d-938a-4cde-954d-d1f733a90092","firstName":"matthew", "lastName":null, "role":{"roleId":"a39e473b-bc9e-43aa-a210-da85d8c9792b", "name":null}}');
 
-        //set
-        GeigerAggregateScore(_storageController).setGeigerScoreAggregate(
-            threatScores: ThreatScore.convertFromJson(
-                '[{"threat":{"threatId":"dd8fdb40-022d-41e8-ac21-51d5113b308b","name":"phishing"},"score":"25"},{"threat":{"threatId":"w1","name":"malware"},"score":"45"}]'),
-            currentUser: GeigerUser(_storageController).getCurrentUserInfo);
-
         //setCurrentGeigerUserScore
-        geigerUser.setCurrentGeigerUserScoreNodeAndNodeValue(
+        geigerUser.setCurrentGeigerUserScore(
+            language: Locale.parse('de-ch'),
             currentUser: geigerUser.getCurrentUserInfo,
             threatScores: ThreatScore.convertFromJson(
                 '[{"threat":{"threatId":"dd8fdb40-022d-41e8-ac21-51d5113b308b","name":"phishing"},"score":"25"}]'),
             geigerScore: "90");
+
+        //setAggregate
+        geigerUser.setGeigerScoreAggregate(
+            language: Locale.parse("de-ch"),
+            threatScores: ThreatScore.convertFromJson(
+                '[{"threat":{"threatId":"dd8fdb40-022d-41e8-ac21-51d5113b308b","name":"phishing"},"score":"25"},{"threat":{"threatId":"w1","name":"malware"},"score":"45"}]'),
+            currentUser: GeigerUser(_storageController).getCurrentUserInfo);
 
         //set recommendations
         GeigerRecommendation(_storageController).setGlobalRecommendationsNode =
@@ -91,8 +89,9 @@ class GeigerUserTest {
                 '[{"recommendationId":"123rec","recommendationType":"user", "relatedThreatsWeight":[{"threat":{"threatId":"t1","name":"phishing"},"weight":"High"},{"threat":{"threatId":"t2","name":"malware"},"weight":"medium"}],"description":{"shortDescription":"Email filtering","longDescription":"very long"}},{"recommendationId":"124rec","recommendationType":"device", "relatedThreatsWeight":[{"threat":{"threatId":"t3","name":"phishing web"},"weight":"High"},{"threat":{"threatId":"t2","name":"malware"},"weight":"Low"}],"description":{"shortDescription":"cyber"}}]');
 
         //setGeigerUserRecommendation
-        geigerUser.setCurrentUserGeigerThreatRecommendation =
-            Threat(threatId: "t2", name: "malware");
+        geigerUser.setCurrentUserGeigerThreatRecommendation(
+            language: Locale.parse("de-ch"),
+            threat: Threat(threatId: "t2", name: "malware"));
       });
 
       test("getCurrentUserInfo", () {
@@ -106,10 +105,24 @@ class GeigerUserTest {
       test("getCurrentUserGeigerScore", () {
         expect(geigerUser.getCurrentGeigerUserScore, equals("90"));
       });
+      test("getCurrentUserThreat", () {
+        expect(
+            geigerUser.getGeigerScoreUserThreatScore(language: "fr"),
+            equals(ThreatScore.convertFromJson(
+                '[{"threat":{"threatId":"dd8fdb40-022d-41e8-ac21-51d5113b308b","name":"phishing"}, "score":"25"}]')));
+      });
+
+      test("getGeigerAggregateThreatScore", () {
+        expect(
+            GeigerAggregateScore(_storageController).getGeigerScoreAggregate,
+            equals(ThreatScore.convertFromJson(
+                '[{"threat":{"threatId":"dd8fdb40-022d-41e8-ac21-51d5113b308b","name":"phishing"},"score":"25"},{"threat":{"threatId":"w1","name":"malware"},"score":"45"}]')));
+      });
 
       test("getCurrentUserThreatRecommendation", () {
         expect(
             geigerUser.getCurrentUserGeigerThreatRecommendation(
+                language: "de-ch",
                 threat: Threat(threatId: "t2", name: "malware")),
             equals(ThreatRecommendation.convertFromJson(
                 '[{"recommendationId":"123rec", "threatWeight":{"threat":{"threatId":"t2","name":"malware"}, "weight":"medium" }, "descriptionShortLong":{"shortDescription":"Email filtering", "longDescription":"very long"}}]')));
@@ -122,31 +135,6 @@ class GeigerUserTest {
             .recommendationId;
         expect(geigerUser.setUserImplementedRecommendation(recommendationId: r),
             equals(true));
-      });
-    });
-  }
-}
-
-class GeigerAggregateScoreTest {
-  StorageController _storageController;
-
-  GeigerAggregateScoreTest(this._storageController);
-
-  void aggregateGroupTest() {
-    group("GeigerAggregateGroup", () {
-      setUp(() {
-        //set
-        GeigerAggregateScore(_storageController).setGeigerScoreAggregate(
-            threatScores: ThreatScore.convertFromJson(
-                '[{"threat":{"threatId":"dd8fdb40-022d-41e8-ac21-51d5113b308b","name":"phishing"},"score":"25"},{"threat":{"threatId":"w1","name":"malware"},"score":"45"}]'),
-            currentUser: GeigerUser(_storageController).getCurrentUserInfo);
-      });
-
-      test("getGeigerAggregateThreatScore", () {
-        expect(
-            GeigerAggregateScore(_storageController).getGeigerScoreAggregate,
-            equals(ThreatScore.convertFromJson(
-                '[{"threat":{"threatId":"dd8fdb40-022d-41e8-ac21-51d5113b308b","name":"phishing"},"score":"25"},{"threat":{"threatId":"w1","name":"malware"},"score":"45"}]')));
       });
     });
   }
