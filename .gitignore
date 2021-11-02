@@ -10,3 +10,4 @@
 *.part
 *.db
 *.idea
+*.sqlite
