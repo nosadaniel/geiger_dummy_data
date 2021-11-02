@@ -7,14 +7,13 @@ name: Dart
 
 on:
   push:
-    branches: [ main, development ]
+    branches: [development ]
   pull_request:
-    branches: [ main, development ]
+    branches: [development ]
 
 jobs:
-  build:
-    runs-on: macos-latest
-
+  test:
+    runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
 
@@ -26,12 +25,6 @@ jobs:
 
       - name: Install dependencies
         run: dart pub get
-
-      # Uncomment this step to verify the use of 'dart format' on each commit.
-      # - name: Verify formatting
-      #   run: dart format --output=none --set-exit-if-changed .
-
-      # Consider passing '--fatal-infos' for slightly stricter analysis.
       - name: Analyze project source
         run: dart analyze
 
@@ -40,3 +33,25 @@ jobs:
       # want to change this to 'flutter test'.
       - name: Run tests
         run: dart test
+  deployment:
+    runs-on: ubuntu-latest
+    container:
+      image:  google/dart:latest
+    needs: test
+    if: github.ref == 'refs/heads/main'
+    steps:
+    - uses: actions/checkout@v1
+    - name: Setup credentials
+      run: | 
+        mkdir -p ~/.pub-cache 
+        cat <<EOF > ~/.pub-cache/credentials.json
+        {
+          "accessToken":"${{ secrets.OAUTH_ACCESS_TOKEN }}",
+          "refreshToken":"${{ secrets.OAUTH_REFRESH_TOKEN }}",
+          "tokenEndpoint":"https://accounts.google.com/o/oauth2/token",
+          "scopes": [ "openid", "https://www.googleapis.com/auth/userinfo.email" ],
+          "expiration": 1635874385010
+        }
+        EOF
+    - name: Publish package
+      run: pub publish -f
