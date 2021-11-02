@@ -17,7 +17,7 @@ export 'src/models/describe_short_long.dart';
 export 'src/geiger_user.dart';
 export 'src/geiger_device.dart';
 export 'src/geiger_threat.dart';
-export 'src/geiger_aggregate_score.dart';
+
 export 'src/geiger_recommendation.dart';
 
 export '/src/constant/constant.dart';

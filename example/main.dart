@@ -17,7 +17,7 @@ void main() {
   // return a List of Threat object containing threatId and name.
   List<Threat> getThreatInfo() {
     try {
-      return _geigerThreat.getThreats;
+      return _geigerThreat.getThreats();
     } catch (e) {
       //threat Json format  '[{"threatId": "t1", name":"phishing"},{"threatId":"t2","name":"malware"}]'
       //Threat to convert your json to Threat object
@@ -26,31 +26,31 @@ void main() {
           Threat.convertFromJson('[{"name":"phishing"},{"name":"malware"}]');
 
       //store threat in :Global:threats:
-      _geigerThreat.setGlobalThreatsNode = threatData;
+      _geigerThreat.setGlobalThreatsNode(threats: threatData);
 
-      return _geigerThreat.getThreats;
+      return _geigerThreat.getThreats();
     }
   }
 
   //store and retrieve currentUserInfo from :Local "currentUser" NodeValue
   User getCurrentUser() {
     try {
-      return _geigerUser.getCurrentUserInfo;
+      return _geigerUser.getUserInfo;
     } catch (e) {
       //set current user info
       User userData = User.convertUserFromJson(
           '{"firstName":"John", "lastName":"Doe", "role":{ "name":"CEO"}}');
 
       //store current user info
-      _geigerUser.setCurrentUserInfo = userData;
-      return _geigerUser.getCurrentUserInfo;
+      _geigerUser.setUserInfo = userData;
+      return _geigerUser.getUserInfo;
     }
   }
 
   //store  and retrieve currentDeviceInfo from :Local "currentDeviceNew NodeValue
   Device getCurrentDevice() {
     try {
-      return _geigerDevice.getCurrentDeviceInfo;
+      return _geigerDevice.getDeviceInfo;
     } catch (e) {
       //set current device info
       // format
@@ -59,16 +59,16 @@ void main() {
 
       //store current user info
       _geigerDevice.setCurrentDeviceInfo = deviceData;
-      return _geigerDevice.getCurrentDeviceInfo;
+      return _geigerDevice.getDeviceInfo;
     }
   }
 
   // display terminal threat info
-  print(getThreatInfo());
+  print("Threats: ${getThreatInfo()}");
 
   // display current user info in terminal
-  print(getCurrentUser());
+  print("Current User: ${getCurrentUser()}");
 
   //display current device info in terminal
-  print(getCurrentDevice());
+  print("Current Device: ${getCurrentDevice()}");
 }

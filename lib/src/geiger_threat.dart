@@ -3,22 +3,27 @@ library geiger_dummy_data;
 import 'dart:developer';
 
 import 'package:geiger_localstorage/geiger_localstorage.dart';
+import 'package:intl/locale.dart';
 
 import '../src/models/threat.dart';
 
+/// <p>Grant access to methods relating threat.</p>
+/// @param storageController
 class GeigerThreat {
   StorageController _storageController;
   GeigerThreat(this._storageController);
 
   Node? _node;
 
-  /// set all threat in Global:threats node
-  void set setGlobalThreatsNode(List<Threat> threats) {
+  /// <p> set all threat in Global:threats node</p>
+  /// @param optional language as locale
+  /// @param list of threat object
+  void setGlobalThreatsNode({Locale? language, required List<Threat> threats}) {
     try {
       for (Threat threat in threats) {
         _node = _storageController.get(':Global:threats:${threat.threatId}');
         //create a NodeValue
-        _setThreatsNodeValue(threat);
+        _setThreatsNodeValue(language, threat);
       }
     } on StorageException {
       //log(":Global:threats not found");
@@ -30,13 +35,14 @@ class GeigerThreat {
         //create :Global:threats:$threatId
         _storageController.addOrUpdate(threatIdNode);
         //create a NodeValue
-        _setThreatsNodeValueException(threat, threatIdNode);
+        _setThreatsNodeValueException(language, threat, threatIdNode);
       }
     }
   }
 
-  ///from return list of threats from localStorage
-  List<Threat> get getThreats {
+  ///@param optional language as string
+  ///@return  list of threats from localStorage
+  List<Threat> getThreats({String language: "en"}) {
     List<Threat> t = [];
     _node = _storageController.get(":Global:threats");
 
@@ -45,22 +51,32 @@ class GeigerThreat {
       Node threatNode = _storageController.get(":Global:threats:$threatId");
       t.add(Threat(
           threatId: threatId,
-          name: threatNode.getValue("name")!.getValue("en").toString()));
+          name: threatNode.getValue("name")!.getValue(language).toString()));
     }
     return t;
   }
 
-  void _setThreatsNodeValue(Threat threat) {
+  void _setThreatsNodeValue(Locale? language, Threat threat) {
     //create a NodeValue
     NodeValue threatNodeValueName = NodeValueImpl("name", threat.name);
+    //translations
+    if (language != null) {
+      threatNodeValueName.setValue(threat.name, language);
+    }
     // add NodeValue to threatChildNode
     _node!.addOrUpdateValue(threatNodeValueName);
     _storageController.update(_node!);
   }
 
-  void _setThreatsNodeValueException(Threat threat, Node threatIdNode) {
+  void _setThreatsNodeValueException(
+      Locale? language, Threat threat, Node threatIdNode) {
     //create a NodeValue
     NodeValue threatNodeValueName = NodeValueImpl("name", threat.name);
+    //translations
+    if (language != null) {
+      threatNodeValueName.setValue(threat.name, language);
+    }
+
     // add NodeValue to threatChildNode
     threatIdNode.addOrUpdateValue(threatNodeValueName);
     _storageController.update(threatIdNode);

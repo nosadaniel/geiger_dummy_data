@@ -4,6 +4,7 @@ import 'dart:developer';
 
 import '/src/models/implemented_recommendation.dart';
 import 'package:geiger_localstorage/geiger_localstorage.dart';
+import 'package:intl/locale.dart';
 
 import '../geiger_dummy_data.dart';
 import '../src/models/device.dart';
@@ -11,7 +12,8 @@ import '../src/models/threat_score.dart';
 import '../src/models/threat.dart';
 import '../src/geiger_recommendation.dart';
 
-///device Node
+/// <p>Grant access to methods relating device.</p>
+/// @param storageController
 class GeigerDevice {
   StorageController _storageController;
   GeigerDevice(this._storageController);
@@ -23,7 +25,10 @@ class GeigerDevice {
   NodeValue? _geigerThreatScores;
   NodeValue? _geigerNumMetrics;
 
-  /// set currentDeviceInfo in currentDevice NodeValue key in :Local
+  /// <p>set deviceInfo in currentDeviceNew NodeValue in :Local</p>
+  /// @param user object
+  /// @throws :Local not found on StorageException
+
   void set setCurrentDeviceInfo(Device currentDeviceInfo) {
     try {
       _node = _storageController.get(":Local");
@@ -33,29 +38,39 @@ class GeigerDevice {
           "currentDeviceNew", Device.convertDeviceToJson(currentDeviceInfo));
       _node!.addOrUpdateValue(localNodeValue!);
       _storageController.update(_node!);
-    } catch (e) {
-      print(":Local not found");
+    } on StorageException {
+      throw Exception(":Local not found");
     }
   }
 
-  /// return CurrentDevice from currentDeviceNew NodeValue key from :Local
-  Device get getCurrentDeviceInfo {
-    _node = _storageController.get(":Local");
+  ///<p> get current device info from :local value 'currentDeviceNew'
+  /// @return device object
+  /// @throws :Local not found on StorageException
+  Device get getDeviceInfo {
+    try {
+      _node = _storageController.get(":Local");
 
-    String currentDevice =
-        _node!.getValue("currentDeviceNew")!.getValue("en").toString();
-    return Device.convertDeviceFromJson(currentDevice);
+      String currentDevice =
+          _node!.getValue("currentDeviceNew")!.getValue("en").toString();
+      return Device.convertDeviceFromJson(currentDevice);
+    } on StorageException {
+      throw Exception("Node :Local not found");
+    }
   }
 
-  /// set GeigerScoreCurrentDeviceNodeAndNodeValue
-  void setCurrentGeigerScoreDeviceNodeAndNodeValue(
-      {required Device currentDevice,
+  /// <p>set GeigerDeviceScore. </p>
+  /// @param option language as locale
+  /// @param list of threatScore object
+  /// @param optional geigerScore as string
+  void setGeigerScoreDevice(
+      {Locale? language,
       required List<ThreatScore> threatScores,
       String geigerScore: "0"}) {
+    Device currentDevice = getDeviceInfo;
     try {
       _node = _storageController
           .get(":Devices:${currentDevice.deviceId}:gi:data:GeigerScoreDevice");
-      _setDeviceNodeValues(threatScores, geigerScore: geigerScore);
+      _setDeviceNodeValues(language, threatScores, geigerScore: geigerScore);
       //print(_node);
     } on StorageException {
       Node deviceNode = NodeImpl("${currentDevice.deviceId}", ":Devices");
@@ -67,35 +82,51 @@ class GeigerDevice {
       Node deviceScoreNode = NodeImpl(
           "GeigerScoreDevice", ":Devices:${currentDevice.deviceId}:gi:data");
       _storageController.add(deviceScoreNode);
-      _setDeviceNodeValuesException(deviceScoreNode, threatScores, geigerScore);
+      _setDeviceNodeValuesException(
+          language, deviceScoreNode, threatScores, geigerScore);
     }
   }
 
-  ///get list of currentDeviceGeigerThreatScores
-  List<ThreatScore> get getCurrentDeviceGeigerThreatScores {
-    Device currentDevice = getCurrentDeviceInfo;
-    _node = _storageController
-        .get(":Devices:${currentDevice.deviceId}:gi:data:GeigerScoreDevice");
+  /// @param optional language as string
+  /// @return GeigerScore as String  from GeigerScoreDevice Node
+  /// @throw Node not found on StorageException
+  String getGeigerScoreDevice({String language: "en"}) {
+    try {
+      Device currentDevice = getDeviceInfo;
 
-    String threats_score =
-        _node!.getValue("threats_score")!.getValue("en").toString();
-    return ThreatScore.convertFromJson(threats_score);
+      _node = _storageController
+          .get(":Devices:${currentDevice.deviceId}:gi:data:GeigerScoreDevice");
+
+      String geigerScore =
+          _node!.getValue("GEIGER_score")!.getValue(language).toString();
+      return geigerScore;
+    } on StorageException {
+      throw Exception("Node not found");
+    }
   }
 
-  ///get CurrentGeigerDeviceScore
-  String get getCurrentGeigerDeviceScore {
-    Device currentDevice = getCurrentDeviceInfo;
-    _node = _storageController
-        .get(":Devices:${currentDevice.deviceId}:gi:data:GeigerScoreDevice");
+  /// @param optional language as string
+  /// @return list of threatScore object from GeigerScoreDevice
+  /// @throw node not found on StorageException
+  List<ThreatScore> getGeigerDeviceThreatScores({String language: "en"}) {
+    try {
+      Device currentDevice = getDeviceInfo;
+      _node = _storageController
+          .get(":Devices:${currentDevice.deviceId}:gi:data:GeigerScoreDevice");
 
-    String geigerScore =
-        _node!.getValue("GEIGER_score")!.getValue("en").toString();
-    return geigerScore;
+      String threats_score =
+          _node!.getValue("threats_score")!.getValue(language).toString();
+      return ThreatScore.convertFromJson(threats_score);
+    } on StorageException {
+      throw Exception("Node not found");
+    }
   }
 
-  /// set GeigerDeviceRecommendation
-  void set setCurrentDeviceGeigerRecommendation(Threat threat) {
-    Device currentDevice = getCurrentDeviceInfo;
+  /// <p>set DeviceRecommendation</p>
+  /// @param optional language as locale
+  /// @param threat object
+  void setDeviceRecommendation({Locale? language, required Threat threat}) {
+    Device currentDevice = getDeviceInfo;
     List<ThreatRecommendation> threatRecommendations =
         GeigerRecommendation(_storageController).getThreatRecommendation(
             threat: threat, recommendationType: "device");
@@ -106,37 +137,61 @@ class GeigerDevice {
       NodeValue threatRecomValue = NodeValueImpl("${threat.threatId}",
           ThreatRecommendation.convertToJson(threatRecommendations));
 
+      if (language != null) {
+        //translations
+        threatRecomValue.setValue(
+            ThreatRecommendation.convertToJson(threatRecommendations),
+            language);
+      }
+
       _node!.addOrUpdateValue(threatRecomValue);
       _storageController.update(_node!);
     } on StorageException {
-      Node userRecommendationNode = NodeImpl(
+      Node deviceRecommendationNode = NodeImpl(
           "recommendations", ":Devices:${currentDevice.deviceId}:gi:data");
-      _storageController.add(userRecommendationNode);
+      _storageController.add(deviceRecommendationNode);
 
       NodeValue threatRecomValue = NodeValueImpl("${threat.threatId}",
           ThreatRecommendation.convertToJson(threatRecommendations));
 
-      userRecommendationNode.addOrUpdateValue(threatRecomValue);
-      _storageController.update(userRecommendationNode);
+      if (language != null) {
+        //translations
+        threatRecomValue.setValue(
+            ThreatRecommendation.convertToJson(threatRecommendations),
+            language);
+      }
+
+      deviceRecommendationNode.addOrUpdateValue(threatRecomValue);
+      _storageController.update(deviceRecommendationNode);
     }
   }
 
-  List<ThreatRecommendation> getCurrentDeviceThreatRecommendation(
-      {required Threat threat}) {
-    Device currentDevice = getCurrentDeviceInfo;
-    _node = _storageController
-        .get(":Devices:${currentDevice.deviceId}:gi:data:recommendations");
-    String threatRecommendations =
-        _node!.getValue("${threat.threatId}")!.getValue("en").toString();
+  ///<p>get deviceRecommendation</p>
+  ///@param option language as string
+  ///@param threat object
+  ///@return list of threatRecommendation object
+  List<ThreatRecommendation> getDeviceThreatRecommendation(
+      {String language: "en", required Threat threat}) {
+    try {
+      Device currentDevice = getDeviceInfo;
+      _node = _storageController
+          .get(":Devices:${currentDevice.deviceId}:gi:data:recommendations");
+      String threatRecommendations =
+          _node!.getValue("${threat.threatId}")!.getValue(language).toString();
 
-    return ThreatRecommendation.convertFromJson(threatRecommendations);
+      return ThreatRecommendation.convertFromJson(threatRecommendations);
+    } on StorageException {
+      throw Exception("NODE NOT FOUND");
+    }
   }
 
-  /// set ImplementedRecommendation for device
+  ///<p> set device ImplementedRecommendation
+  ///@param recommendationId as string
+  ///@return bool
   bool setDeviceImplementedRecommendation({required String recommendationId}) {
     List<ImplementedRecommendation> implementedRecommendations = [];
     //get currentDevice info
-    Device currentDevice = getCurrentDeviceInfo;
+    Device currentDevice = getDeviceInfo;
     try {
       _node = _storageController
           .get(":Devices:${currentDevice.deviceId}:gi:data:GeigerScoreDevice");
@@ -155,12 +210,19 @@ class GeigerDevice {
     }
   }
 
-  void _setDeviceNodeValues(List<ThreatScore> threatScores,
+  void _setDeviceNodeValues(Locale? language, List<ThreatScore> threatScores,
       {String geigerScore: "0"}) {
     _geigerScore = NodeValueImpl("GEIGER_score", geigerScore);
     _node!.addOrUpdateValue(_geigerScore!);
     _geigerThreatScores =
         NodeValueImpl("threats_score", ThreatScore.convertToJson(threatScores));
+
+    if (language != null) {
+      //translations
+      _geigerThreatScores!
+          .setValue(ThreatScore.convertToJson(threatScores), language);
+    }
+
     _node!.addOrUpdateValue(_geigerThreatScores!);
     _geigerNumMetrics =
         NodeValueImpl("number_metrics", threatScores.length.toString());
@@ -169,12 +231,19 @@ class GeigerDevice {
     _storageController.update(_node!);
   }
 
-  void _setDeviceNodeValuesException(Node deviceScoreNode,
+  void _setDeviceNodeValuesException(Locale? language, Node deviceScoreNode,
       List<ThreatScore> threatScores, String geigerScore) {
     _geigerScore = NodeValueImpl("GEIGER_score", geigerScore);
     deviceScoreNode.addOrUpdateValue(_geigerScore!);
     _geigerThreatScores =
         NodeValueImpl("threats_score", ThreatScore.convertToJson(threatScores));
+
+    if (language != null) {
+      //translations
+      _geigerThreatScores!
+          .setValue(ThreatScore.convertToJson(threatScores), language);
+    }
+
     deviceScoreNode.addOrUpdateValue(_geigerThreatScores!);
     _geigerNumMetrics =
         NodeValueImpl("number_metrics", threatScores.length.toString());

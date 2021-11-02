@@ -1,3 +1,10 @@
+# 0.2.2
+* update geiger_localstorage to 0.5.6
+* added locale
+* added exception handling for getters 
+* added google standard comment
+
+
 # 0.2.1
 * added optional parameter for functions except set for functions(dart don't allow it)
 
@@ -10,7 +17,6 @@
 
 
 ## 0.0.1
-
 * First Initial release
 
 
