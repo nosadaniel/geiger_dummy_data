@@ -1,6 +1,8 @@
+##0.2.4
+- fix bug: 
+
 ##0.2.3
 - fix bug: Can't retrieved node in geigerScoreUser Node 
-
 
 ## 0.2.2
 - update geiger_local storage to 0.5.6

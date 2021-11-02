@@ -248,6 +248,7 @@ class GeigerDevice {
     _geigerNumMetrics =
         NodeValueImpl("number_metrics", threatScores.length.toString());
     deviceScoreNode.addOrUpdateValue(_geigerNumMetrics!);
+    _storageController.update(deviceScoreNode);
   }
 }
 //Todo
