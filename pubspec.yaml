@@ -2,7 +2,7 @@ name: geiger_dummy_data
 description: >-
   A dart package that provides functionality for easy propagation of data to the Geiger localStorage for testing purposes.
 
-version: 0.2.2
+version: 0.2.3
 repository: https://github.com/nosadaniel/geiger_dummy_data
 documentation: https://github.com/cyber-geiger/toolbox-indicator/tree/development-java
 

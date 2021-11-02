@@ -1,3 +1,7 @@
+##0.2.3
+- fix bug: Can't retrieved node in geigerScoreUser Node 
+
+
 ## 0.2.2
 - update geiger_local storage to 0.5.6
 - added locale
@@ -14,7 +18,7 @@
 - Added a gitHub repo link
 - initial alpha release
 
-# 0.0.1
+## 0.0.1
 - First Initial release
 
 
