@@ -5,12 +5,7 @@
 
 name: Dart
 
-on:
-  push:
-    branches: [development ]
-  pull_request:
-    branches: [development ]
-
+on: [push, pull_request]
 jobs:
   test:
     runs-on: ubuntu-latest
