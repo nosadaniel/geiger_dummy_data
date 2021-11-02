@@ -12,7 +12,8 @@ environment:
 
 dependencies:
   equatable: ^2.0.3
-  geiger_localstorage: 0.5.6
+  geiger_localstorage: ^0.5.6
+  intl: ^0.17.0
   json_annotation: ^4.3.0
   uuid: ^3.0.5
 
