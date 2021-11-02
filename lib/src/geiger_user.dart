@@ -33,7 +33,6 @@ class GeigerUser {
           NodeValueImpl("currentUser", User.convertUserToJson(currentUserInfo));
       _node!.addOrUpdateValue(localNodeValue);
       _storageController.update(_node!);
-      log(_node!.toString());
     } on StorageException {
       throw Exception(":Local not found");
     }
@@ -99,6 +98,15 @@ class GeigerUser {
           .get(":Users:${currentUser.userId}:gi:data:GeigerScoreAggregate");
       _setUserNodeValues(language, threatScores, geigerScore: geigerScore);
     } on StorageException {
+      Node userNode = NodeImpl("${currentUser.userId}", ":Users");
+      _storageController.addOrUpdate(userNode);
+
+      Node giNode = NodeImpl("gi", ":Users:${currentUser.userId}");
+      _storageController.addOrUpdate(giNode);
+
+      Node nodeData = NodeImpl("data", ":Users:${currentUser.userId}:gi");
+      _storageController.addOrUpdate(nodeData);
+
       Node aggScoreNode = NodeImpl(
           "GeigerScoreAggregate", ":Users:${currentUser.userId}:gi:data");
       _storageController.add(aggScoreNode);
