@@ -323,7 +323,7 @@ class GeigerUser {
 
 //Todo
 
-// write throw exception for all getters if object is not
+// write throw custom exception for all getters if object is not
 // found
 
 //add the following line of code below to geiger-toolbox ui

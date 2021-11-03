@@ -1,13 +1,12 @@
 import 'package:geiger_dummy_data/geiger_dummy_data.dart';
 import 'package:geiger_dummy_data/src/geiger_recommendation.dart';
 import 'package:geiger_dummy_data/src/geiger_user.dart';
-
 import 'package:geiger_dummy_data/src/models/recommendation.dart';
-import 'package:geiger_localstorage/geiger_localstorage.dart';
 import 'package:geiger_dummy_data/src/models/threat.dart';
 import 'package:geiger_dummy_data/src/models/threat_recommendation.dart';
-import 'package:test/test.dart';
+import 'package:geiger_localstorage/geiger_localstorage.dart';
 import 'package:intl/locale.dart';
+import 'package:test/test.dart';
 
 void main() {
   StorageController _storageController =
@@ -244,7 +243,3 @@ class GeigerRecommendationTest {
     });
   }
 }
-
-//Todo
-//implemented user recommendations in GeigerScoreUser Node
-//implementedRecommendations NodeValue and store implemented recommendationId in the nodevalue
