@@ -149,7 +149,7 @@ class GeigerDeviceTest {
       setUp(() {
         // set currentDevice
         geigerDevice.setCurrentDeviceInfo = Device.convertDeviceFromJson(
-            '{"owner":${User.convertUserToJson(geigerUser.getUserInfo)},"deviceId":"d62f5015-c790-48ae-83d0-2ae2f4a073ce","name":"Iphone","type":"mobile"}');
+            '{"owner":${User.convertUserToJson(geigerUser.getUserInfo!)},"deviceId":"d62f5015-c790-48ae-83d0-2ae2f4a073ce","name":"Iphone","type":"mobile"}');
 
         // set list of threats for currentDevice
         geigerDevice.setGeigerScoreDevice(
@@ -171,7 +171,7 @@ class GeigerDeviceTest {
         expect(
             geigerDevice.getDeviceInfo,
             equals(Device.convertDeviceFromJson(
-                '{"owner":${User.convertUserToJson(geigerUser.getUserInfo)},"deviceId":"d62f5015-c790-48ae-83d0-2ae2f4a073ce","name":"Iphone","type":"mobile"}')));
+                '{"owner":${User.convertUserToJson(geigerUser.getUserInfo!)},"deviceId":"d62f5015-c790-48ae-83d0-2ae2f4a073ce","name":"Iphone","type":"mobile"}')));
       });
 
       test("getGeigerScoreDeviceThreatScore", () {

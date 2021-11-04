@@ -33,7 +33,7 @@ void main() {
   }
 
   //store and retrieve currentUserInfo from :Local "currentUser" NodeValue
-  User getCurrentUser() {
+  User? getCurrentUser() {
     try {
       return _geigerUser.getUserInfo;
     } catch (e) {
@@ -55,7 +55,7 @@ void main() {
       //set current device info
       // format
       Device deviceData = Device.convertDeviceFromJson(
-          '{"owner":${User.convertUserToJson(getCurrentUser())},"name":"Iphone","type":"mobile"}');
+          '{"owner":${User.convertUserToJson(getCurrentUser()!)},"name":"Iphone","type":"mobile"}');
 
       //store current user info
       _geigerDevice.setCurrentDeviceInfo = deviceData;
