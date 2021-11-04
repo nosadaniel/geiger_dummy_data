@@ -48,7 +48,7 @@ void main() {
   }
 
   //store  and retrieve currentDeviceInfo from :Local "currentDeviceNew NodeValue
-  Device getCurrentDevice() {
+  Device? getCurrentDevice() {
     try {
       return _geigerDevice.getDeviceInfo;
     } catch (e) {
