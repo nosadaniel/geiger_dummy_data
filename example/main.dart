@@ -7,11 +7,11 @@ void main() {
       GenericController("Example", SqliteMapper("./example.db"));
 
   //set and get threat
-  GeigerThreat _geigerThreat = GeigerThreat(_storageController);
+  ThreatNode _geigerThreat = ThreatNode(_storageController);
   //set and get current user
-  GeigerUser _geigerUser = GeigerUser(_storageController);
+  UserNode _geigerUser = UserNode(_storageController);
   //set and get current device
-  GeigerDevice _geigerDevice = GeigerDevice(_storageController);
+  DeviceNode _geigerDevice = DeviceNode(_storageController);
 
   //store and retrieve threats from :Global:threats
   // return a List of Threat object containing threatId and name.
