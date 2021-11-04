@@ -11,6 +11,7 @@ import '../src/models/device.dart';
 import '../src/models/threat_score.dart';
 import '../src/models/threat.dart';
 import '../src/recommendation_node.dart';
+import 'models/geiger_score_threats.dart';
 
 /// <p>Grant access to methods relating device.</p>
 /// @param storageController
@@ -117,16 +118,22 @@ class DeviceNode {
   /// @param optional language as string
   /// @return list of threatScore object from GeigerScoreDevice
   /// @throw node not found on StorageException
-  List<ThreatScore> getGeigerDeviceThreatScores({String language: "en"}) {
+  GeigerScoreThreats getGeigerScoreDeviceThreatScores({String language: "en"}) {
     if (getDeviceInfo != null) {
       Device currentDevice = getDeviceInfo!;
       try {
         _node = _storageController.get(
             ":Devices:${currentDevice.deviceId}:gi:data:GeigerScoreDevice");
+        String geigerScore =
+            _node!.getValue("GEIGER_score")!.getValue(language).toString();
 
         String threats_score =
             _node!.getValue("threats_score")!.getValue(language).toString();
-        return ThreatScore.convertFromJson(threats_score);
+        List<ThreatScore> _threatScores =
+            ThreatScore.convertFromJson(threats_score);
+
+        return GeigerScoreThreats(
+            threatScores: _threatScores, geigerScore: geigerScore);
       } on StorageException {
         throw Exception("Node not found");
       }

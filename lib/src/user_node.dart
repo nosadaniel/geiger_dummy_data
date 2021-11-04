@@ -2,6 +2,7 @@ library geiger_dummy_mapper;
 
 import 'dart:developer';
 
+import 'package:geiger_dummy_data/src/models/geiger_score_threats.dart';
 import 'package:geiger_localstorage/geiger_localstorage.dart';
 import 'package:intl/locale.dart';
 
@@ -127,7 +128,7 @@ class UserNode {
   /// @param optional language as string
   /// @return GeigerScore as String  from GeigerScoreUser Node
   /// @throw Node not found on StorageException
-  String getGeigerScoreUser({String language: "en"}) {
+  /*String getGeigerScoreUser({String language: "en"}) {
     if (getUserInfo != null) {
       User currentUser = getUserInfo!;
       try {
@@ -143,20 +144,28 @@ class UserNode {
     } else {
       throw Exception("currentUser is null ");
     }
-  }
+  }*/
 
   /// @param optional language as string
   /// @return list of threatScore object from GeigerScoreUser
-  List<ThreatScore> getGeigerScoreUserThreatScores({String language: "en"}) {
+  GeigerScoreThreats getGeigerScoreUserThreatScores({String language: "en"}) {
     if (getUserInfo != null) {
       User currentUser = getUserInfo!;
       try {
         _node = _storageController
             .get(":Users:${currentUser.userId}:gi:data:GeigerScoreUser");
 
+        String geigerScore =
+            _node!.getValue("GEIGER_score")!.getValue(language).toString();
+
         String threats_score =
             _node!.getValue("threats_score")!.getValue(language).toString();
-        return ThreatScore.convertFromJson(threats_score);
+
+        List<ThreatScore> _threatScores =
+            ThreatScore.convertFromJson(threats_score);
+
+        return GeigerScoreThreats(
+            threatScores: _threatScores, geigerScore: geigerScore);
       } on StorageException {
         throw Exception("NODE NOT FOUND");
       }
@@ -167,7 +176,7 @@ class UserNode {
 
   /// @return GeigerScoreAggregate as String  from GeigerScoreAggregate Node
   /// @throw Node not found on StorageException
-  String getGeigerScoreAggregate({String language: "en"}) {
+  /*String getGeigerScoreAggregate({String language: "en"}) {
     if (getUserInfo != null) {
       User currentUser = getUserInfo!;
       try {
@@ -183,11 +192,11 @@ class UserNode {
     } else {
       throw Exception("currentUser is null ");
     }
-  }
+  }*/
 
   /// @param optional language as string
   /// @return list of threatScore object from GeigerScoreAggregate
-  List<ThreatScore> getGeigerScoreAggregateThreatScore(
+  GeigerScoreThreats getGeigerScoreAggregateThreatScore(
       {String language: "en"}) {
     if (getUserInfo != null) {
       User currentUser = getUserInfo!;
@@ -195,9 +204,17 @@ class UserNode {
       _node = _storageController
           .get(":Users:${currentUser.userId}:gi:data:GeigerScoreAggregate");
 
-      String threats_score =
+      String geigerScore =
+          _node!.getValue("GEIGER_score")!.getValue(language).toString();
+
+      String threatsScore =
           _node!.getValue("threats_score")!.getValue(language).toString();
-      return ThreatScore.convertFromJson(threats_score);
+
+      List<ThreatScore> _threatScores =
+          ThreatScore.convertFromJson(threatsScore);
+
+      return GeigerScoreThreats(
+          threatScores: _threatScores, geigerScore: geigerScore);
     } else {
       throw Exception("currentUser is null ");
     }

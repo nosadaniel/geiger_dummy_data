@@ -1,4 +1,5 @@
 import 'package:geiger_dummy_data/geiger_dummy_data.dart';
+import 'package:geiger_dummy_data/src/models/geiger_score_threats.dart';
 import 'package:geiger_dummy_data/src/recommendation_node.dart';
 import 'package:geiger_dummy_data/src/user_node.dart';
 import 'package:geiger_dummy_data/src/models/recommendation.dart';
@@ -99,21 +100,22 @@ class GeigerUserTest {
         );
       });
 
-      test("getGeigerScoreUser", () {
-        expect(geigerUser.getGeigerScoreUser(), equals("90"));
-      });
       test("getCurrentUserThreat", () {
         expect(
             geigerUser.getGeigerScoreUserThreatScores(language: "fr"),
-            equals(ThreatScore.convertFromJson(
-                '[{"threat":{"threatId":"dd8fdb40-022d-41e8-ac21-51d5113b308b","name":"phishing"}, "score":"25"}]')));
+            equals(GeigerScoreThreats(
+                threatScores: ThreatScore.convertFromJson(
+                    '[{"threat":{"threatId":"dd8fdb40-022d-41e8-ac21-51d5113b308b","name":"phishing"}, "score":"25"}]'),
+                geigerScore: "90")));
       });
 
       test("getGeigerAggregateThreatScore", () {
         expect(
             geigerUser.getGeigerScoreAggregateThreatScore(language: "de-ch"),
-            equals(ThreatScore.convertFromJson(
-                '[{"threat":{"threatId":"dd8fdb40-022d-41e8-ac21-51d5113b308b","name":"phishing"},"score":"25"},{"threat":{"threatId":"w1","name":"malware"},"score":"45"}]')));
+            equals(GeigerScoreThreats(
+                threatScores: ThreatScore.convertFromJson(
+                    '[{"threat":{"threatId":"dd8fdb40-022d-41e8-ac21-51d5113b308b","name":"phishing"},"score":"25"},{"threat":{"threatId":"w1","name":"malware"},"score":"45"}]'),
+                geigerScore: "0")));
       });
 
       test("getCurrentUserThreatRecommendation", () {
@@ -176,9 +178,11 @@ class GeigerDeviceTest {
 
       test("getGeigerScoreDeviceThreatScore", () {
         expect(
-            geigerDevice.getGeigerDeviceThreatScores(),
-            equals(ThreatScore.convertFromJson(
-                '[{"threat":{"threatId":"5e5eb533-7b81-457c-92bc-76a3acd27cca","name":"phishing"},"score":"25"},{"threat":{"threatId":"83968e5c-7201-4b58-a5d1-efdb85b837e0","name":"malware"},"score":"45"},{"threat":{"threatId":"9e4d4366-4a8e-4c9e-877a-7baccd9d98bf","name":"cyber Attack"},"score":"50"}]')));
+            geigerDevice.getGeigerScoreDeviceThreatScores(),
+            equals(GeigerScoreThreats(
+                threatScores: ThreatScore.convertFromJson(
+                    '[{"threat":{"threatId":"5e5eb533-7b81-457c-92bc-76a3acd27cca","name":"phishing"},"score":"25"},{"threat":{"threatId":"83968e5c-7201-4b58-a5d1-efdb85b837e0","name":"malware"},"score":"45"},{"threat":{"threatId":"9e4d4366-4a8e-4c9e-877a-7baccd9d98bf","name":"cyber Attack"},"score":"50"}]'),
+                geigerScore: "89")));
       });
 
       test("getGeigerScoreDevice", () {
