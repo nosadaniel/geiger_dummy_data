@@ -5,7 +5,7 @@ import 'dart:developer';
 import 'package:geiger_localstorage/geiger_localstorage.dart';
 import 'package:intl/locale.dart';
 
-import '../src/geiger_recommendation.dart';
+import '../src/recommendation_node.dart';
 import '../src/models/threat.dart';
 import '../src/models/threat_recommendation.dart';
 import '../src/models/threat_score.dart';
@@ -14,10 +14,10 @@ import 'models/implemented_recommendation.dart';
 
 /// <p>Grant access to methods relating user.</p>
 /// @param storageController
-class GeigerUser {
+class UserNode {
   StorageController _storageController;
 
-  GeigerUser(this._storageController);
+  UserNode(this._storageController);
   Node? _node;
   NodeValue? _geigerScore;
   NodeValue? _geigerThreatScores;
@@ -210,7 +210,7 @@ class GeigerUser {
     if (getUserInfo != null) {
       User currentUser = getUserInfo!;
       List<ThreatRecommendation> threatRecommendations =
-          GeigerRecommendation(_storageController).getThreatRecommendation(
+          RecommendationNode(_storageController).getThreatRecommendation(
               threat: threat, recommendationType: "user");
       try {
         _node = _storageController

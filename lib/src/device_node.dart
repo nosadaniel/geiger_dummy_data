@@ -10,13 +10,13 @@ import '../geiger_dummy_data.dart';
 import '../src/models/device.dart';
 import '../src/models/threat_score.dart';
 import '../src/models/threat.dart';
-import '../src/geiger_recommendation.dart';
+import '../src/recommendation_node.dart';
 
 /// <p>Grant access to methods relating device.</p>
 /// @param storageController
-class GeigerDevice {
+class DeviceNode {
   StorageController _storageController;
-  GeigerDevice(this._storageController);
+  DeviceNode(this._storageController);
   Node? _node;
 
   NodeValue? localNodeValue;
@@ -142,7 +142,7 @@ class GeigerDevice {
     if (getDeviceInfo != null) {
       Device currentDevice = getDeviceInfo!;
       List<ThreatRecommendation> threatRecommendations =
-          GeigerRecommendation(_storageController).getThreatRecommendation(
+          RecommendationNode(_storageController).getThreatRecommendation(
               threat: threat, recommendationType: "device");
       try {
         _node = _storageController

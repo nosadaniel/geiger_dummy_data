@@ -11,9 +11,9 @@ import '../src/models/threat_weight.dart';
 
 /// <p>Grant access to methods relating recommendation.</p>
 /// @param storageController
-class GeigerRecommendation {
+class RecommendationNode {
   StorageController _storageController;
-  GeigerRecommendation(this._storageController);
+  RecommendationNode(this._storageController);
 
   Node? _node;
 

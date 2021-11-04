@@ -9,9 +9,9 @@ import '../src/models/threat.dart';
 
 /// <p>Grant access to methods relating threat.</p>
 /// @param storageController
-class GeigerThreat {
+class ThreatNode {
   StorageController _storageController;
-  GeigerThreat(this._storageController);
+  ThreatNode(this._storageController);
 
   Node? _node;
 

@@ -1,6 +1,6 @@
 import 'package:geiger_dummy_data/geiger_dummy_data.dart';
-import 'package:geiger_dummy_data/src/geiger_recommendation.dart';
-import 'package:geiger_dummy_data/src/geiger_user.dart';
+import 'package:geiger_dummy_data/src/recommendation_node.dart';
+import 'package:geiger_dummy_data/src/user_node.dart';
 import 'package:geiger_dummy_data/src/models/recommendation.dart';
 import 'package:geiger_dummy_data/src/models/threat.dart';
 import 'package:geiger_dummy_data/src/models/threat_recommendation.dart';
@@ -37,7 +37,7 @@ class GeigerThreatTest {
   GeigerThreatTest(this._storageController);
 
   void threatGroupTest() {
-    GeigerThreat geigerThreat = GeigerThreat(_storageController);
+    ThreatNode geigerThreat = ThreatNode(_storageController);
     group("threatGroupTest", () {
       setUp(() {
         geigerThreat.setGlobalThreatsNode(
@@ -60,7 +60,7 @@ class GeigerUserTest {
   GeigerUserTest(this._storageController);
 
   void userGroupTest() {
-    GeigerUser geigerUser = GeigerUser(_storageController);
+    UserNode geigerUser = UserNode(_storageController);
     group("currentUserGroupTest:", () {
       setUp(() {
         //setCurrentUser
@@ -81,7 +81,7 @@ class GeigerUserTest {
         );
 
         //set recommendations
-        GeigerRecommendation(_storageController).setGlobalRecommendationsNode(
+        RecommendationNode(_storageController).setGlobalRecommendationsNode(
             recommendations: Recommendation.convertFromJSon(
                 '[{"recommendationId":"123rec","recommendationType":"user", "relatedThreatsWeight":[{"threat":{"threatId":"t1","name":"phishing"},"weight":"High"},{"threat":{"threatId":"t2","name":"malware"},"weight":"medium"}],"description":{"shortDescription":"Email filtering","longDescription":"very long"}},{"recommendationId":"124rec","recommendationType":"device", "relatedThreatsWeight":[{"threat":{"threatId":"t3","name":"phishing web"},"weight":"High"},{"threat":{"threatId":"t2","name":"malware"},"weight":"Low"}],"description":{"shortDescription":"cyber"}}]'));
 
@@ -143,8 +143,8 @@ class GeigerDeviceTest {
   GeigerDeviceTest(this._storageController);
 
   void deviceGroupTest() {
-    GeigerDevice geigerDevice = GeigerDevice(_storageController);
-    GeigerUser geigerUser = GeigerUser(_storageController);
+    DeviceNode geigerDevice = DeviceNode(_storageController);
+    UserNode geigerUser = UserNode(_storageController);
     group("GeigerDeviceGroupTest", () {
       setUp(() {
         // set currentDevice
@@ -158,7 +158,7 @@ class GeigerDeviceTest {
                 '[{"threat":{"threatId":"5e5eb533-7b81-457c-92bc-76a3acd27cca","name":"phishing"},"score":"25"},{"threat":{"threatId":"83968e5c-7201-4b58-a5d1-efdb85b837e0","name":"malware"},"score":"45"},{"threat":{"threatId":"9e4d4366-4a8e-4c9e-877a-7baccd9d98bf","name":"cyber Attack"},"score":"50"}]'));
 
         //set global recommendations
-        GeigerRecommendation(_storageController).setGlobalRecommendationsNode(
+        RecommendationNode(_storageController).setGlobalRecommendationsNode(
             recommendations: Recommendation.convertFromJSon(
                 '[{"recommendationId":"123rec","recommendationType":"user", "relatedThreatsWeight":[{"threat":{"threatId":"t1","name":"phishing"},"weight":"High"},{"threat":{"threatId":"t2","name":"malware"},"weight":"Low"}],"description":{"shortDescription":"Email filtering","longDescription":"very long"}},{"recommendationId":"124rec","recommendationType":"device", "relatedThreatsWeight":[{"threat":{"threatId":"t3","name":"phishing web"},"weight":"High"},{"threat":{"threatId":"t2","name":"malware"},"weight":"Low"}],"description":{"shortDescription":"cyber","longDescription":"very long2"}}]'));
 
@@ -214,8 +214,8 @@ class GeigerRecommendationTest {
   GeigerRecommendationTest(this._storageController);
 
   void recommendationGroupTest() {
-    GeigerRecommendation geigerRecommendation =
-        GeigerRecommendation(_storageController);
+    RecommendationNode geigerRecommendation =
+        RecommendationNode(_storageController);
 
     group("RecommendationGroupTest", () {
       setUp(() {
