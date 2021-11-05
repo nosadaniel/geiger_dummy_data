@@ -1,3 +1,6 @@
+##0.2.5
+ - added onBtnPressed method that returns json objects that container:
+    * aggregateInfo, UserScoreInfo, DeviceScoreInfo and recommendationInfo.
 ##0.2.4
 - fix bug: 
 

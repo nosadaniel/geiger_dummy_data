@@ -1,6 +1,7 @@
 library geiger_dummy_data;
 
 import 'dart:convert';
+
 import 'package:geiger_dummy_data/geiger_dummy_data.dart';
 import 'package:geiger_dummy_data/src/geiger_listen.dart';
 import 'package:geiger_dummy_data/src/models/geiger_score_threats.dart';
@@ -21,14 +22,18 @@ class Geiger implements GeigerListen {
 
     List<GeigerScoreThreats> geigerScoreThreats = [];
 
-    //add aggregate,//userScore // deviceScore
-    geigerScoreThreats.add(_userNode.getGeigerScoreAggregateThreatScore());
-    geigerScoreThreats.add(_userNode.getGeigerScoreUserThreatScores());
-    geigerScoreThreats.add(_deviceNode.getGeigerScoreDeviceThreatScores());
-
-    return jsonEncode(GeigerData(
-        geigerScoreThreats: geigerScoreThreats,
-        recommendations: _recommendationNode.getRecommendations));
+    try {
+      //add aggregate,//userScore // deviceScore
+      geigerScoreThreats.add(_userNode.getGeigerScoreAggregateThreatScore());
+      geigerScoreThreats.add(_userNode.getGeigerScoreUserThreatScores());
+      geigerScoreThreats.add(_deviceNode.getGeigerScoreDeviceThreatScores());
+      return jsonEncode(GeigerData(
+          geigerScoreThreats: geigerScoreThreats,
+          recommendations: _recommendationNode.getRecommendations));
+    } catch (e) {
+      throw Exception(
+          "Node aggregate, user, device and recommendation not created");
+    }
   }
 }
 
