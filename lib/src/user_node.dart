@@ -60,14 +60,15 @@ class UserNode {
   /// @param optional geigerScore as string
   void setGeigerUserScore(
       {Locale? language,
-      required List<ThreatScore> threatScores,
+      required GeigerScoreThreats geigerScoreThreats,
       String geigerScore: "0"}) {
     if (getUserInfo != null) {
       User currentUser = getUserInfo!;
       try {
         _node = _storageController
             .get(":Users:${currentUser.userId}:gi:data:GeigerScoreUser");
-        _setUserNodeValues(language, threatScores, geigerScore: geigerScore);
+        _setUserNodeValues(language, geigerScoreThreats.threatScores,
+            geigerScore: geigerScore);
       } on StorageException {
         Node userNode = NodeImpl("${currentUser.userId}", ":Users");
         _storageController.addOrUpdate(userNode);
@@ -82,8 +83,8 @@ class UserNode {
             NodeImpl("GeigerScoreUser", ":Users:${currentUser.userId}:gi:data");
 
         _storageController.add(userScoreNode);
-        _setUserNodeValuesException(language, userScoreNode, threatScores,
-            geigerScore: geigerScore);
+        _setUserNodeValuesException(language, userScoreNode,
+            geigerScoreThreats.threatScores, geigerScoreThreats.geigerScore);
       }
     } else {
       log("currentUser is null ");
@@ -95,15 +96,14 @@ class UserNode {
   /// @param list of threatScore object
   /// @param optional geigerScore as string
   void setGeigerScoreAggregate(
-      {Locale? language,
-      required List<ThreatScore> threatScores,
-      String geigerScore: "0"}) {
+      {Locale? language, required GeigerScoreThreats geigerScoreThreats}) {
     if (getUserInfo != null) {
       User currentUser = getUserInfo!;
       try {
         _node = _storageController
             .get(":Users:${currentUser.userId}:gi:data:GeigerScoreAggregate");
-        _setUserNodeValues(language, threatScores, geigerScore: geigerScore);
+        _setUserNodeValues(language, geigerScoreThreats.threatScores,
+            geigerScore: geigerScoreThreats.geigerScore);
       } on StorageException {
         Node userNode = NodeImpl("${currentUser.userId}", ":Users");
         _storageController.addOrUpdate(userNode);
@@ -118,7 +118,8 @@ class UserNode {
             "GeigerScoreAggregate", ":Users:${currentUser.userId}:gi:data");
         _storageController.add(aggScoreNode);
 
-        _setUserNodeValuesException(language, aggScoreNode, threatScores);
+        _setUserNodeValuesException(language, aggScoreNode,
+            geigerScoreThreats.threatScores, geigerScoreThreats.geigerScore);
       }
     } else {
       log("currentUser is null ");
@@ -348,8 +349,7 @@ class UserNode {
   }
 
   void _setUserNodeValuesException(
-      Locale? language, Node userScoreNode, threatScores,
-      {String geigerScore: "0"}) {
+      Locale? language, Node userScoreNode, threatScores, String geigerScore) {
     _geigerScore = NodeValueImpl("GEIGER_score", geigerScore);
     userScoreNode.addOrUpdateValue(_geigerScore!);
     _geigerThreatScores =

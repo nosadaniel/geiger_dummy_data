@@ -4,7 +4,7 @@ import 'package:equatable/equatable.dart';
 
 part 'geiger_score_threats.g.dart';
 
-@JsonSerializable()
+@JsonSerializable(explicitToJson: true)
 class GeigerScoreThreats extends Equatable {
   final List<ThreatScore> threatScores;
   final String geigerScore;

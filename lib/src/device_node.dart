@@ -65,15 +65,14 @@ class DeviceNode {
   /// @param list of threatScore object
   /// @param optional geigerScore as string
   void setGeigerScoreDevice(
-      {Locale? language,
-      required List<ThreatScore> threatScores,
-      String geigerScore: "0"}) {
+      {Locale? language, required GeigerScoreThreats geigerScoreThreats}) {
     if (getDeviceInfo != null) {
       Device currentDevice = getDeviceInfo!;
       try {
         _node = _storageController.get(
             ":Devices:${currentDevice.deviceId}:gi:data:GeigerScoreDevice");
-        _setDeviceNodeValues(language, threatScores, geigerScore: geigerScore);
+        _setDeviceNodeValues(language, geigerScoreThreats.threatScores,
+            geigerScore: geigerScoreThreats.geigerScore);
         //print(_node);
       } on StorageException {
         Node deviceNode = NodeImpl("${currentDevice.deviceId}", ":Devices");
@@ -86,8 +85,8 @@ class DeviceNode {
         Node deviceScoreNode = NodeImpl(
             "GeigerScoreDevice", ":Devices:${currentDevice.deviceId}:gi:data");
         _storageController.add(deviceScoreNode);
-        _setDeviceNodeValuesException(
-            language, deviceScoreNode, threatScores, geigerScore);
+        _setDeviceNodeValuesException(language, deviceScoreNode,
+            geigerScoreThreats.threatScores, geigerScoreThreats.geigerScore);
       }
     } else {
       log("currentDevice is null ");
@@ -97,23 +96,23 @@ class DeviceNode {
   /// @param optional language as string
   /// @return GeigerScore as String  from GeigerScoreDevice Node
   /// @throw Node not found on StorageException
-  String getGeigerScoreDevice({String language: "en"}) {
-    if (getDeviceInfo != null) {
-      Device currentDevice = getDeviceInfo!;
-      try {
-        _node = _storageController.get(
-            ":Devices:${currentDevice.deviceId}:gi:data:GeigerScoreDevice");
-
-        String geigerScore =
-            _node!.getValue("GEIGER_score")!.getValue(language).toString();
-        return geigerScore;
-      } on StorageException {
-        throw Exception("Node not found");
-      }
-    } else {
-      throw Exception("currentDevice is null ");
-    }
-  }
+  // String getGeigerScoreDevice({String language: "en"}) {
+  //   if (getDeviceInfo != null) {
+  //     Device currentDevice = getDeviceInfo!;
+  //     try {
+  //       _node = _storageController.get(
+  //           ":Devices:${currentDevice.deviceId}:gi:data:GeigerScoreDevice");
+  //
+  //       String geigerScore =
+  //           _node!.getValue("GEIGER_score")!.getValue(language).toString();
+  //       return geigerScore;
+  //     } on StorageException {
+  //       throw Exception("Node not found");
+  //     }
+  //   } else {
+  //     throw Exception("currentDevice is null ");
+  //   }
+  // }
 
   /// @param optional language as string
   /// @return list of threatScore object from GeigerScoreDevice

@@ -5,7 +5,7 @@ import 'geiger_score_threats.dart';
 
 part 'geiger_data.g.dart';
 
-@JsonSerializable()
+@JsonSerializable(explicitToJson: true)
 class GeigerData extends Equatable {
   final List<GeigerScoreThreats> geigerScoreThreats;
   final List<Recommendation> recommendations;
@@ -21,6 +21,5 @@ class GeigerData extends Equatable {
   }
 
   @override
-  // TODO: implement props
   List<Object?> get props => [geigerScoreThreats, recommendations];
 }
