@@ -12,6 +12,8 @@ class GeigerApi implements Geiger {
 
   GeigerApi(this._storageController);
 
+  ///<p>implement onBtnPressed function from geiger abstract class</p>
+  ///@return a Future of json string
   @override
   Future<String> onBtnPressed() async {
     UserNode _userNode = UserNode(_storageController);
@@ -35,6 +37,9 @@ class GeigerApi implements Geiger {
     }
   }
 
+  ///<p>implement initialGeigerDummyData function from geiger abstract class</p>
+  ///@param TermsAndCondition object
+  ///@return a Future void
   @override
   Future<void> initialGeigerDummyData(
       TermsAndConditions termsAndConditions) async {
@@ -45,6 +50,7 @@ class GeigerApi implements Geiger {
     if (_isTermAgreed(termsAndConditions: termsAndConditions)) {
       //device
       _deviceNode.setCurrentDeviceInfo = Device(owner: _userNode.getUserInfo!);
+      print(_deviceNode.getDeviceInfo);
       //set threat
       _threatNode.setGlobalThreatsNode(
           threats: [Threat(name: "phishing"), Threat(name: "Malware")]);
@@ -143,3 +149,5 @@ class GeigerApi implements Geiger {
 }
 
 //Todo
+
+// make score to be random
