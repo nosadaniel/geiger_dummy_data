@@ -14,7 +14,7 @@ void main() {
   StorageController _storageController =
       GenericController("test", SqliteMapper("./test.sqlite"));
 
-  //geigerThreat
+  /*//geigerThreat
   GeigerThreatTest geigerThreatTest = GeigerThreatTest(_storageController);
   geigerThreatTest.threatGroupTest();
 
@@ -30,7 +30,7 @@ void main() {
   //geigerDeviceTest
   GeigerDeviceTest geigerDeviceTest = GeigerDeviceTest(_storageController);
   geigerDeviceTest.deviceGroupTest();
-
+*/
   //GeigerOnBtnPressedTest
   GeigerApiTest(_storageController).onBtnPressedTest();
 }
@@ -259,9 +259,16 @@ class GeigerApiTest {
   GeigerApiTest(this._storageController);
 
   void onBtnPressedTest() {
-    test("getDataFrom OnBtnPressed", () async {
-      String result = await GeigerApi(_storageController).onBtnPressed();
-      print(result);
+    group("RecommendationGroupTest", () {
+      setUp(() async {
+        await GeigerApi(_storageController).initialGeigerDummyData(
+            TermsAndConditions(
+                ageCompliant: true, agreedPrivacy: true, signedConsent: true));
+      });
+      test("getDataFrom OnBtnPressed", () async {
+        String result = await GeigerApi(_storageController).onBtnPressed();
+        print(result);
+      });
     });
   }
 }
