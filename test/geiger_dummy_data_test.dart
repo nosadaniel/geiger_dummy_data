@@ -1,11 +1,12 @@
 import 'package:geiger_dummy_data/geiger_dummy_data.dart';
 import 'package:geiger_dummy_data/src/geiger.dart';
+import 'package:geiger_dummy_data/src/models/consent.dart';
 import 'package:geiger_dummy_data/src/models/geiger_score_threats.dart';
+import 'package:geiger_dummy_data/src/models/recommendation.dart';
+import 'package:geiger_dummy_data/src/models/terms_and_conditions.dart';
+import 'package:geiger_dummy_data/src/models/threat.dart';
 import 'package:geiger_dummy_data/src/recommendation_node.dart';
 import 'package:geiger_dummy_data/src/user_node.dart';
-import 'package:geiger_dummy_data/src/models/recommendation.dart';
-import 'package:geiger_dummy_data/src/models/threat.dart';
-
 import 'package:geiger_localstorage/geiger_localstorage.dart';
 import 'package:intl/locale.dart';
 import 'package:test/test.dart';
@@ -67,8 +68,10 @@ class GeigerUserTest {
     group("currentUserGroupTest:", () {
       setUp(() {
         //setCurrentUser
-        geigerUser.setUserInfo = User.convertUserFromJson(
-            '{"firstName":"matthew", "lastName":"doe", "role":{ "name":"CEO"}}');
+        geigerUser.setUserInfo = User(
+            userName: "John Doe",
+            termsAndConditions: TermsAndConditions(),
+            consent: Consent());
 
         //setCurrentGeigerUserScore
         List<String> userScores = ["44", "50", "70"];

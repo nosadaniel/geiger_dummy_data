@@ -17,6 +17,8 @@ GeigerData _$GeigerDataFromJson(Map<String, dynamic> json) => GeigerData(
 
 Map<String, dynamic> _$GeigerDataToJson(GeigerData instance) =>
     <String, dynamic>{
-      'geigerScoreThreats': instance.geigerScoreThreats,
-      'recommendations': instance.recommendations,
+      'geigerScoreThreats':
+          instance.geigerScoreThreats.map((e) => e.toJson()).toList(),
+      'recommendations':
+          instance.recommendations.map((e) => e.toJson()).toList(),
     };

@@ -38,8 +38,8 @@ void main() {
       return _geigerUser.getUserInfo;
     } catch (e) {
       //set current user info
-      User userData = User.convertUserFromJson(
-          '{"firstName":"John", "lastName":"Doe", "role":{ "name":"CEO"}}');
+      User userData =
+          User(termsAndConditions: TermsAndConditions(), consent: Consent());
 
       //store current user info
       _geigerUser.setUserInfo = userData;

@@ -6,11 +6,11 @@ import 'package:geiger_dummy_data/src/models/geiger_score_threats.dart';
 import 'package:geiger_localstorage/geiger_localstorage.dart';
 import 'package:intl/locale.dart';
 
-import '../src/recommendation_node.dart';
 import '../src/models/threat.dart';
 import '../src/models/threat_recommendation.dart';
 import '../src/models/threat_score.dart';
 import '../src/models/user.dart';
+import '../src/recommendation_node.dart';
 import 'models/implemented_recommendation.dart';
 
 /// <p>Grant access to methods relating user.</p>
@@ -30,8 +30,12 @@ class UserNode {
   void set setUserInfo(User currentUserInfo) {
     try {
       _node = _storageController.get(":Local");
+
+      NodeValue currentUserId =
+          NodeValueImpl("currentUser", currentUserInfo.userId);
+      //store userInfo in userDetails Nodevalue
       NodeValue localNodeValue =
-          NodeValueImpl("currentUser", User.convertUserToJson(currentUserInfo));
+          NodeValueImpl("userDetails", User.convertUserToJson(currentUserInfo));
       _node!.addOrUpdateValue(localNodeValue);
       _storageController.update(_node!);
     } on StorageException {
@@ -45,9 +49,9 @@ class UserNode {
   User? get getUserInfo {
     try {
       _node = _storageController.get(":Local");
-      String currentUser =
-          _node!.getValue("currentUser")!.getValue("en").toString();
-      return User.convertUserFromJson(currentUser);
+      String userDetails =
+          _node!.getValue("userDetails")!.getValue("en").toString();
+      return User.convertUserFromJson(userDetails);
     } on StorageException {
       log("Node :Local not found");
       return null;

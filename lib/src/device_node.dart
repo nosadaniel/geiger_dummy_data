@@ -2,14 +2,14 @@ library geiger_dummy_data;
 
 import 'dart:developer';
 
-import '/src/models/implemented_recommendation.dart';
 import 'package:geiger_localstorage/geiger_localstorage.dart';
 import 'package:intl/locale.dart';
 
+import '/src/models/implemented_recommendation.dart';
 import '../geiger_dummy_data.dart';
 import '../src/models/device.dart';
-import '../src/models/threat_score.dart';
 import '../src/models/threat.dart';
+import '../src/models/threat_score.dart';
 import '../src/recommendation_node.dart';
 import 'models/geiger_score_threats.dart';
 
@@ -34,9 +34,12 @@ class DeviceNode {
     try {
       _node = _storageController.get(":Local");
 
-      //create new NodeValue key
+      NodeValue currentDeviceId =
+          NodeValueImpl("currentDevice", currentDeviceInfo.deviceId);
+
+      //store deviceInfo in deviceDetails Nodevalue
       localNodeValue = NodeValueImpl(
-          "currentDeviceNew", Device.convertDeviceToJson(currentDeviceInfo));
+          "deviceDetails", Device.convertDeviceToJson(currentDeviceInfo));
       _node!.addOrUpdateValue(localNodeValue!);
       _storageController.update(_node!);
     } on StorageException {
@@ -52,7 +55,7 @@ class DeviceNode {
       _node = _storageController.get(":Local");
 
       String currentDevice =
-          _node!.getValue("currentDeviceNew")!.getValue("en").toString();
+          _node!.getValue("deviceDetails")!.getValue("en").toString();
       return Device.convertDeviceFromJson(currentDevice);
     } on StorageException {
       log("Node :Local not found");

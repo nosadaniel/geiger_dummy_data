@@ -1,17 +1,17 @@
 // GENERATED CODE - DO NOT MODIFY BY HAND
 
-part of geiger_dummy_data;
+part of 'tool.dart';
 
 // **************************************************************************
 // JsonSerializableGenerator
 // **************************************************************************
 
-Role _$RoleFromJson(Map<String, dynamic> json) => Role(
-      roleId: json['roleId'] as String?,
-      name: json['name'] as String?,
+Tool _$ToolFromJson(Map<String, dynamic> json) => Tool(
+      toolId: json['toolId'] as String,
+      name: json['name'] as String,
     );
 
-Map<String, dynamic> _$RoleToJson(Role instance) => <String, dynamic>{
-      'roleId': instance.roleId,
+Map<String, dynamic> _$ToolToJson(Tool instance) => <String, dynamic>{
+      'toolId': instance.toolId,
       'name': instance.name,
     };
