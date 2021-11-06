@@ -7,7 +7,7 @@ part of 'tool.dart';
 // **************************************************************************
 
 Tool _$ToolFromJson(Map<String, dynamic> json) => Tool(
-      toolId: json['toolId'] as String,
+      toolId: json['toolId'] as String?,
       name: json['name'] as String,
     );
 

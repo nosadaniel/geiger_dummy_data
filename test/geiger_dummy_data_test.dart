@@ -1,5 +1,5 @@
 import 'package:geiger_dummy_data/geiger_dummy_data.dart';
-import 'package:geiger_dummy_data/src/geiger.dart';
+import 'package:geiger_dummy_data/src/geiger_api.dart';
 import 'package:geiger_dummy_data/src/models/consent.dart';
 import 'package:geiger_dummy_data/src/models/geiger_score_threats.dart';
 import 'package:geiger_dummy_data/src/models/recommendation.dart';
@@ -8,7 +8,6 @@ import 'package:geiger_dummy_data/src/models/threat.dart';
 import 'package:geiger_dummy_data/src/recommendation_node.dart';
 import 'package:geiger_dummy_data/src/user_node.dart';
 import 'package:geiger_localstorage/geiger_localstorage.dart';
-import 'package:intl/locale.dart';
 import 'package:test/test.dart';
 
 void main() {
@@ -19,6 +18,11 @@ void main() {
   GeigerThreatTest geigerThreatTest = GeigerThreatTest(_storageController);
   geigerThreatTest.threatGroupTest();
 
+  //geigerRecommendation
+  GeigerRecommendationTest geigerRecommendationTest =
+      GeigerRecommendationTest(_storageController);
+  geigerRecommendationTest.recommendationGroupTest();
+
   //geigerUserTest
   GeigerUserTest geigerUserTest = GeigerUserTest(_storageController);
   geigerUserTest.userGroupTest();
@@ -27,14 +31,8 @@ void main() {
   GeigerDeviceTest geigerDeviceTest = GeigerDeviceTest(_storageController);
   geigerDeviceTest.deviceGroupTest();
 
-  //geigerRecommendation
-  //Test passed but failed to compare
-  GeigerRecommendationTest geigerRecommendationTest =
-      GeigerRecommendationTest(_storageController);
-  geigerRecommendationTest.recommendationGroupTest();
-
   //GeigerOnBtnPressedTest
-  GeigerOnBtnPressedTest(_storageController).onBtnPressedTest();
+  GeigerApiTest(_storageController).onBtnPressedTest();
 }
 
 class GeigerThreatTest {
@@ -47,8 +45,7 @@ class GeigerThreatTest {
     group("threatGroupTest", () {
       setUp(() {
         geigerThreat.setGlobalThreatsNode(
-            threats: Threat.convertFromJson(
-                '[{"name":"phishing"},{"name":"malware"},{"name":"web attack"}]'));
+            threats: [Threat(name: "phishing"), Threat(name: "Malware")]);
       });
       test("getThreatList", () {
         geigerThreat.getThreats();
@@ -97,16 +94,18 @@ class GeigerUserTest {
             geigerScoreThreats: GeigerScoreThreats(
                 threatScores: aggThreatsScore, geigerScore: "50"));
 
-        //check this
-        //set recommendations
-        RecommendationNode(_storageController).setGlobalRecommendationsNode(
-            recommendations: Recommendation.convertFromJSon(
-                '[{"recommendationId":"123rec","recommendationType":"user", "relatedThreatsWeight":[{"threat":{"threatId":"t1","name":"phishing"},"weight":"High"},{"threat":{"threatId":"t2","name":"malware"},"weight":"medium"}],"description":{"shortDescription":"Email filtering","longDescription":"very long"}},{"recommendationId":"124rec","recommendationType":"device", "relatedThreatsWeight":[{"threat":{"threatId":"t3","name":"phishing web"},"weight":"High"},{"threat":{"threatId":"t2","name":"malware"},"weight":"Low"}],"description":{"shortDescription":"cyber"}}]'));
-
-        //setGeigerUserRecommendation
-        geigerUser.setUserThreatRecommendation(
-            language: Locale.parse("de-ch"),
-            threat: Threat(threatId: "t2", name: "malware"));
+        //set user recommendation in userNode
+        geigerUser.setUserThreatRecommendation();
+        //
+        // List<Recommendation> recommendations = RecommendationNode(_storageController).getRecommendations;
+        //
+        // List<String> userWeight = ["high", "low", "medium"];
+        // List<Threat> threats = _threatNode.getThreats();
+        // List<ThreatWeight> threatWeight = [];
+        // for(int i =0; i<recommendations.length; i++){
+        //   threatWeight.add(ThreatWeight(threat: threats[i], weight: userWeight[i]));
+        // }
+        // geigerUser.setRelatedThreatsWeightInRecommendation(recommendationId: recommendationId, threatsWeight: threatsWeight, recommendationType: "user")s
       });
 
       test("getCurrentUserInfo", () {
@@ -122,10 +121,10 @@ class GeigerUserTest {
       });
 
       //check this
-      // test("getCurrentUserThreatRecommendation", () {
-      //   geigerUser.getUserThreatRecommendation(
-      //       threat: _threatNode.getThreats().last);
-      // });
+      test("getCurrentUserRecommendation", () {
+        var r = geigerUser.getUserRecommendation();
+        print(r);
+      });
 
       // test("setUserImplementedRecommendation", () {
       //   String r = geigerUser
@@ -166,44 +165,8 @@ class GeigerDeviceTest {
             geigerScoreThreats: GeigerScoreThreats(
                 threatScores: threatsScore, geigerScore: "23"));
 
-        //set global recommendations
-        List<ThreatWeight> threatWeight = [];
-        List<String> weights = ["High", "Medium", "Low"];
-        for (int i = 0; i < deviceThreats.length; i++) {
-          threatWeight
-              .add(ThreatWeight(threat: deviceThreats[i], weight: weights[i]));
-        }
-        RecommendationNode(_storageController)
-            .setGlobalRecommendationsNode(recommendations: [
-          Recommendation(
-              recommendationType: "user",
-              relatedThreatsWeight: threatWeight,
-              description: DescriptionShortLong(
-                  shortDescription: 'Cyber attacks',
-                  longDescription: 'they are real, Please be careful')),
-          Recommendation(
-              recommendationType: "device",
-              relatedThreatsWeight: threatWeight,
-              description: DescriptionShortLong(
-                  shortDescription: 'Device attacks',
-                  longDescription: 'they are real, Please be really careful')),
-          Recommendation(
-              recommendationType: "device",
-              relatedThreatsWeight: threatWeight,
-              description: DescriptionShortLong(
-                  shortDescription: 'Internet attacks',
-                  longDescription: 'they are real, Please be really careful')),
-          Recommendation(
-              recommendationType: "user",
-              relatedThreatsWeight: threatWeight,
-              description: DescriptionShortLong(
-                  shortDescription: 'Internet attacks',
-                  longDescription: 'they are real, Please be really careful'))
-        ]);
-
-        //setGeigerCurrentDeviceRecommendation
-        // geigerDevice.setDeviceRecommendation(
-        //     threat: Threat(threatId: "t2", name: "malware"));
+        //set deviceRecommendation in device node
+        geigerDevice.setDeviceRecommendation();
       });
 
       test("getGeigerCurrentDeviceInfo", () {
@@ -215,11 +178,10 @@ class GeigerDeviceTest {
       });
 
       // getCurrentDeviceGeigerThreatRecommendation
-      // test("getCurrentDeviceGeigerThreatRecommendation", () {
-      //   var r = geigerDevice.getDeviceThreatRecommendation(
-      //       threat: _threatNode.getThreats().first);
-      //   print(r);
-      // });
+      test("getCurrentDeviceGeigerThreatRecommendation", () {
+        var r = geigerDevice.getDeviceThreatRecommendation();
+        print(r);
+      });
 
       // test("setDeviceImplementedRecommendation", () {
       //   String r = geigerDevice.getDeviceThreatRecommendation(threat: Threat(threatId: "t2", name: "malware"))[0]
@@ -246,7 +208,7 @@ class GeigerRecommendationTest {
 
     group("RecommendationGroupTest", () {
       setUp(() {
-        //set global recommendations
+        // //set global recommendations
         List<Threat> threats = _threatNode.getThreats();
         List<ThreatWeight> threatWeight = [];
         List<String> weights = ["High", "Medium", "Low"];
@@ -263,20 +225,14 @@ class GeigerRecommendationTest {
                   shortDescription: 'Cyber attacks',
                   longDescription: 'they are real, Please be careful')),
           Recommendation(
-              recommendationType: "device",
-              relatedThreatsWeight: threatWeight,
               description: DescriptionShortLong(
                   shortDescription: 'Device attacks',
                   longDescription: 'they are real, Please be really careful')),
           Recommendation(
-              recommendationType: "device",
-              relatedThreatsWeight: threatWeight,
               description: DescriptionShortLong(
                   shortDescription: 'Internet attacks',
                   longDescription: 'they are real, Please be really careful')),
           Recommendation(
-              recommendationType: "user",
-              relatedThreatsWeight: threatWeight,
               description: DescriptionShortLong(
                   shortDescription: 'Internet attacks',
                   longDescription: 'they are real, Please be really careful'))
@@ -288,23 +244,23 @@ class GeigerRecommendationTest {
         print(r);
       });
 
-      test("getUserThreatRecommendations", () {
-        var r = geigerRecommendation.getThreatRecommendation(
-            threat: _threatNode.getThreats().first, recommendationType: "user");
-        print(r);
-      });
+      // test("getUserThreatRecommendations", () {
+      //   var r = geigerRecommendation.getThreatRecommendation(
+      //       threat: _threatNode.getThreats().first, recommendationType: "user");
+      //   print(r);
+      // });
     });
   }
 }
 
-class GeigerOnBtnPressedTest {
+class GeigerApiTest {
   StorageController _storageController;
 
-  GeigerOnBtnPressedTest(this._storageController);
+  GeigerApiTest(this._storageController);
 
   void onBtnPressedTest() {
     test("getDataFrom OnBtnPressed", () async {
-      String result = await Geiger(_storageController).onBtnPressed();
+      String result = await GeigerApi(_storageController).onBtnPressed();
       print(result);
     });
   }

@@ -9,9 +9,9 @@ part of geiger_dummy_data;
 Recommendation _$RecommendationFromJson(Map<String, dynamic> json) =>
     Recommendation(
       recommendationId: json['recommendationId'] as String?,
-      recommendationType: json['recommendationType'] as String,
-      relatedThreatsWeight: (json['relatedThreatsWeight'] as List<dynamic>)
-          .map((e) => ThreatWeight.fromJson(e as Map<String, dynamic>))
+      recommendationType: json['recommendationType'] as String?,
+      relatedThreatsWeight: (json['relatedThreatsWeight'] as List<dynamic>?)
+          ?.map((e) => ThreatWeight.fromJson(e as Map<String, dynamic>))
           .toList(),
       description: DescriptionShortLong.fromJson(
           json['description'] as Map<String, dynamic>),
@@ -22,6 +22,6 @@ Map<String, dynamic> _$RecommendationToJson(Recommendation instance) =>
       'recommendationId': instance.recommendationId,
       'recommendationType': instance.recommendationType,
       'relatedThreatsWeight':
-          instance.relatedThreatsWeight.map((e) => e.toJson()).toList(),
+          instance.relatedThreatsWeight?.map((e) => e.toJson()).toList(),
       'description': instance.description.toJson(),
     };

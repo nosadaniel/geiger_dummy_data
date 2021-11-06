@@ -3,12 +3,12 @@ library geiger_dummy_data;
 import 'dart:convert';
 
 import 'package:equatable/equatable.dart';
-import '/src/exceptions/custom_invalid_map_key_exception.dart';
-import '/src/exceptions/custom_format_exception.dart';
 import 'package:json_annotation/json_annotation.dart';
-import '/src/models/threat_weight.dart';
-import '/src/constant/constant.dart';
 
+import '/src/constant/constant.dart';
+import '/src/exceptions/custom_format_exception.dart';
+import '/src/exceptions/custom_invalid_map_key_exception.dart';
+import '/src/models/threat_weight.dart';
 import 'describe_short_long.dart';
 
 part 'recommendation.g.dart';
@@ -16,14 +16,14 @@ part 'recommendation.g.dart';
 @JsonSerializable(explicitToJson: true)
 class Recommendation extends Equatable {
   final String? recommendationId;
-  final String recommendationType;
-  final List<ThreatWeight> relatedThreatsWeight;
+  final String? recommendationType;
+  final List<ThreatWeight>? relatedThreatsWeight;
   final DescriptionShortLong description;
 
   Recommendation(
       {String? recommendationId,
-      required this.recommendationType,
-      required this.relatedThreatsWeight,
+      this.recommendationType,
+      this.relatedThreatsWeight,
       required this.description})
       : recommendationId = recommendationId ?? GeigerConstant.uuid;
 

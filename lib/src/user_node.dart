@@ -2,23 +2,21 @@ library geiger_dummy_mapper;
 
 import 'dart:developer';
 
+import 'package:geiger_dummy_data/geiger_dummy_data.dart';
 import 'package:geiger_dummy_data/src/models/geiger_score_threats.dart';
 import 'package:geiger_localstorage/geiger_localstorage.dart';
 import 'package:intl/locale.dart';
 
-import '../src/models/threat.dart';
-import '../src/models/threat_recommendation.dart';
 import '../src/models/threat_score.dart';
 import '../src/models/user.dart';
 import '../src/recommendation_node.dart';
-import 'models/implemented_recommendation.dart';
 
 /// <p>Grant access to methods relating user.</p>
 /// @param storageController
-class UserNode {
+class UserNode extends RecommendationNode {
   StorageController _storageController;
 
-  UserNode(this._storageController);
+  UserNode(this._storageController) : super(_storageController);
   Node? _node;
   NodeValue? _geigerScore;
   NodeValue? _geigerThreatScores;
@@ -33,6 +31,7 @@ class UserNode {
 
       NodeValue currentUserId =
           NodeValueImpl("currentUser", currentUserInfo.userId);
+      _node!.addOrUpdateValue(currentUserId);
       //store userInfo in userDetails Nodevalue
       NodeValue localNodeValue =
           NodeValueImpl("userDetails", User.convertUserToJson(currentUserInfo));
@@ -179,26 +178,6 @@ class UserNode {
     }
   }
 
-  /// @return GeigerScoreAggregate as String  from GeigerScoreAggregate Node
-  /// @throw Node not found on StorageException
-  /*String getGeigerScoreAggregate({String language: "en"}) {
-    if (getUserInfo != null) {
-      User currentUser = getUserInfo!;
-      try {
-        _node = _storageController
-            .get(":Users:${currentUser.userId}:gi:data:GeigerScoreAggregate");
-
-        String geigerScore =
-            _node!.getValue("GEIGER_score")!.getValue(language).toString();
-        return geigerScore;
-      } on StorageException {
-        throw Exception("Node not found");
-      }
-    } else {
-      throw Exception("currentUser is null ");
-    }
-  }*/
-
   /// @param optional language as string
   /// @return list of threatScore object from GeigerScoreAggregate
   GeigerScoreThreats getGeigerScoreAggregateThreatScore(
@@ -225,27 +204,41 @@ class UserNode {
     }
   }
 
-  /// <p>set UserRecommendation</p>
+  //a problem: please don't use
+  // I need to understand it
+  //I wanted to stored user recommendation into recommendation in
+  // without using Recommendation.
+  // set user relatedThreatsWeight in :recommendation node
+  // void setUserRelatedThreatsWeightInRecommendation(
+  //     {required Recommendation recommendationId,
+  //     required List<ThreatWeight> threatWeight}) {
+  //   setRelatedThreatsWeightInRecommendation(
+  //       recommendationId: recommendationId.recommendationId!,
+  //       threatsWeight: threatWeight,
+  //       recommendationType: "user");
+  // }
+
+  /// <p>get UserRecommendation from recommendation node and set in :users node</p>
   /// @param optional language as locale
   /// @param threat object
-  void setUserThreatRecommendation({Locale? language, required Threat threat}) {
+  ///
+  ///
+  void setUserThreatRecommendation({Locale? language}) {
     if (getUserInfo != null) {
       User currentUser = getUserInfo!;
-      List<ThreatRecommendation> threatRecommendations =
-          RecommendationNode(_storageController).getThreatRecommendation(
-              threat: threat, recommendationType: "user");
+      List<Recommendation> userRecommendations =
+          getThreatRecommendation(recommendationType: "user");
       try {
         _node = _storageController
             .get(":Users:${currentUser.userId}:gi:data:recommendations");
 
-        NodeValue threatRecomValue = NodeValueImpl("${threat.threatId}",
-            ThreatRecommendation.convertToJson(threatRecommendations));
+        NodeValue threatRecomValue = NodeValueImpl("userRecommendation",
+            Recommendation.convertToJson(userRecommendations));
 
         if (language != null) {
           //translations
           threatRecomValue.setValue(
-              ThreatRecommendation.convertToJson(threatRecommendations),
-              language);
+              Recommendation.convertToJson(userRecommendations), language);
         }
 
         _node!.addOrUpdateValue(threatRecomValue);
@@ -255,14 +248,13 @@ class UserNode {
             NodeImpl("recommendations", ":Users:${currentUser.userId}:gi:data");
         _storageController.add(userRecommendationNode);
 
-        NodeValue threatRecomValue = NodeValueImpl("${threat.threatId}",
-            ThreatRecommendation.convertToJson(threatRecommendations));
+        NodeValue threatRecomValue = NodeValueImpl("userRecommendation",
+            Recommendation.convertToJson(userRecommendations));
 
         if (language != null) {
           //translations
           threatRecomValue.setValue(
-              ThreatRecommendation.convertToJson(threatRecommendations),
-              language);
+              Recommendation.convertToJson(userRecommendations), language);
         }
 
         userRecommendationNode.addOrUpdateValue(threatRecomValue);
@@ -274,25 +266,24 @@ class UserNode {
     }
   }
 
-  ///<p>get UserRecommendation</p>
+  ///<p>get UserRecommendation from :user path</p>
   ///@param option language as string
   ///@param threat object
   ///@return list of threatRecommendation object
-  List<ThreatRecommendation> getUserThreatRecommendation({
+  List<Recommendation> getUserRecommendation({
     String language: "en",
-    required Threat threat,
   }) {
     if (getUserInfo != null) {
       User currentUser = getUserInfo!;
       try {
         _node = _storageController
             .get(":Users:${currentUser.userId}:gi:data:recommendations");
-        String threatRecommendations = _node!
-            .getValue("${threat.threatId}")!
+        String userRecommendations = _node!
+            .getValue("userRecommendation")!
             .getValue(language)
             .toString();
 
-        return ThreatRecommendation.convertFromJson(threatRecommendations);
+        return Recommendation.convertFromJSon(userRecommendations);
       } on StorageException {
         throw Exception("NODE NOT FOUND");
       }
@@ -302,22 +293,20 @@ class UserNode {
   }
 
   ///<p> set user ImplementedRecommendation
-  ///@param recommendationId as string
+  ///@param recommendation as Recommendation
   ///@return bool
-  bool setUserImplementedRecommendation({required String recommendationId}) {
+  bool setUserImplementedRecommendation(
+      {required Recommendation recommendation}) {
     if (getUserInfo != null) {
       User currentUser = getUserInfo!;
-      List<ImplementedRecommendation> implementedRecommendations = [];
+      List<Recommendation> implementedRecommendations = [];
       try {
         _node = _storageController
             .get(":Users:${currentUser.userId}:gi:data:GeigerScoreUser");
-        implementedRecommendations
-            .add(ImplementedRecommendation(recommendationId: recommendationId));
+        implementedRecommendations.add(recommendation);
 
-        NodeValue implementedRecom = NodeValueImpl(
-            "implementedRecommendations",
-            ImplementedRecommendation.convertToJson(
-                implementedRecommendations));
+        NodeValue implementedRecom = NodeValueImpl("implementedRecommendations",
+            Recommendation.convertToJson(implementedRecommendations));
         _node!.addOrUpdateValue(implementedRecom);
 
         _storageController.update(_node!);
@@ -370,17 +359,6 @@ class UserNode {
     userScoreNode.addOrUpdateValue(_geigerNumMetrics!);
     _storageController.update(userScoreNode);
   }
-
-// ///get list of currentUserThreatScores
-// List<ThreatScore> get getCurrentGeigerUserThreatScores {
-//   User currentUser = getCurrentUserInfo;
-//   _node = _storageController
-//       .get(":Users:${currentUser.userId}:gi:data:GeigerScoreUser");
-//
-//   String threats_score =
-//       _node!.getValue("threats_score")!.getValue("en").toString();
-//   return ThreatScore.fromJSon(threats_score);
-// }
 }
 
 //Todo
