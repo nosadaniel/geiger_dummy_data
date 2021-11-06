@@ -19,11 +19,11 @@ void main() {
     try {
       return _geigerThreat.getThreats();
     } catch (e) {
-      //threat Json format  '[{"threatId": "t1", name":"phishing"},{"threatId":"t2","name":"malware"}]'
-      //Threat to convert your json to Threat object
       // threatId is optional: is auto generated.
-      List<Threat> threatData =
-          Threat.convertFromJson('[{"name":"phishing"},{"name":"malware"}]');
+      List<Threat> threatData = [
+        Threat(name: "phishing"),
+        Threat(name: "Malware")
+      ];
 
       //store threat in :Global:threats:
       _geigerThreat.setGlobalThreatsNode(threats: threatData);
@@ -54,8 +54,7 @@ void main() {
     } catch (e) {
       //set current device info
       // format
-      Device deviceData = Device.convertDeviceFromJson(
-          '{"owner":${User.convertUserToJson(getCurrentUser()!)},"name":"Iphone","type":"mobile"}');
+      Device deviceData = Device(owner: getCurrentUser()!);
 
       //store current user info
       _geigerDevice.setCurrentDeviceInfo = deviceData;

@@ -6,6 +6,7 @@ import 'package:geiger_dummy_data/geiger_dummy_data.dart';
 import 'package:geiger_dummy_data/src/geiger_listen.dart';
 import 'package:geiger_dummy_data/src/models/geiger_score_threats.dart';
 import 'package:geiger_localstorage/geiger_localstorage.dart';
+
 import '/src/models/geiger_data.dart';
 
 class Geiger implements GeigerListen {
@@ -35,6 +36,9 @@ class Geiger implements GeigerListen {
           "Node aggregate, user, device and recommendation not created");
     }
   }
+
+  @override
+  Future<void> initialLocalData() async {}
 }
 
 //Todo
