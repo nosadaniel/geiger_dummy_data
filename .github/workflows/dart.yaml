@@ -43,5 +43,5 @@ jobs:
           credential: ${{ secrets.CREDENTIAL_JSON }}
           flutter_package: false
           skip_test: true
-          dry_run: true
+          
   
