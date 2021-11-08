@@ -1,3 +1,6 @@
+##0.2.7
+- added initialGeigerDummyData with dynamic data
+
 ##0.2.6
 - added initialGeigerDummyData
 ##0.2.5
