@@ -1,6 +1,7 @@
 library geiger_dummy_data;
 
 import 'dart:convert';
+import 'dart:math';
 
 import 'package:geiger_localstorage/geiger_localstorage.dart';
 
@@ -55,41 +56,60 @@ class GeigerApi implements Geiger {
       _threatNode.setGlobalThreatsNode(
           threats: [Threat(name: "phishing"), Threat(name: "Malware")]);
 
+      // set random scores
+      Random random = new Random();
+
       //set Agg
-      List<String> AggScores = ["45", "65", "60"];
+      List<int> AggScores = List.generate(
+          3,
+          (_) =>
+              random.nextInt(100) +
+              10); //This will generate a list of 3 integers from 10 to 99 (inclusive).
+
       List<Threat> AggThreats = _threatNode.getThreats();
       List<ThreatScore> aggThreatsScore = [];
       for (int i = 0; i < AggThreats.length; i++) {
-        aggThreatsScore
-            .add(ThreatScore(threat: AggThreats[i], score: AggScores[i]));
+        aggThreatsScore.add(
+            ThreatScore(threat: AggThreats[i], score: AggScores[i].toString()));
       }
       _userNode.setGeigerScoreAggregate(
           geigerScoreThreats: GeigerScoreThreats(
-              threatScores: aggThreatsScore, geigerScore: "50"));
+              threatScores: aggThreatsScore,
+              geigerScore: (random.nextInt(90) + 20).toString()));
 
       // set userscore
-      List<String> userScores = ["30", "70", "45"];
+      List<int> userScores = List.generate(
+          3,
+          (_) =>
+              random.nextInt(100) +
+              10); //This will generate a list of 3 integers from 10 to 99 (inclusive).
       List<Threat> userThreats = _threatNode.getThreats();
       List<ThreatScore> userThreatsScore = [];
       for (int i = 0; i < userThreats.length; i++) {
-        userThreatsScore
-            .add(ThreatScore(threat: userThreats[i], score: userScores[i]));
+        userThreatsScore.add(ThreatScore(
+            threat: userThreats[i], score: userScores[i].toString()));
       }
       _userNode.setGeigerUserScore(
           geigerScoreThreats: GeigerScoreThreats(
-              threatScores: aggThreatsScore, geigerScore: "45"));
+              threatScores: aggThreatsScore,
+              geigerScore: (random.nextInt(90) + 20).toString()));
 
       // set deviceScore
-      List<String> deviceScores = ["40", "58", "47"];
+      List<int> deviceScores = List.generate(
+          3,
+          (_) =>
+              random.nextInt(100) +
+              10); //This will generate a list of 3 integers from 10 to 99 (inclusive).
       List<Threat> deviceThreats = _threatNode.getThreats();
       List<ThreatScore> deviceThreatsScore = [];
       for (int i = 0; i < deviceThreats.length; i++) {
-        deviceThreatsScore
-            .add(ThreatScore(threat: deviceThreats[i], score: deviceScores[i]));
+        deviceThreatsScore.add(ThreatScore(
+            threat: deviceThreats[i], score: deviceScores[i].toString()));
       }
       _deviceNode.setGeigerScoreDevice(
           geigerScoreThreats: GeigerScoreThreats(
-              threatScores: deviceThreatsScore, geigerScore: "35"));
+              threatScores: deviceThreatsScore,
+              geigerScore: (random.nextInt(90) + 20).toString()));
 
       //set global recommendations
       List<Threat> threats = _threatNode.getThreats();
@@ -105,26 +125,30 @@ class GeigerApi implements Geiger {
             recommendationType: "user",
             relatedThreatsWeight: threatWeight,
             description: DescriptionShortLong(
-                shortDescription: 'Cyber attacks',
-                longDescription: 'they are real, Please be careful')),
+                shortDescription: 'Recognize phishing mails',
+                longDescription:
+                    'Improve your ability to recognize phishing mails. Choose at least one email in the cyberrange app and judge wether it is a phishing mail or not.')),
         Recommendation(
             recommendationType: "device",
             relatedThreatsWeight: threatWeight,
             description: DescriptionShortLong(
-                shortDescription: 'Device attacks',
-                longDescription: 'they are real, Please be really careful')),
+                shortDescription: 'Password Manager',
+                longDescription:
+                    'Learn how to implement a password manager which offers a secure storage of passwords')),
         Recommendation(
             recommendationType: "device",
             relatedThreatsWeight: threatWeight,
             description: DescriptionShortLong(
-                shortDescription: 'Internet attacks',
-                longDescription: 'they are real, Please be really careful')),
+                shortDescription: 'Activate Device Report',
+                longDescription:
+                    'The Kaspersky Mobile Security Device Report allows to assess the vulnerabilities and threats affecting the device and provides a report with information about:')),
         Recommendation(
             recommendationType: "user",
             relatedThreatsWeight: threatWeight,
             description: DescriptionShortLong(
-                shortDescription: 'Internet attacks',
-                longDescription: 'they are real, Please be really careful'))
+                shortDescription: 'Strong passwords',
+                longDescription:
+                    'Complete the Password Safety lesson. Learn how to use strong and unique passwords.'))
       ]);
 
       //set userRecommendation
