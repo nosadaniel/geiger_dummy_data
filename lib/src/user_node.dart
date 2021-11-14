@@ -25,18 +25,18 @@ class UserNode extends RecommendationNode {
   /// <p>set userInfo in currentUser NodeValue in :Local</p>
   /// @param user object
   /// @throws :Local not found on StorageException
-  void set setUserInfo(User currentUserInfo) {
+  Future<void> setUserInfo(User currentUserInfo) async {
     try {
-      _node = _storageController.get(":Local");
+      _node = await _storageController.get(":Local");
 
       NodeValue currentUserId =
           NodeValueImpl("currentUser", currentUserInfo.userId);
-      _node!.addOrUpdateValue(currentUserId);
+      await _node!.addOrUpdateValue(currentUserId);
       //store userInfo in userDetails Nodevalue
       NodeValue localNodeValue =
           NodeValueImpl("userDetails", User.convertUserToJson(currentUserInfo));
-      _node!.addOrUpdateValue(localNodeValue);
-      _storageController.update(_node!);
+      await _node!.addOrUpdateValue(localNodeValue);
+      await _storageController.update(_node!);
     } on StorageException {
       throw Exception(":Local not found");
     }
@@ -45,15 +45,15 @@ class UserNode extends RecommendationNode {
   ///<p> get current user info from :local value 'currentUser'
   /// @return user object
   /// @throws :Local not found on StorageException
-  User? get getUserInfo {
+  Future<User> get getUserInfo async {
     try {
-      _node = _storageController.get(":Local");
-      String userDetails =
-          _node!.getValue("userDetails")!.getValue("en").toString();
+      _node = await _storageController.get(":Local");
+      String userDetails = await _node!
+          .getValue("userDetails")
+          .then((value) => value!.getValue("en")!);
       return User.convertUserFromJson(userDetails);
     } on StorageException {
-      log("Node :Local not found");
-      return null;
+      throw ("Node :Local not found");
     }
   }
 
@@ -61,36 +61,33 @@ class UserNode extends RecommendationNode {
   /// @param option language as locale
   /// @param list of threatScore object
   /// @param optional geigerScore as string
-  void setGeigerUserScore(
+  Future<void> setGeigerUserScore(
       {Locale? language,
       required GeigerScoreThreats geigerScoreThreats,
-      String geigerScore: "0"}) {
-    if (getUserInfo != null) {
-      User currentUser = getUserInfo!;
-      try {
-        _node = _storageController
-            .get(":Users:${currentUser.userId}:gi:data:GeigerScoreUser");
-        _setUserNodeValues(language, geigerScoreThreats.threatScores,
-            geigerScore: geigerScore);
-      } on StorageException {
-        Node userNode = NodeImpl("${currentUser.userId}", ":Users");
-        _storageController.addOrUpdate(userNode);
+      String geigerScore: "0"}) async {
+    User currentUser = await getUserInfo;
 
-        Node giNode = NodeImpl("gi", ":Users:${currentUser.userId}");
-        _storageController.addOrUpdate(giNode);
+    try {
+      _node = await _storageController
+          .get(":Users:${currentUser.userId}:gi:data:GeigerScoreUser");
+      _setUserNodeValues(language, geigerScoreThreats.threatScores,
+          geigerScore: geigerScore);
+    } on StorageException {
+      Node userNode = NodeImpl("${currentUser.userId}", ":Users");
+      _storageController.addOrUpdate(userNode);
 
-        Node nodeData = NodeImpl("data", ":Users:${currentUser.userId}:gi");
-        _storageController.addOrUpdate(nodeData);
+      Node giNode = NodeImpl("gi", ":Users:${currentUser.userId}");
+      _storageController.addOrUpdate(giNode);
 
-        Node userScoreNode =
-            NodeImpl("GeigerScoreUser", ":Users:${currentUser.userId}:gi:data");
+      Node nodeData = NodeImpl("data", ":Users:${currentUser.userId}:gi");
+      _storageController.addOrUpdate(nodeData);
 
-        _storageController.add(userScoreNode);
-        _setUserNodeValuesException(language, userScoreNode,
-            geigerScoreThreats.threatScores, geigerScoreThreats.geigerScore);
-      }
-    } else {
-      log("currentUser is null ");
+      Node userScoreNode =
+          NodeImpl("GeigerScoreUser", ":Users:${currentUser.userId}:gi:data");
+
+      _storageController.add(userScoreNode);
+      _setUserNodeValuesException(language, userScoreNode,
+          geigerScoreThreats.threatScores, geigerScoreThreats.geigerScore);
     }
   }
 
@@ -98,40 +95,38 @@ class UserNode extends RecommendationNode {
   /// @param option language as locale
   /// @param list of threatScore object
   /// @param optional geigerScore as string
-  void setGeigerScoreAggregate(
-      {Locale? language, required GeigerScoreThreats geigerScoreThreats}) {
-    if (getUserInfo != null) {
-      User currentUser = getUserInfo!;
-      try {
-        _node = _storageController
-            .get(":Users:${currentUser.userId}:gi:data:GeigerScoreAggregate");
-        _setUserNodeValues(language, geigerScoreThreats.threatScores,
-            geigerScore: geigerScoreThreats.geigerScore);
-      } on StorageException {
-        Node userNode = NodeImpl("${currentUser.userId}", ":Users");
-        _storageController.addOrUpdate(userNode);
+  Future<void> setGeigerScoreAggregate(
+      {Locale? language,
+      required GeigerScoreThreats geigerScoreThreats}) async {
+    User currentUser = await getUserInfo;
 
-        Node giNode = NodeImpl("gi", ":Users:${currentUser.userId}");
-        _storageController.addOrUpdate(giNode);
+    try {
+      _node = await _storageController
+          .get(":Users:${currentUser.userId}:gi:data:GeigerScoreAggregate");
+      _setUserNodeValues(language, geigerScoreThreats.threatScores,
+          geigerScore: geigerScoreThreats.geigerScore);
+    } on StorageException {
+      Node userNode = NodeImpl("${currentUser.userId}", ":Users");
+      _storageController.addOrUpdate(userNode);
 
-        Node nodeData = NodeImpl("data", ":Users:${currentUser.userId}:gi");
-        _storageController.addOrUpdate(nodeData);
+      Node giNode = NodeImpl("gi", ":Users:${currentUser.userId}");
+      _storageController.addOrUpdate(giNode);
 
-        Node aggScoreNode = NodeImpl(
-            "GeigerScoreAggregate", ":Users:${currentUser.userId}:gi:data");
-        _storageController.add(aggScoreNode);
+      Node nodeData = NodeImpl("data", ":Users:${currentUser.userId}:gi");
+      _storageController.addOrUpdate(nodeData);
 
-        _setUserNodeValuesException(language, aggScoreNode,
-            geigerScoreThreats.threatScores, geigerScoreThreats.geigerScore);
-      }
-    } else {
-      log("currentUser is null ");
+      Node aggScoreNode = NodeImpl(
+          "GeigerScoreAggregate", ":Users:${currentUser.userId}:gi:data");
+      _storageController.add(aggScoreNode);
+
+      _setUserNodeValuesException(language, aggScoreNode,
+          geigerScoreThreats.threatScores, geigerScoreThreats.geigerScore);
     }
   }
 
-  /// @param optional language as string
-  /// @return GeigerScore as String  from GeigerScoreUser Node
-  /// @throw Node not found on StorageException
+  ///// @param optional language as string
+  ///// @return GeigerScore as String  from GeigerScoreUser Node
+  ///// @throw Node not found on StorageException
   /*String getGeigerScoreUser({String language: "en"}) {
     if (getUserInfo != null) {
       User currentUser = getUserInfo!;
@@ -152,56 +147,53 @@ class UserNode extends RecommendationNode {
 
   /// @param optional language as string
   /// @return list of threatScore object from GeigerScoreUser
-  GeigerScoreThreats getGeigerScoreUserThreatScores({String language: "en"}) {
-    if (getUserInfo != null) {
-      User currentUser = getUserInfo!;
-      try {
-        _node = _storageController
-            .get(":Users:${currentUser.userId}:gi:data:GeigerScoreUser");
+  Future<GeigerScoreThreats> getGeigerScoreUserThreatScores(
+      {String language: "en"}) async {
+    User currentUser = await getUserInfo;
 
-        String geigerScore =
-            _node!.getValue("GEIGER_score")!.getValue(language).toString();
+    try {
+      _node = await _storageController
+          .get(":Users:${currentUser.userId}:gi:data:GeigerScoreUser");
 
-        String threats_score =
-            _node!.getValue("threats_score")!.getValue(language).toString();
+      String geigerScore = await _node!
+          .getValue("GEIGER_score")
+          .then((value) => value!.getValue(language).toString());
 
-        List<ThreatScore> _threatScores =
-            ThreatScore.convertFromJson(threats_score);
+      String threats_score = await _node!
+          .getValue("threats_score")
+          .then((value) => value!.getValue(language).toString());
 
-        return GeigerScoreThreats(
-            threatScores: _threatScores, geigerScore: geigerScore);
-      } on StorageException {
-        throw Exception("NODE NOT FOUND");
-      }
-    } else {
-      throw Exception("currentUser is null ");
+      List<ThreatScore> _threatScores =
+          ThreatScore.convertFromJson(threats_score);
+
+      return GeigerScoreThreats(
+          threatScores: _threatScores, geigerScore: geigerScore);
+    } on StorageException {
+      throw Exception("NODE NOT FOUND");
     }
   }
 
   /// @param optional language as string
   /// @return list of threatScore object from GeigerScoreAggregate
-  GeigerScoreThreats getGeigerScoreAggregateThreatScore(
-      {String language: "en"}) {
-    if (getUserInfo != null) {
-      User currentUser = getUserInfo!;
+  Future<GeigerScoreThreats> getGeigerScoreAggregateThreatScore(
+      {String language: "en"}) async {
+    User currentUser = await getUserInfo;
 
-      _node = _storageController
-          .get(":Users:${currentUser.userId}:gi:data:GeigerScoreAggregate");
+    _node = await _storageController
+        .get(":Users:${currentUser.userId}:gi:data:GeigerScoreAggregate");
 
-      String geigerScore =
-          _node!.getValue("GEIGER_score")!.getValue(language).toString();
+    String geigerScore = await _node!
+        .getValue("GEIGER_score")
+        .then((value) => value!.getValue(language).toString());
 
-      String threatsScore =
-          _node!.getValue("threats_score")!.getValue(language).toString();
+    String threatsScore = await _node!
+        .getValue("threats_score")
+        .then((value) => value!.getValue(language)!);
 
-      List<ThreatScore> _threatScores =
-          ThreatScore.convertFromJson(threatsScore);
+    List<ThreatScore> _threatScores = ThreatScore.convertFromJson(threatsScore);
 
-      return GeigerScoreThreats(
-          threatScores: _threatScores, geigerScore: geigerScore);
-    } else {
-      throw Exception("currentUser is null ");
-    }
+    return GeigerScoreThreats(
+        threatScores: _threatScores, geigerScore: geigerScore);
   }
 
   //a problem: please don't use
@@ -223,46 +215,43 @@ class UserNode extends RecommendationNode {
   /// @param threat object
   ///
   ///
-  void setUserThreatRecommendation({Locale? language}) {
-    if (getUserInfo != null) {
-      User currentUser = getUserInfo!;
-      List<Recommendation> userRecommendations =
-          getThreatRecommendation(recommendationType: "user");
-      try {
-        _node = _storageController
-            .get(":Users:${currentUser.userId}:gi:data:recommendations");
+  Future<void> setUserThreatRecommendation({Locale? language}) async {
+    User currentUser = await getUserInfo;
 
-        NodeValue threatRecomValue = NodeValueImpl("userRecommendation",
-            Recommendation.convertToJson(userRecommendations));
+    List<Recommendation> userRecommendations =
+        await getThreatRecommendation(recommendationType: "user");
+    try {
+      _node = await _storageController
+          .get(":Users:${currentUser.userId}:gi:data:recommendations");
 
-        if (language != null) {
-          //translations
-          threatRecomValue.setValue(
-              Recommendation.convertToJson(userRecommendations), language);
-        }
+      NodeValue threatRecomValue = NodeValueImpl("userRecommendation",
+          Recommendation.convertToJson(userRecommendations));
 
-        _node!.addOrUpdateValue(threatRecomValue);
-        _storageController.update(_node!);
-      } on StorageException {
-        Node userRecommendationNode =
-            NodeImpl("recommendations", ":Users:${currentUser.userId}:gi:data");
-        _storageController.add(userRecommendationNode);
-
-        NodeValue threatRecomValue = NodeValueImpl("userRecommendation",
-            Recommendation.convertToJson(userRecommendations));
-
-        if (language != null) {
-          //translations
-          threatRecomValue.setValue(
-              Recommendation.convertToJson(userRecommendations), language);
-        }
-
-        userRecommendationNode.addOrUpdateValue(threatRecomValue);
-
-        _storageController.update(userRecommendationNode);
+      if (language != null) {
+        //translations
+        threatRecomValue.setValue(
+            Recommendation.convertToJson(userRecommendations), language);
       }
-    } else {
-      log("currentUser is null ");
+
+      _node!.addOrUpdateValue(threatRecomValue);
+      _storageController.update(_node!);
+    } on StorageException {
+      Node userRecommendationNode =
+          NodeImpl("recommendations", ":Users:${currentUser.userId}:gi:data");
+      _storageController.add(userRecommendationNode);
+
+      NodeValue threatRecomValue = NodeValueImpl("userRecommendation",
+          Recommendation.convertToJson(userRecommendations));
+
+      if (language != null) {
+        //translations
+        threatRecomValue.setValue(
+            Recommendation.convertToJson(userRecommendations), language);
+      }
+
+      userRecommendationNode.addOrUpdateValue(threatRecomValue);
+
+      _storageController.update(userRecommendationNode);
     }
   }
 
@@ -270,53 +259,46 @@ class UserNode extends RecommendationNode {
   ///@param option language as string
   ///@param threat object
   ///@return list of threatRecommendation object
-  List<Recommendation> getUserRecommendation({
+  Future<List<Recommendation>> getUserRecommendation({
     String language: "en",
-  }) {
-    if (getUserInfo != null) {
-      User currentUser = getUserInfo!;
-      try {
-        _node = _storageController
-            .get(":Users:${currentUser.userId}:gi:data:recommendations");
-        String userRecommendations = _node!
-            .getValue("userRecommendation")!
-            .getValue(language)
-            .toString();
+  }) async {
+    User currentUser = await getUserInfo;
 
-        return Recommendation.convertFromJSon(userRecommendations);
-      } on StorageException {
-        throw Exception("NODE NOT FOUND");
-      }
-    } else {
-      throw Exception("currentUser is null ");
+    try {
+      _node = await _storageController
+          .get(":Users:${currentUser.userId}:gi:data:recommendations");
+      String userRecommendations = await _node!
+          .getValue("userRecommendation")
+          .then((value) => value!.getValue(language)!);
+
+      return Recommendation.convertFromJSon(userRecommendations);
+    } on StorageException {
+      throw Exception("NODE NOT FOUND");
     }
   }
 
   ///<p> set user ImplementedRecommendation
   ///@param recommendation as Recommendation
   ///@return bool
-  bool setUserImplementedRecommendation(
-      {required Recommendation recommendation}) {
-    if (getUserInfo != null) {
-      User currentUser = getUserInfo!;
-      List<Recommendation> implementedRecommendations = [];
-      try {
-        _node = _storageController
-            .get(":Users:${currentUser.userId}:gi:data:GeigerScoreUser");
-        implementedRecommendations.add(recommendation);
+  Future<bool> setUserImplementedRecommendation(
+      {required Recommendation recommendation}) async {
+    User currentUser = await getUserInfo;
 
-        NodeValue implementedRecom = NodeValueImpl("implementedRecommendations",
-            Recommendation.convertToJson(implementedRecommendations));
-        _node!.addOrUpdateValue(implementedRecom);
+    List<Recommendation> implementedRecommendations = [];
+    try {
+      _node = await _storageController
+          .get(":Users:${currentUser.userId}:gi:data:GeigerScoreUser");
+      implementedRecommendations.add(recommendation);
 
-        _storageController.update(_node!);
-        return true;
-      } catch (e) {
-        log("failed to addOrUpdate implementedRecommendations NodeValue");
-        return false;
-      }
-    } else {
-      throw Exception("currentUser is null ");
+      NodeValue implementedRecom = NodeValueImpl("implementedRecommendations",
+          Recommendation.convertToJson(implementedRecommendations));
+      _node!.addOrUpdateValue(implementedRecom);
+
+      _storageController.update(_node!);
+      return true;
+    } catch (e) {
+      log("failed to addOrUpdate implementedRecommendations NodeValue");
+      return false;
     }
   }
 

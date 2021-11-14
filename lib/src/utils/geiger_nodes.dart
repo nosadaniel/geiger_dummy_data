@@ -7,12 +7,12 @@ class GeigerNodes {
   GeigerNodes(this._storageController);
   final StorageController _storageController;
 
-  Node get getLocalNode {
-    return _storageController.get(":Local");
+  Future<Node> get getLocalNode async {
+    return await _storageController.get(":Local");
   }
 
-  Node get getGlobalNode {
-    return _storageController.get(":Global");
+  Future<Node> get getGlobalNode async {
+    return await _storageController.get(":Global");
   }
 
   /* List<Threat> get getGlobalThreats{

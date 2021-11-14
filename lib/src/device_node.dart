@@ -28,19 +28,19 @@ class DeviceNode extends RecommendationNode {
   /// @param user object
   /// @throws :Local not found on StorageException
 
-  void set setCurrentDeviceInfo(Device currentDeviceInfo) {
+  Future<void> setCurrentDeviceInfo(Device currentDeviceInfo) async {
     try {
-      _node = _storageController.get(":Local");
+      _node = await _storageController.get(":Local");
 
       NodeValue currentDeviceId =
           NodeValueImpl("currentDevice", currentDeviceInfo.deviceId);
-      _node!.addOrUpdateValue(currentDeviceId);
+      await _node!.addOrUpdateValue(currentDeviceId);
       //store deviceInfo in deviceDetails Nodevalue
 
       localNodeValue = NodeValueImpl(
           "deviceDetails", Device.convertDeviceToJson(currentDeviceInfo));
-      _node!.addOrUpdateValue(localNodeValue!);
-      _storageController.update(_node!);
+      await _node!.addOrUpdateValue(localNodeValue!);
+      await _storageController.update(_node!);
     } on StorageException {
       throw Exception(":Local not found");
     }
@@ -49,16 +49,18 @@ class DeviceNode extends RecommendationNode {
   ///<p> get current device info from :local value 'currentDeviceNew'
   /// @return device object
   /// @throws :Local not found on StorageException
-  Device? get getDeviceInfo {
+  Future<Device> get getDeviceInfo async {
     try {
-      _node = _storageController.get(":Local");
+      _node = await _storageController.get(":Local");
 
-      String currentDevice =
-          _node!.getValue("deviceDetails")!.getValue("en").toString();
+      String currentDevice = await _node!
+          .getValue("deviceDetails")
+          .then((value) => value!.getValue("en")!);
+
       return Device.convertDeviceFromJson(currentDevice);
     } on StorageException {
       log("Node :Local not found");
-      return null;
+      rethrow;
     }
   }
 
@@ -67,37 +69,34 @@ class DeviceNode extends RecommendationNode {
   /// @param list of threatScore object
   /// @param optional geigerScore as string
   void setGeigerScoreDevice(
-      {Locale? language, required GeigerScoreThreats geigerScoreThreats}) {
-    if (getDeviceInfo != null) {
-      Device currentDevice = getDeviceInfo!;
-      try {
-        _node = _storageController.get(
-            ":Devices:${currentDevice.deviceId}:gi:data:GeigerScoreDevice");
-        _setDeviceNodeValues(language, geigerScoreThreats.threatScores,
-            geigerScore: geigerScoreThreats.geigerScore);
-        //print(_node);
-      } on StorageException {
-        Node deviceNode = NodeImpl("${currentDevice.deviceId}", ":Devices");
-        _storageController.add(deviceNode);
-        Node giNode = NodeImpl("gi", ":Devices:${currentDevice.deviceId}");
-        _storageController.add(giNode);
-        Node nodeData =
-            NodeImpl("data", ":Devices:${currentDevice.deviceId}:gi");
-        _storageController.add(nodeData);
-        Node deviceScoreNode = NodeImpl(
-            "GeigerScoreDevice", ":Devices:${currentDevice.deviceId}:gi:data");
-        _storageController.add(deviceScoreNode);
-        _setDeviceNodeValuesException(language, deviceScoreNode,
-            geigerScoreThreats.threatScores, geigerScoreThreats.geigerScore);
-      }
-    } else {
-      log("currentDevice is null ");
+      {Locale? language,
+      required GeigerScoreThreats geigerScoreThreats}) async {
+    Device currentDevice = await getDeviceInfo;
+
+    try {
+      _node = await _storageController
+          .get(":Devices:${currentDevice.deviceId}:gi:data:GeigerScoreDevice");
+      _setDeviceNodeValues(language, geigerScoreThreats.threatScores,
+          geigerScore: geigerScoreThreats.geigerScore);
+      //print(_node);
+    } on StorageException {
+      Node deviceNode = NodeImpl("${currentDevice.deviceId}", ":Devices");
+      _storageController.add(deviceNode);
+      Node giNode = NodeImpl("gi", ":Devices:${currentDevice.deviceId}");
+      _storageController.add(giNode);
+      Node nodeData = NodeImpl("data", ":Devices:${currentDevice.deviceId}:gi");
+      _storageController.add(nodeData);
+      Node deviceScoreNode = NodeImpl(
+          "GeigerScoreDevice", ":Devices:${currentDevice.deviceId}:gi:data");
+      _storageController.add(deviceScoreNode);
+      _setDeviceNodeValuesException(language, deviceScoreNode,
+          geigerScoreThreats.threatScores, geigerScoreThreats.geigerScore);
     }
   }
 
-  /// @param optional language as string
-  /// @return GeigerScore as String  from GeigerScoreDevice Node
-  /// @throw Node not found on StorageException
+  ///// @param optional language as string
+  ///// @return GeigerScore as String  from GeigerScoreDevice Node
+  ///// @throw Node not found on StorageException
   // String getGeigerScoreDevice({String language: "en"}) {
   //   if (getDeviceInfo != null) {
   //     Device currentDevice = getDeviceInfo!;
@@ -119,72 +118,70 @@ class DeviceNode extends RecommendationNode {
   /// @param optional language as string
   /// @return list of threatScore object from GeigerScoreDevice
   /// @throw node not found on StorageException
-  GeigerScoreThreats getGeigerScoreDeviceThreatScores({String language: "en"}) {
-    if (getDeviceInfo != null) {
-      Device currentDevice = getDeviceInfo!;
-      try {
-        _node = _storageController.get(
-            ":Devices:${currentDevice.deviceId}:gi:data:GeigerScoreDevice");
-        String geigerScore =
-            _node!.getValue("GEIGER_score")!.getValue(language).toString();
+  Future<GeigerScoreThreats> getGeigerScoreDeviceThreatScores(
+      {String language: "en"}) async {
+    Device currentDevice = await getDeviceInfo;
 
-        String threats_score =
-            _node!.getValue("threats_score")!.getValue(language).toString();
-        List<ThreatScore> _threatScores =
-            ThreatScore.convertFromJson(threats_score);
+    try {
+      _node = await _storageController
+          .get(":Devices:${currentDevice.deviceId}:gi:data:GeigerScoreDevice");
+      String geigerScore = await _node!
+          .getValue("GEIGER_score")
+          .then((value) => value!.getValue(language).toString());
 
-        return GeigerScoreThreats(
-            threatScores: _threatScores, geigerScore: geigerScore);
-      } on StorageException {
-        throw Exception("Node not found");
-      }
-    } else {
-      throw Exception("currentDevice is null ");
+      String threats_score = await _node!
+          .getValue("threats_score")
+          .then((value) => value!.getValue(language).toString());
+
+      List<ThreatScore> _threatScores =
+          ThreatScore.convertFromJson(threats_score);
+
+      return GeigerScoreThreats(
+          threatScores: _threatScores, geigerScore: geigerScore);
+    } on StorageException {
+      throw Exception("Node not found");
     }
   }
 
   /// <p>get DeviceRecommendation from recommendation node and set in :device node</p>
   /// @param optional language as locale
   /// @param threat object
-  void setDeviceRecommendation({Locale? language}) {
-    if (getDeviceInfo != null) {
-      Device currentDevice = getDeviceInfo!;
-      List<Recommendation> threatRecommendations =
-          getThreatRecommendation(recommendationType: "device");
-      try {
-        _node = _storageController
-            .get(":Devices:${currentDevice.deviceId}:gi:data:recommendations");
+  Future<void> setDeviceRecommendation({Locale? language}) async {
+    Device currentDevice = await getDeviceInfo;
 
-        NodeValue threatRecomValue = NodeValueImpl("deviceRecommendation",
-            Recommendation.convertToJson(threatRecommendations));
+    List<Recommendation> threatRecommendations =
+        await getThreatRecommendation(recommendationType: "device");
+    try {
+      _node = await _storageController
+          .get(":Devices:${currentDevice.deviceId}:gi:data:recommendations");
 
-        if (language != null) {
-          //translations
-          threatRecomValue.setValue(
-              Recommendation.convertToJson(threatRecommendations), language);
-        }
+      NodeValue threatRecomValue = NodeValueImpl("deviceRecommendation",
+          Recommendation.convertToJson(threatRecommendations));
 
-        _node!.addOrUpdateValue(threatRecomValue);
-        _storageController.update(_node!);
-      } on StorageException {
-        Node deviceRecommendationNode = NodeImpl(
-            "recommendations", ":Devices:${currentDevice.deviceId}:gi:data");
-        _storageController.add(deviceRecommendationNode);
-
-        NodeValue threatRecomValue = NodeValueImpl("deviceRecommendations",
-            Recommendation.convertToJson(threatRecommendations));
-
-        if (language != null) {
-          //translations
-          threatRecomValue.setValue(
-              Recommendation.convertToJson(threatRecommendations), language);
-        }
-
-        deviceRecommendationNode.addOrUpdateValue(threatRecomValue);
-        _storageController.update(deviceRecommendationNode);
+      if (language != null) {
+        //translations
+        threatRecomValue.setValue(
+            Recommendation.convertToJson(threatRecommendations), language);
       }
-    } else {
-      log("currentDevice is null ");
+
+      _node!.addOrUpdateValue(threatRecomValue);
+      _storageController.update(_node!);
+    } on StorageException {
+      Node deviceRecommendationNode = NodeImpl(
+          "recommendations", ":Devices:${currentDevice.deviceId}:gi:data");
+      _storageController.add(deviceRecommendationNode);
+
+      NodeValue threatRecomValue = NodeValueImpl("deviceRecommendations",
+          Recommendation.convertToJson(threatRecommendations));
+
+      if (language != null) {
+        //translations
+        threatRecomValue.setValue(
+            Recommendation.convertToJson(threatRecommendations), language);
+      }
+
+      deviceRecommendationNode.addOrUpdateValue(threatRecomValue);
+      _storageController.update(deviceRecommendationNode);
     }
   }
 
@@ -192,52 +189,46 @@ class DeviceNode extends RecommendationNode {
   ///@param option language as string
   ///@param threat object
   ///@return list of threatRecommendation object
-  List<Recommendation> getDeviceThreatRecommendation({String language: "en"}) {
-    if (getDeviceInfo != null) {
-      Device currentDevice = getDeviceInfo!;
-      try {
-        _node = _storageController
-            .get(":Devices:${currentDevice.deviceId}:gi:data:recommendations");
-        String threatRecommendations = _node!
-            .getValue("deviceRecommendations")!
-            .getValue(language)
-            .toString();
+  Future<List<Recommendation>> getDeviceThreatRecommendation(
+      {String language: "en"}) async {
+    Device currentDevice = await getDeviceInfo;
 
-        return Recommendation.convertFromJSon(threatRecommendations);
-      } on StorageException {
-        throw Exception("NODE NOT FOUND");
-      }
-    } else {
-      throw Exception("currentDevice is null");
+    try {
+      _node = await _storageController
+          .get(":Devices:${currentDevice.deviceId}:gi:data:recommendations");
+      String threatRecommendations = await _node!
+          .getValue("deviceRecommendations")
+          .then((value) => value!.getValue(language).toString());
+
+      return Recommendation.convertFromJSon(threatRecommendations);
+    } on StorageException {
+      throw Exception("NODE NOT FOUND");
     }
   }
 
   ///<p> set device ImplementedRecommendation
   ///@param recommendationId as string
   ///@return bool
-  bool setDeviceImplementedRecommendation(
-      {required Recommendation recommendation}) {
-    if (getDeviceInfo != null) {
-      Device currentDevice = getDeviceInfo!;
-      List<Recommendation> implementedRecommendations = [];
+  Future<bool> setDeviceImplementedRecommendation(
+      {required Recommendation recommendation}) async {
+    Device currentDevice = await getDeviceInfo;
 
-      try {
-        _node = _storageController.get(
-            ":Devices:${currentDevice.deviceId}:gi:data:GeigerScoreDevice");
-        implementedRecommendations.add(recommendation);
+    List<Recommendation> implementedRecommendations = [];
 
-        NodeValue implementedRecom = NodeValueImpl("implementedRecommendations",
-            Recommendation.convertToJson(implementedRecommendations));
-        _node!.addOrUpdateValue(implementedRecom);
+    try {
+      _node = await _storageController
+          .get(":Devices:${currentDevice.deviceId}:gi:data:GeigerScoreDevice");
+      implementedRecommendations.add(recommendation);
 
-        _storageController.update(_node!);
-        return true;
-      } catch (e) {
-        log("failed to addOrUpdate implementedRecommendations NodeValue");
-        return false;
-      }
-    } else {
-      throw Exception("currentDevice is null");
+      NodeValue implementedRecom = NodeValueImpl("implementedRecommendations",
+          Recommendation.convertToJson(implementedRecommendations));
+      _node!.addOrUpdateValue(implementedRecom);
+
+      _storageController.update(_node!);
+      return true;
+    } catch (e) {
+      log("failed to addOrUpdate implementedRecommendations NodeValue");
+      return false;
     }
   }
 

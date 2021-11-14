@@ -1,6 +1,4 @@
 import 'package:geiger_dummy_data/geiger_dummy_data.dart';
-import 'package:geiger_dummy_data/src/geiger_api.dart';
-import 'package:geiger_dummy_data/src/models/terms_and_conditions.dart';
 import 'package:geiger_dummy_data/src/recommendation_node.dart';
 import 'package:geiger_dummy_data/src/user_node.dart';
 import 'package:geiger_localstorage/geiger_localstorage.dart';
@@ -11,22 +9,22 @@ void main() {
       GenericController("test", SqliteMapper("./test.sqlite"));
 
   //GeigerOnBtnPressedTest
-  GeigerApiTest(_storageController).onBtnPressedTest();
+  //GeigerApiTest(_storageController).onBtnPressedTest();
 
   //geigerThreat
-  GeigerThreatTest geigerThreatTest = GeigerThreatTest(_storageController);
-  geigerThreatTest.threatGroupTest();
-
-  //geigerRecommendation
-  GeigerRecommendationTest geigerRecommendationTest =
-      GeigerRecommendationTest(_storageController);
-  geigerRecommendationTest.recommendationGroupTest();
-
+  // GeigerThreatTest geigerThreatTest = GeigerThreatTest(_storageController);
+  // geigerThreatTest.threatGroupTest();
+  //
+  // //geigerRecommendation
+  // GeigerRecommendationTest geigerRecommendationTest =
+  //     GeigerRecommendationTest(_storageController);
+  // geigerRecommendationTest.recommendationGroupTest();
+  //
   //geigerUserTest
   GeigerUserTest geigerUserTest = GeigerUserTest(_storageController);
   geigerUserTest.userGroupTest();
-
-  //geigerDeviceTest
+  //
+  // //geigerDeviceTest
   GeigerDeviceTest geigerDeviceTest = GeigerDeviceTest(_storageController);
   geigerDeviceTest.deviceGroupTest();
 }
@@ -39,12 +37,12 @@ class GeigerThreatTest {
   void threatGroupTest() {
     ThreatNode geigerThreat = ThreatNode(_storageController);
     group("threatGroupTest", () {
-      // setUp(() {
-      //   geigerThreat.setGlobalThreatsNode(
-      //       threats: [Threat(name: "phishing"), Threat(name: "Malware")]);
-      // });
-      test("getThreatList", () {
-        geigerThreat.getThreats();
+      setUp(() async {
+        await geigerThreat.setGlobalThreatsNode(
+            threats: [Threat(name: "phishing"), Threat(name: "Malware")]);
+      });
+      test("getThreatList", () async {
+        print(await geigerThreat.getThreats());
       });
     });
   }
@@ -59,68 +57,68 @@ class GeigerUserTest {
     UserNode geigerUser = UserNode(_storageController);
     //ThreatNode _threatNode = ThreatNode(_storageController);
     group("currentUserGroupTest:", () {
-      // setUp(() {
-      //   //setCurrentUser
-      //   geigerUser.setUserInfo = User(
-      //       userName: "John Doe",
-      //       termsAndConditions: TermsAndConditions(),
-      //       consent: Consent());
-      //
-      //   //setCurrentGeigerUserScore
-      //   List<String> userScores = ["44", "50", "70"];
-      //   List<Threat> userThreats = _threatNode.getThreats();
-      //   List<ThreatScore> threatsScore = [];
-      //   for (int i = 0; i < userThreats.length; i++) {
-      //     threatsScore
-      //         .add(ThreatScore(threat: userThreats[i], score: userScores[i]));
-      //   }
-      //   geigerUser.setGeigerUserScore(
-      //       geigerScoreThreats: GeigerScoreThreats(
-      //           threatScores: threatsScore, geigerScore: "45"));
-      //
-      //   //setAggregate
-      //   List<String> AggScores = ["20", "70", "90"];
-      //   List<Threat> AggThreats = _threatNode.getThreats();
-      //   List<ThreatScore> aggThreatsScore = [];
-      //   for (int i = 0; i < AggThreats.length; i++) {
-      //     aggThreatsScore
-      //         .add(ThreatScore(threat: AggThreats[i], score: AggScores[i]));
-      //   }
-      //   geigerUser.setGeigerScoreAggregate(
-      //       geigerScoreThreats: GeigerScoreThreats(
-      //           threatScores: aggThreatsScore, geigerScore: "50"));
-      //
-      //   //set user recommendation in userNode
-      //   geigerUser.setUserThreatRecommendation();
-      //   //
-      //   // List<Recommendation> recommendations = RecommendationNode(_storageController).getRecommendations;
-      //   //
-      //   // List<String> userWeight = ["high", "low", "medium"];
-      //   // List<Threat> threats = _threatNode.getThreats();
-      //   // List<ThreatWeight> threatWeight = [];
-      //   // for(int i =0; i<recommendations.length; i++){
-      //   //   threatWeight.add(ThreatWeight(threat: threats[i], weight: userWeight[i]));
-      //   // }
-      //   // geigerUser.setRelatedThreatsWeightInRecommendation(recommendationId: recommendationId, threatsWeight: threatsWeight, recommendationType: "user")s
+      setUp(() async {
+        //setCurrentUser
+        await geigerUser.setUserInfo(User(
+            userName: "John Doe",
+            termsAndConditions: TermsAndConditions(),
+            consent: Consent()));
+        // //
+        //   //setCurrentGeigerUserScore
+        //   List<String> userScores = ["44", "50", "70"];
+        //   List<Threat> userThreats = _threatNode.getThreats();
+        //   List<ThreatScore> threatsScore = [];
+        //   for (int i = 0; i < userThreats.length; i++) {
+        //     threatsScore
+        //         .add(ThreatScore(threat: userThreats[i], score: userScores[i]));
+        //   }
+        //   geigerUser.setGeigerUserScore(
+        //       geigerScoreThreats: GeigerScoreThreats(
+        //           threatScores: threatsScore, geigerScore: "45"));
+        //
+        //   //setAggregate
+        //   List<String> AggScores = ["20", "70", "90"];
+        //   List<Threat> AggThreats = _threatNode.getThreats();
+        //   List<ThreatScore> aggThreatsScore = [];
+        //   for (int i = 0; i < AggThreats.length; i++) {
+        //     aggThreatsScore
+        //         .add(ThreatScore(threat: AggThreats[i], score: AggScores[i]));
+        //   }
+        //   geigerUser.setGeigerScoreAggregate(
+        //       geigerScoreThreats: GeigerScoreThreats(
+        //           threatScores: aggThreatsScore, geigerScore: "50"));
+        //
+        //   //set user recommendation in userNode
+        //   geigerUser.setUserThreatRecommendation();
+        //   //
+        //   // List<Recommendation> recommendations = RecommendationNode(_storageController).getRecommendations;
+        //   //
+        //   // List<String> userWeight = ["high", "low", "medium"];
+        //   // List<Threat> threats = _threatNode.getThreats();
+        //   // List<ThreatWeight> threatWeight = [];
+        //   // for(int i =0; i<recommendations.length; i++){
+        //   //   threatWeight.add(ThreatWeight(threat: threats[i], weight: userWeight[i]));
+        //   // }
+        //   // geigerUser.setRelatedThreatsWeightInRecommendation(recommendationId: recommendationId, threatsWeight: threatsWeight, recommendationType: "user")s
+      });
+
+      test("getCurrentUserInfo", () async {
+        print(await geigerUser.getUserInfo);
+      });
+
+      // test("getCurrentUserThreat", () async {
+      //   await geigerUser.getGeigerScoreUserThreatScores(language: "fr");
       // });
-
-      test("getCurrentUserInfo", () {
-        geigerUser.getUserInfo;
-      });
-
-      test("getCurrentUserThreat", () {
-        geigerUser.getGeigerScoreUserThreatScores(language: "fr");
-      });
-
-      test("getGeigerAggregateThreatScore", () {
-        geigerUser.getGeigerScoreAggregateThreatScore(language: "de-ch");
-      });
-
-      //check this
-      test("getCurrentUserRecommendation", () {
-        var r = geigerUser.getUserRecommendation();
-        print(r);
-      });
+      //
+      // test("getGeigerAggregateThreatScore", () async {
+      //   await geigerUser.getGeigerScoreAggregateThreatScore(language: "de-ch");
+      // });
+      //
+      // //check this
+      // test("getCurrentUserRecommendation", () async {
+      //   var r = await geigerUser.getUserRecommendation();
+      //   print(r);
+      // });
 
       // test("setUserImplementedRecommendation", () {
       //   String r = geigerUser
@@ -142,42 +140,43 @@ class GeigerDeviceTest {
 
   void deviceGroupTest() {
     DeviceNode geigerDevice = DeviceNode(_storageController);
-    // UserNode geigerUser = UserNode(_storageController);
+    UserNode geigerUser = UserNode(_storageController);
     // ThreatNode _threatNode = ThreatNode(_storageController);
     group("GeigerDeviceGroupTest", () {
-      // setUp(() {
-      //   // set currentDevice
-      //   geigerDevice.setCurrentDeviceInfo =
-      //       Device(owner: geigerUser.getUserInfo!);
-      //   // set list of threats for currentDevice
-      //   List<String> deviceScores = ["24", "20", "80"];
-      //   List<Threat> deviceThreats = _threatNode.getThreats();
-      //   List<ThreatScore> threatsScore = [];
-      //   for (int i = 0; i < deviceThreats.length; i++) {
-      //     threatsScore.add(
-      //         ThreatScore(threat: deviceThreats[i], score: deviceScores[i]));
-      //   }
-      //   geigerDevice.setGeigerScoreDevice(
-      //       geigerScoreThreats: GeigerScoreThreats(
-      //           threatScores: threatsScore, geigerScore: "23"));
-      //
-      //   //set deviceRecommendation in device node
-      //   geigerDevice.setDeviceRecommendation();
+      setUp(() async {
+        //   // set currentDevice
+
+        await geigerDevice
+            .setCurrentDeviceInfo(Device(owner: await geigerUser.getUserInfo));
+        //   // set list of threats for currentDevice
+        //   List<String> deviceScores = ["24", "20", "80"];
+        //   List<Threat> deviceThreats = _threatNode.getThreats();
+        //   List<ThreatScore> threatsScore = [];
+        //   for (int i = 0; i < deviceThreats.length; i++) {
+        //     threatsScore.add(
+        //         ThreatScore(threat: deviceThreats[i], score: deviceScores[i]));
+        //   }
+        //   geigerDevice.setGeigerScoreDevice(
+        //       geigerScoreThreats: GeigerScoreThreats(
+        //           threatScores: threatsScore, geigerScore: "23"));
+        //
+        //   //set deviceRecommendation in device node
+        //   geigerDevice.setDeviceRecommendation();
+      });
+
+      test("getGeigerCurrentDeviceInfo", () async {
+        print("Device details: ${await geigerDevice.getDeviceInfo}");
+      });
+
+      // test("getGeigerScoreDeviceThreatScore", () async {
+      //   await geigerDevice.getGeigerScoreDeviceThreatScores();
       // });
-
-      test("getGeigerCurrentDeviceInfo", () {
-        print("Device details: ${geigerDevice.getDeviceInfo}");
-      });
-
-      test("getGeigerScoreDeviceThreatScore", () {
-        geigerDevice.getGeigerScoreDeviceThreatScores();
-      });
-
-      // getCurrentDeviceGeigerThreatRecommendation
-      test("getCurrentDeviceGeigerThreatRecommendation", () {
-        var r = geigerDevice.getDeviceThreatRecommendation();
-        print(r);
-      });
+      //
+      // // getCurrentDeviceGeigerThreatRecommendation
+      // test("getCurrentDeviceGeigerThreatRecommendation", () async {
+      //   var r = await geigerDevice.getDeviceThreatRecommendation();
+      //   print(r);
+      // });
 
       // test("setDeviceImplementedRecommendation", () {
       //   String r = geigerDevice.getDeviceThreatRecommendation(threat: Threat(threatId: "t2", name: "malware"))[0]
@@ -235,8 +234,8 @@ class GeigerRecommendationTest {
       //   ]);
       // });
 
-      test("getRecommendation", () {
-        var r = geigerRecommendation.getRecommendations;
+      test("getRecommendation", () async {
+        var r = await geigerRecommendation.getRecommendations;
         print(r);
       });
 
@@ -257,17 +256,19 @@ class GeigerApiTest {
   void onBtnPressedTest() {
     group("RecommendationGroupTest", () {
       setUp(() async {
-        await GeigerApi(_storageController).initialGeigerDummyData(
+        print(await GeigerApi(_storageController).initialGeigerDummyData(
             TermsAndConditions(
-                ageCompliant: true, agreedPrivacy: true, signedConsent: true));
+                ageCompliant: true, agreedPrivacy: true, signedConsent: true)));
       });
-      test("getDataFrom OnBtnPressed", () async {
-        String result = await GeigerApi(_storageController).onBtnPressed();
-        print(result);
-      });
-    });
-    tearDown(() {
-      _storageController.flush();
+      // test(("initialGeigerDummyData "), () async {
+      //   await GeigerApi(_storageController).initialGeigerDummyData(
+      //       TermsAndConditions(
+      //           ageCompliant: true, agreedPrivacy: true, signedConsent: true));
+      // });
+      // test("getDataFrom OnBtnPressed", () async {
+      //   String result = await GeigerApi(_storageController).onBtnPressed();
+      //   print(result);
+      // });
     });
   }
 }

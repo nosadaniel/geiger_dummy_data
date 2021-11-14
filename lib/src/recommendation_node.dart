@@ -19,11 +19,11 @@ class RecommendationNode {
   /// @param optional language locale object
   /// @Param list of recommendation object
 
-  void setGlobalRecommendationsNode(
-      {Locale? language, required List<Recommendation> recommendations}) {
+  Future<void> setGlobalRecommendationsNode(
+      {Locale? language, required List<Recommendation> recommendations}) async {
     try {
       for (Recommendation recommendation in recommendations) {
-        _node = _storageController
+        _node = await _storageController
             .get(':Global:recommendations:${recommendation.recommendationId}');
 
         //create a NodeValue
@@ -48,7 +48,8 @@ class RecommendationNode {
     }
   }
 
-  void _setThreatsNodeValue(Locale? language, Recommendation recommendation) {
+  Future<void> _setThreatsNodeValue(
+      Locale? language, Recommendation recommendation) async {
     //create a NodeValue
     if (recommendation.relatedThreatsWeight != null &&
         recommendation.recommendationType != null) {
@@ -139,37 +140,43 @@ class RecommendationNode {
   }
 
   ///from return list of recommendations from localStorage
-  List<Recommendation> get getRecommendations {
+  Future<List<Recommendation>> get getRecommendations async {
     List<Recommendation> r = [];
 
-    _node = _storageController.get(":Global:recommendations");
-    for (String recId in _node!.getChildNodesCsv().split(",")) {
-      Node recNode = _storageController.get(":Global:recommendations:$recId");
+    _node = await _storageController.get(":Global:recommendations");
+    for (String recId
+        in await _node!.getChildNodesCsv().then((value) => value.split(','))) {
+      Node recNode =
+          await _storageController.get(":Global:recommendations:$recId");
 
-      if (recNode.getValue("recommendationType") != null &&
-          recNode.getValue("relatedThreatsWeights") != null) {
+      if (await recNode.getValue("recommendationType") != null &&
+          await recNode.getValue("relatedThreatsWeights") != null) {
         r.add(Recommendation(
           recommendationId: recId,
-          recommendationType:
-              recNode.getValue("recommendationType")!.getValue("en").toString(),
-          relatedThreatsWeight: ThreatWeight.convertFromJson(recNode
-              .getValue("relatedThreatsWeights")!
-              .getValue("en")
-              .toString()),
+          recommendationType: await recNode
+              .getValue("recommendationType")
+              .then((value) => value!.getValue("en")!),
+          relatedThreatsWeight: ThreatWeight.convertFromJson(await recNode
+              .getValue("relatedThreatsWeights")
+              .then((value) => value!.getValue("en")!)),
           description: DescriptionShortLong(
-              shortDescription:
-                  recNode.getValue("short")!.getValue("en").toString(),
-              longDescription:
-                  recNode.getValue("long")!.getValue("en").toString()),
+              shortDescription: await recNode
+                  .getValue("short")
+                  .then((value) => value!.getValue("en")!),
+              longDescription: await recNode
+                  .getValue("long")
+                  .then((value) => value!.getValue("en")!)),
         ));
       } else {
         r.add(Recommendation(
           recommendationId: recId,
           description: DescriptionShortLong(
-              shortDescription:
-                  recNode.getValue("short")!.getValue("en").toString(),
-              longDescription:
-                  recNode.getValue("long")!.getValue("en").toString()),
+              shortDescription: await recNode
+                  .getValue("short")
+                  .then((value) => value!.getValue("en")!),
+              longDescription: await recNode
+                  .getValue("long")
+                  .then((value) => value!.getValue("en")!)),
         ));
       }
     }
@@ -202,30 +209,33 @@ class RecommendationNode {
   /// @param option language as string
   /// @param recommendationType as string
   /// @return list of Recommendation object
-  List<Recommendation> getThreatRecommendation(
-      {String language: "en", required String recommendationType}) {
+  Future<List<Recommendation>> getThreatRecommendation(
+      {String language: "en", required String recommendationType}) async {
     List<Recommendation> r = [];
     try {
-      _node = _storageController.get(":Global:recommendations");
-      for (String recId in _node!.getChildNodesCsv().split(",")) {
-        Node recNode = _storageController.get(":Global:recommendations:$recId");
+      _node = await _storageController.get(":Global:recommendations");
+      for (String recId in await _node!
+          .getChildNodesCsv()
+          .then((value) => value.split(","))) {
+        Node recNode =
+            await _storageController.get(":Global:recommendations:$recId");
         DescriptionShortLong descriptionShortLong = DescriptionShortLong(
-            shortDescription:
-                recNode.getValue("short")!.getValue(language).toString(),
-            longDescription:
-                recNode.getValue("long")!.getValue(language).toString());
+            shortDescription: await recNode
+                .getValue("short")
+                .then((value) => value!.getValue(language)!),
+            longDescription: await recNode
+                .getValue("long")
+                .then((value) => value!.getValue(language)!));
 
-        if (recNode.getValue("recommendationType") != null &&
-            recNode.getValue("relatedThreatsWeights") != null) {
+        if (await recNode.getValue("recommendationType") != null &&
+            await recNode.getValue("relatedThreatsWeights") != null) {
           List<ThreatWeight> relatedThreatsWeight =
-              ThreatWeight.convertFromJson(recNode
-                  .getValue("relatedThreatsWeights")!
-                  .getValue(language)
-                  .toString());
-          String type = recNode
-              .getValue("recommendationType")!
-              .getValue(language)
-              .toString();
+              ThreatWeight.convertFromJson(await recNode
+                  .getValue("relatedThreatsWeights")
+                  .then((value) => value!.getValue(language)!));
+          String type = await recNode
+              .getValue("recommendationType")
+              .then((value) => value!.getValue(language)!);
           if (type == recommendationType) {
             r.add(Recommendation(
                 recommendationId: recId,

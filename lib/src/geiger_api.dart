@@ -26,12 +26,14 @@ class GeigerApi implements Geiger {
 
     try {
       //add aggregate,//userScore // deviceScore
-      geigerScoreThreats.add(_userNode.getGeigerScoreAggregateThreatScore());
-      geigerScoreThreats.add(_userNode.getGeigerScoreUserThreatScores());
-      geigerScoreThreats.add(_deviceNode.getGeigerScoreDeviceThreatScores());
+      geigerScoreThreats
+          .add(await _userNode.getGeigerScoreAggregateThreatScore());
+      geigerScoreThreats.add(await _userNode.getGeigerScoreUserThreatScores());
+      geigerScoreThreats
+          .add(await _deviceNode.getGeigerScoreDeviceThreatScores());
       return jsonEncode(GeigerData(
           geigerScoreThreats: geigerScoreThreats,
-          recommendations: _recommendationNode.getRecommendations));
+          recommendations: await _recommendationNode.getRecommendations));
     } catch (e) {
       throw Exception(
           "Node aggregate, user, device and recommendation not created");
@@ -42,15 +44,16 @@ class GeigerApi implements Geiger {
   ///@param TermsAndCondition object
   ///@return a Future void
   @override
-  Future<void> initialGeigerDummyData(
+  Future<bool> initialGeigerDummyData(
       TermsAndConditions termsAndConditions) async {
     UserNode _userNode = UserNode(_storageController);
     DeviceNode _deviceNode = DeviceNode(_storageController);
     ThreatNode _threatNode = ThreatNode(_storageController);
+    User user = await _userNode.getUserInfo;
 
     if (_isTermAgreed(termsAndConditions: termsAndConditions)) {
       //device
-      _deviceNode.setCurrentDeviceInfo = Device(owner: _userNode.getUserInfo!);
+      _deviceNode.setCurrentDeviceInfo(Device(owner: user));
       print(_deviceNode.getDeviceInfo);
       //set threat
       _threatNode.setGlobalThreatsNode(
@@ -66,7 +69,7 @@ class GeigerApi implements Geiger {
               random.nextInt(100) +
               10); //This will generate a list of 3 integers from 10 to 99 (inclusive).
 
-      List<Threat> AggThreats = _threatNode.getThreats();
+      List<Threat> AggThreats = await _threatNode.getThreats();
       List<ThreatScore> aggThreatsScore = [];
       for (int i = 0; i < AggThreats.length; i++) {
         aggThreatsScore.add(
@@ -83,7 +86,7 @@ class GeigerApi implements Geiger {
           (_) =>
               random.nextInt(100) +
               10); //This will generate a list of 3 integers from 10 to 99 (inclusive).
-      List<Threat> userThreats = _threatNode.getThreats();
+      List<Threat> userThreats = await _threatNode.getThreats();
       List<ThreatScore> userThreatsScore = [];
       for (int i = 0; i < userThreats.length; i++) {
         userThreatsScore.add(ThreatScore(
@@ -100,7 +103,7 @@ class GeigerApi implements Geiger {
           (_) =>
               random.nextInt(100) +
               10); //This will generate a list of 3 integers from 10 to 99 (inclusive).
-      List<Threat> deviceThreats = _threatNode.getThreats();
+      List<Threat> deviceThreats = await _threatNode.getThreats();
       List<ThreatScore> deviceThreatsScore = [];
       for (int i = 0; i < deviceThreats.length; i++) {
         deviceThreatsScore.add(ThreatScore(
@@ -112,7 +115,7 @@ class GeigerApi implements Geiger {
               geigerScore: (random.nextInt(90) + 20).toString()));
 
       //set global recommendations
-      List<Threat> threats = _threatNode.getThreats();
+      List<Threat> threats = await _threatNode.getThreats();
       List<ThreatWeight> threatWeight = [];
       List<String> weights = ["High", "Medium", "Low"];
       for (int i = 0; i < threats.length; i++) {
@@ -155,6 +158,7 @@ class GeigerApi implements Geiger {
       _userNode.setUserThreatRecommendation();
       //set deviceRecommendation
       _deviceNode.setDeviceRecommendation();
+      return true;
     } else {
       throw Exception("terms and conditions must be checked");
     }
@@ -164,8 +168,8 @@ class GeigerApi implements Geiger {
     if (termsAndConditions.agreedPrivacy == true &&
         termsAndConditions.signedConsent == true &&
         termsAndConditions.ageCompliant == true) {
-      UserNode(_storageController).setUserInfo =
-          User(termsAndConditions: termsAndConditions, consent: Consent());
+      UserNode(_storageController).setUserInfo(
+          User(termsAndConditions: termsAndConditions, consent: Consent()));
       return true;
     }
     return false;
