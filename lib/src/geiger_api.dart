@@ -50,11 +50,12 @@ class GeigerApi implements Geiger {
     UserNode _userNode = UserNode(_storageController);
     DeviceNode _deviceNode = DeviceNode(_storageController);
     ThreatNode _threatNode = ThreatNode(_storageController);
-    User user = await _userNode.getUserInfo;
 
-    if (_isTermAgreed(termsAndConditions: termsAndConditions)) {
+    Device device = await _deviceNode.getDeviceInfo;
+
+    if (_isTermAgreed(termsAndConditions: termsAndConditions, device: device)) {
       //device
-      _deviceNode.setCurrentDeviceInfo(Device(owner: user));
+      _deviceNode.setCurrentDeviceInfo(Device());
       print(_deviceNode.getDeviceInfo);
       //set threat
       _threatNode.setGlobalThreatsNode(
@@ -165,12 +166,16 @@ class GeigerApi implements Geiger {
     }
   }
 
-  bool _isTermAgreed({required TermsAndConditions termsAndConditions}) {
+  bool _isTermAgreed(
+      {required TermsAndConditions termsAndConditions,
+      required Device device}) {
     if (termsAndConditions.agreedPrivacy == true &&
         termsAndConditions.signedConsent == true &&
         termsAndConditions.ageCompliant == true) {
-      UserNode(_storageController).setUserInfo(
-          User(termsAndConditions: termsAndConditions, consent: Consent()));
+      UserNode(_storageController).setUserInfo(User(
+          termsAndConditions: termsAndConditions,
+          consent: Consent(),
+          deviceOwner: device));
       return true;
     }
     return false;

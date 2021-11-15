@@ -20,13 +20,15 @@ void main() {
   //     GeigerRecommendationTest(_storageController);
   // geigerRecommendationTest.recommendationGroupTest();
   //
+
+  // //geigerDeviceTest
+  GeigerDeviceTest geigerDeviceTest = GeigerDeviceTest(_storageController);
+  geigerDeviceTest.deviceGroupTest();
+
   //geigerUserTest
   GeigerUserTest geigerUserTest = GeigerUserTest(_storageController);
   geigerUserTest.userGroupTest();
   //
-  // //geigerDeviceTest
-  GeigerDeviceTest geigerDeviceTest = GeigerDeviceTest(_storageController);
-  geigerDeviceTest.deviceGroupTest();
 }
 
 class GeigerThreatTest {
@@ -55,6 +57,7 @@ class GeigerUserTest {
 
   void userGroupTest() {
     UserNode geigerUser = UserNode(_storageController);
+    DeviceNode _deviceNode = DeviceNode(_storageController);
     //ThreatNode _threatNode = ThreatNode(_storageController);
     group("currentUserGroupTest:", () {
       setUp(() async {
@@ -62,7 +65,8 @@ class GeigerUserTest {
         await geigerUser.setUserInfo(User(
             userName: "John Doe",
             termsAndConditions: TermsAndConditions(),
-            consent: Consent()));
+            consent: Consent(),
+            deviceOwner: await _deviceNode.getDeviceInfo));
         // //
         //   //setCurrentGeigerUserScore
         //   List<String> userScores = ["44", "50", "70"];
@@ -140,7 +144,7 @@ class GeigerDeviceTest {
 
   void deviceGroupTest() {
     DeviceNode geigerDevice = DeviceNode(_storageController);
-    UserNode geigerUser = UserNode(_storageController);
+
     // ThreatNode _threatNode = ThreatNode(_storageController);
     group("GeigerDeviceGroupTest", () {
       setUp(() async {
@@ -149,8 +153,7 @@ class GeigerDeviceTest {
         SearchCriteria criteria = SearchCriteria(":Users");
         _storageController.registerChangeListener(listener, criteria);
 
-        await geigerDevice
-            .setCurrentDeviceInfo(Device(owner: await geigerUser.getUserInfo));
+        await geigerDevice.setCurrentDeviceInfo(Device(name: "Iphone"));
 
         //   // set list of threats for currentDevice
         //   List<String> deviceScores = ["24", "20", "80"];

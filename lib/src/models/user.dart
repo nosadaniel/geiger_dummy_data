@@ -3,6 +3,9 @@ library geiger_dummy_data;
 import 'dart:convert';
 
 import 'package:equatable/equatable.dart';
+import 'package:geiger_dummy_data/geiger_dummy_data.dart';
+import 'package:geiger_dummy_data/src/models/mse.dart';
+import 'package:geiger_dummy_data/src/models/share_info.dart';
 import 'package:json_annotation/json_annotation.dart';
 
 import '/src/exceptions/custom_format_exception.dart';
@@ -19,17 +22,25 @@ class User extends Equatable {
   final String userId;
   final String? userName;
   final String language;
-  final bool? owner;
+  final bool? supervisor;
   final TermsAndConditions termsAndConditions;
   final Consent consent;
+  final Device deviceOwner;
+  final List<Device>? pairedDevices;
+  final ShareInfo? shareInfo;
+  final Mse? mse;
 
   User(
       {String? userId,
       this.userName,
       this.language: "en",
-      this.owner: false,
+      this.supervisor: false,
       required this.termsAndConditions,
-      required this.consent})
+      required this.consent,
+      required this.deviceOwner,
+      this.pairedDevices,
+      this.shareInfo,
+      this.mse})
       : userId = userId ?? GeigerConstant.uuid;
 
   factory User.fromJson(Map<String, dynamic> json) {
@@ -95,10 +106,20 @@ class User extends Equatable {
   @override
   String toString() {
     super.toString();
-    return '{"userId":$userId,"userName":$userName, "language":$language, "owner":$owner, "termsAndConditions":$termsAndConditions, "consent":$consent}';
+    return '{"userId":$userId,"userName":$userName, "language":$language, "owner":$supervisor, "termsAndConditions":$termsAndConditions, "consent":$consent, "deviceOwner":$deviceOwner, "pairedDevices":$pairedDevices, "shareInfo": $shareInfo, "mse":$mse}';
   }
 
   @override
-  List<Object?> get props =>
-      [userId, userName, language, owner, termsAndConditions, consent];
+  List<Object?> get props => [
+        userId,
+        userName,
+        language,
+        supervisor,
+        termsAndConditions,
+        consent,
+        deviceOwner,
+        pairedDevices,
+        shareInfo,
+        mse
+      ];
 }

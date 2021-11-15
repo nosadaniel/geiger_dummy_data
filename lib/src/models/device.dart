@@ -9,20 +9,18 @@ import 'package:json_annotation/json_annotation.dart';
 import '/src/exceptions/custom_format_exception.dart';
 import '/src/exceptions/custom_invalid_map_key_exception.dart';
 import '../constant/constant.dart';
-import '../models/user.dart';
 
 part 'device.g.dart';
 
 @JsonSerializable(explicitToJson: true)
 class Device extends Equatable {
   final String deviceId;
-  final User owner;
+
   final String? name;
   final String? type;
   final List<Tool>? tools;
 
-  Device(
-      {String? deviceId, required this.owner, this.name, this.type, this.tools})
+  Device({String? deviceId, this.name, this.type, this.tools})
       : deviceId = deviceId ?? GeigerConstant.uuid;
 
   factory Device.fromJson(Map<String, dynamic> json) {
@@ -87,10 +85,10 @@ class Device extends Equatable {
   @override
   String toString() {
     super.toString();
-    return '{"deviceId":$deviceId, "owner":$owner, "name":$name, "type":$type, "tools":$tools}';
+    return '{"deviceId":$deviceId,  "name":$name, "type":$type, "tools":$tools}';
   }
 
   @override
   // TODO: implement props
-  List<Object?> get props => [deviceId, owner, name, type, tools];
+  List<Object?> get props => [deviceId, name, type, tools];
 }
