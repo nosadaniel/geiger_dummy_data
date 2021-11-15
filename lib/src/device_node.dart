@@ -34,7 +34,7 @@ class DeviceNode extends RecommendationNode {
 
       NodeValue currentDeviceId =
           NodeValueImpl("currentDevice", currentDeviceInfo.deviceId);
-      await _node!.addOrUpdateValue(currentDeviceId);
+      await _node!.updateValue(currentDeviceId);
       //store deviceInfo in deviceDetails Nodevalue
 
       localNodeValue = NodeValueImpl(

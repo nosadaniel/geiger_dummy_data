@@ -1,5 +1,6 @@
 library geiger_dummy_data;
 
+import 'dart:async';
 import 'dart:convert';
 import 'dart:math';
 
@@ -173,6 +174,48 @@ class GeigerApi implements Geiger {
       return true;
     }
     return false;
+  }
+}
+
+class Event {
+  final EventType _event;
+  final Node? _old;
+  final Node? _new;
+
+  Event(this._event, this._old, this._new);
+
+  EventType get type => _event;
+
+  Node? get oldNode => _old;
+
+  Node? get newNode => _new;
+
+  @override
+  String toString() {
+    return '${type.toString()} ${oldNode.toString()}=>${newNode.toString()}';
+  }
+}
+
+class CustomStorageListener implements StorageListener {
+  List<Event> events = <Event>[];
+  @override
+  void gotStorageChange(EventType event, Node? oldNode, Node? newNode) {
+    Event e = Event(event, oldNode, newNode);
+    events.add(e);
+  }
+
+  Future<List<Event>> getNumberEvents(int number,
+      {int timeout = 1000000}) async {
+    int start = DateTime.now().millisecondsSinceEpoch;
+    List<Event> ret = await Future.doWhile(() =>
+            events.length < number &&
+            start + 1000 * timeout > DateTime.now().millisecondsSinceEpoch)
+        .then((value) => events);
+    if (events.length < number) {
+      throw TimeoutException(
+          'Timeout reached while waiting for $number events');
+    }
+    return ret;
   }
 }
 

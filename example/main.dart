@@ -116,20 +116,20 @@ void main() async {
     await getThreats();
   }
 
-  Future<String> getCurrentUserId() async {
-    try {
-      Node _node = await _storageController.get(":Local");
-      String currentUser = await _node
-          .getValue("currentUser")
-          .then((value) => value!.getValue("en")!);
-      return currentUser;
-    } on StorageException {
-      throw ("Node :Local not found");
-    }
-  }
+  // Future<String> getCurrentUserId() async {
+  //   try {
+  //     Node _node = await _storageController.get(":Local");
+  //     String currentUser = await _node
+  //         .getValue("currentUser")
+  //         .then((value) => value!.getValue("en")!);
+  //     return currentUser;
+  //   } on StorageException {
+  //     throw ("Node :Local not found");
+  //   }
+  // }
 
-  //print("Global Threats: ${getListThreat()}");
-  print("CurrentUser Id : ${await getCurrentUserId()}");
+  print("Global Threats: ${getListThreat()}");
+  //print("CurrentUser Id : ${await getCurrentUserId()}");
   // // display terminal threat info
   // print("Threats: ${getThreatInfo()}");
   //

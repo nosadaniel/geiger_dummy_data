@@ -31,7 +31,7 @@ class UserNode extends RecommendationNode {
 
       NodeValue currentUserId =
           NodeValueImpl("currentUser", currentUserInfo.userId);
-      await _node!.addOrUpdateValue(currentUserId);
+      await _node!.updateValue(currentUserId);
       //store userInfo in userDetails Nodevalue
       NodeValue localNodeValue =
           NodeValueImpl("userDetails", User.convertUserToJson(currentUserInfo));

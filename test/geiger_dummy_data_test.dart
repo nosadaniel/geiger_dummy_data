@@ -145,9 +145,13 @@ class GeigerDeviceTest {
     group("GeigerDeviceGroupTest", () {
       setUp(() async {
         //   // set currentDevice
+        CustomStorageListener listener = CustomStorageListener();
+        SearchCriteria criteria = SearchCriteria(":Users");
+        _storageController.registerChangeListener(listener, criteria);
 
         await geigerDevice
             .setCurrentDeviceInfo(Device(owner: await geigerUser.getUserInfo));
+
         //   // set list of threats for currentDevice
         //   List<String> deviceScores = ["24", "20", "80"];
         //   List<Threat> deviceThreats = _threatNode.getThreats();
