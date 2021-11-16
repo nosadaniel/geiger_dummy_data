@@ -24,6 +24,19 @@ class DeviceNode extends RecommendationNode {
   NodeValue? _geigerThreatScores;
   NodeValue? _geigerNumMetrics;
 
+  ///get currentDeviceId
+  Future<String> get _getCurrentDeviceId async {
+    try {
+      Node _node = await _storageController.get(":Local");
+      String currentUser = await _node
+          .getValue("currentDevice")
+          .then((value) => value!.getValue("en")!);
+      return currentUser;
+    } on StorageException {
+      throw ("Node :Local not found");
+    }
+  }
+
   /// <p>set deviceInfo in currentDeviceNew NodeValue in :Local</p>
   /// @param user object
   /// @throws :Local not found on StorageException
@@ -32,11 +45,7 @@ class DeviceNode extends RecommendationNode {
     try {
       _node = await _storageController.get(":Local");
 
-      NodeValue currentDeviceId =
-          NodeValueImpl("currentDevice", currentDeviceInfo.deviceId);
-      await _node!.updateValue(currentDeviceId);
-      //store deviceInfo in deviceDetails Nodevalue
-
+      currentDeviceInfo.deviceId = await _getCurrentDeviceId;
       localNodeValue = NodeValueImpl(
           "deviceDetails", Device.convertDeviceToJson(currentDeviceInfo));
       await _node!.addOrUpdateValue(localNodeValue!);

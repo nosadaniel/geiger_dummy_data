@@ -2,26 +2,23 @@ library geiger_dummy_data;
 
 import 'dart:convert';
 
-import 'package:equatable/equatable.dart';
 import 'package:geiger_dummy_data/src/models/tool.dart';
 import 'package:json_annotation/json_annotation.dart';
 
 import '/src/exceptions/custom_format_exception.dart';
 import '/src/exceptions/custom_invalid_map_key_exception.dart';
-import '../constant/constant.dart';
 
 part 'device.g.dart';
 
 @JsonSerializable(explicitToJson: true)
-class Device extends Equatable {
-  final String deviceId;
+class Device {
+  String? deviceId;
 
   final String? name;
   final String? type;
   final List<Tool>? tools;
 
-  Device({String? deviceId, this.name, this.type, this.tools})
-      : deviceId = deviceId ?? GeigerConstant.uuid;
+  Device({this.deviceId, this.name, this.type, this.tools});
 
   factory Device.fromJson(Map<String, dynamic> json) {
     try {
@@ -87,8 +84,4 @@ class Device extends Equatable {
     super.toString();
     return '{"deviceId":$deviceId,  "name":$name, "type":$type, "tools":$tools}';
   }
-
-  @override
-  // TODO: implement props
-  List<Object?> get props => [deviceId, name, type, tools];
 }

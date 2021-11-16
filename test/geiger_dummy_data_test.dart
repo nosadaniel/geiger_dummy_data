@@ -63,10 +63,11 @@ class GeigerUserTest {
       setUp(() async {
         //setCurrentUser
         await geigerUser.setUserInfo(User(
-            userName: "John Doe",
-            termsAndConditions: TermsAndConditions(),
-            consent: Consent(),
-            deviceOwner: await _deviceNode.getDeviceInfo));
+          userName: "John Doe",
+          termsAndConditions: TermsAndConditions(),
+          consent: Consent(),
+          deviceOwner: await _deviceNode.getDeviceInfo,
+        ));
         // //
         //   //setCurrentGeigerUserScore
         //   List<String> userScores = ["44", "50", "70"];

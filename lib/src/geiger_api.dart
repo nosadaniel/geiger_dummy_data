@@ -169,15 +169,15 @@ class GeigerApi implements Geiger {
   bool _isTermAgreed(
       {required TermsAndConditions termsAndConditions,
       required Device device}) {
-    if (termsAndConditions.agreedPrivacy == true &&
-        termsAndConditions.signedConsent == true &&
-        termsAndConditions.ageCompliant == true) {
-      UserNode(_storageController).setUserInfo(User(
-          termsAndConditions: termsAndConditions,
-          consent: Consent(),
-          deviceOwner: device));
-      return true;
-    }
+    // if (termsAndConditions.agreedPrivacy == true &&
+    //     termsAndConditions.signedConsent == true &&
+    //     termsAndConditions.ageCompliant == true) {
+    //   UserNode(_storageController).setUserInfo(User(
+    //       termsAndConditions: termsAndConditions,
+    //       consent: Consent(),
+    //       deviceOwner: device));
+    //   return true;
+    // }
     return false;
   }
 }

@@ -22,6 +22,19 @@ class UserNode extends RecommendationNode {
   NodeValue? _geigerThreatScores;
   NodeValue? _geigerNumMetrics;
 
+  ///get currentUserId
+  Future<String> get _getCurrentUserId async {
+    try {
+      Node _node = await _storageController.get(":Local");
+      String currentUser = await _node
+          .getValue("currentUser")
+          .then((value) => value!.getValue("en")!);
+      return currentUser;
+    } on StorageException {
+      throw ("Node :Local not found");
+    }
+  }
+
   /// <p>set userInfo in currentUser NodeValue in :Local</p>
   /// @param user object
   /// @throws :Local not found on StorageException
@@ -29,9 +42,8 @@ class UserNode extends RecommendationNode {
     try {
       _node = await _storageController.get(":Local");
 
-      NodeValue currentUserId =
-          NodeValueImpl("currentUser", currentUserInfo.userId);
-      await _node!.updateValue(currentUserId);
+      String currentUserId = await _getCurrentUserId;
+      currentUserInfo.userId = currentUserId;
       //store userInfo in userDetails Nodevalue
       NodeValue localNodeValue =
           NodeValueImpl("userDetails", User.convertUserToJson(currentUserInfo));

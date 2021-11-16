@@ -10,6 +10,7 @@ User _$UserFromJson(Map<String, dynamic> json) => User(
       userId: json['userId'] as String?,
       userName: json['userName'] as String?,
       language: json['language'] as String? ?? "en",
+      country: json['country'] as String?,
       supervisor: json['supervisor'] as bool? ?? false,
       termsAndConditions: TermsAndConditions.fromJson(
           json['termsAndConditions'] as Map<String, dynamic>),
@@ -30,6 +31,7 @@ Map<String, dynamic> _$UserToJson(User instance) => <String, dynamic>{
       'userId': instance.userId,
       'userName': instance.userName,
       'language': instance.language,
+      'country': instance.country,
       'supervisor': instance.supervisor,
       'termsAndConditions': instance.termsAndConditions.toJson(),
       'consent': instance.consent.toJson(),
