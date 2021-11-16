@@ -1,3 +1,5 @@
+##0.2.8
+- Breaking change -> intro async/await
 ##0.2.7
 - added initialGeigerDummyData with dynamic data
 
