@@ -2,7 +2,6 @@ library geiger_dummy_data;
 
 import 'dart:async';
 import 'dart:convert';
-import 'dart:math';
 
 import 'package:geiger_localstorage/geiger_localstorage.dart';
 
@@ -47,17 +46,20 @@ class GeigerApi implements Geiger {
   @override
   Future<bool> initialGeigerDummyData(
       TermsAndConditions termsAndConditions) async {
-    UserNode _userNode = UserNode(_storageController);
+    //UserNode _userNode = UserNode(_storageController);
     DeviceNode _deviceNode = DeviceNode(_storageController);
-    ThreatNode _threatNode = ThreatNode(_storageController);
-
+    //ThreatNode _threatNode = ThreatNode(_storageController);
+    //set device
+    await _deviceNode.setCurrentDeviceInfo(Device());
+    //get device
     Device device = await _deviceNode.getDeviceInfo;
+    print("Device Details: $device");
 
-    if (_isTermAgreed(termsAndConditions: termsAndConditions, device: device)) {
+    if (await _isTermAgreed(
+        termsAndConditions: termsAndConditions, device: device)) {
       //device
       _deviceNode.setCurrentDeviceInfo(Device());
-      print(_deviceNode.getDeviceInfo);
-      //set threat
+      /*//set threat
       _threatNode.setGlobalThreatsNode(
           threats: [Threat(name: "phishing"), Threat(name: "Malware")]);
 
@@ -160,24 +162,26 @@ class GeigerApi implements Geiger {
       _userNode.setUserThreatRecommendation();
       //set deviceRecommendation
       _deviceNode.setDeviceRecommendation();
+*/
       return true;
     } else {
       throw Exception("terms and conditions must be checked");
     }
   }
 
-  bool _isTermAgreed(
+  Future<bool> _isTermAgreed(
       {required TermsAndConditions termsAndConditions,
-      required Device device}) {
-    // if (termsAndConditions.agreedPrivacy == true &&
-    //     termsAndConditions.signedConsent == true &&
-    //     termsAndConditions.ageCompliant == true) {
-    //   UserNode(_storageController).setUserInfo(User(
-    //       termsAndConditions: termsAndConditions,
-    //       consent: Consent(),
-    //       deviceOwner: device));
-    //   return true;
-    // }
+      required Device device}) async {
+    if (termsAndConditions.agreedPrivacy == true &&
+        termsAndConditions.signedConsent == true &&
+        termsAndConditions.ageCompliant == true) {
+      await UserNode(_storageController).setUserInfo(User(
+          termsAndConditions: termsAndConditions,
+          consent: Consent(),
+          deviceOwner: device));
+      print("UserDetails : ${await UserNode(_storageController).getUserInfo}");
+      return true;
+    }
     return false;
   }
 }

@@ -9,7 +9,7 @@ void main() {
       GenericController("test", SqliteMapper("./test.sqlite"));
 
   //GeigerOnBtnPressedTest
-  //GeigerApiTest(_storageController).onBtnPressedTest();
+  GeigerApiTest(_storageController).onBtnPressedTest();
 
   //geigerThreat
   // GeigerThreatTest geigerThreatTest = GeigerThreatTest(_storageController);
@@ -22,13 +22,13 @@ void main() {
   //
 
   // //geigerDeviceTest
-  GeigerDeviceTest geigerDeviceTest = GeigerDeviceTest(_storageController);
-  geigerDeviceTest.deviceGroupTest();
-
-  //geigerUserTest
-  GeigerUserTest geigerUserTest = GeigerUserTest(_storageController);
-  geigerUserTest.userGroupTest();
+  // GeigerDeviceTest geigerDeviceTest = GeigerDeviceTest(_storageController);
+  // geigerDeviceTest.deviceGroupTest();
   //
+  // //geigerUserTest
+  // GeigerUserTest geigerUserTest = GeigerUserTest(_storageController);
+  // geigerUserTest.userGroupTest();
+  // //
 }
 
 class GeigerThreatTest {
@@ -57,17 +57,17 @@ class GeigerUserTest {
 
   void userGroupTest() {
     UserNode geigerUser = UserNode(_storageController);
-    DeviceNode _deviceNode = DeviceNode(_storageController);
+    //DeviceNode _deviceNode = DeviceNode(_storageController);
     //ThreatNode _threatNode = ThreatNode(_storageController);
     group("currentUserGroupTest:", () {
-      setUp(() async {
-        //setCurrentUser
-        await geigerUser.setUserInfo(User(
-          userName: "John Doe",
-          termsAndConditions: TermsAndConditions(),
-          consent: Consent(),
-          deviceOwner: await _deviceNode.getDeviceInfo,
-        ));
+      setUp(() {
+        // //setCurrentUser
+        // await geigerUser.setUserInfo(User(
+        //   userName: "John Doe",
+        //   termsAndConditions: TermsAndConditions(),
+        //   consent: Consent(),
+        //   deviceOwner: await _deviceNode.getDeviceInfo,
+        //));
         // //
         //   //setCurrentGeigerUserScore
         //   List<String> userScores = ["44", "50", "70"];
@@ -148,13 +148,13 @@ class GeigerDeviceTest {
 
     // ThreatNode _threatNode = ThreatNode(_storageController);
     group("GeigerDeviceGroupTest", () {
-      setUp(() async {
-        //   // set currentDevice
-        CustomStorageListener listener = CustomStorageListener();
-        SearchCriteria criteria = SearchCriteria(":Users");
-        _storageController.registerChangeListener(listener, criteria);
-
-        await geigerDevice.setCurrentDeviceInfo(Device(name: "Iphone"));
+      setUp(() {
+        // //   // set currentDevice
+        // CustomStorageListener listener = CustomStorageListener();
+        // SearchCriteria criteria = SearchCriteria(":Users");
+        // _storageController.registerChangeListener(listener, criteria);
+        //
+        // await geigerDevice.setCurrentDeviceInfo(Device(name: "Iphone"));
 
         //   // set list of threats for currentDevice
         //   List<String> deviceScores = ["24", "20", "80"];
@@ -264,9 +264,15 @@ class GeigerApiTest {
   void onBtnPressedTest() {
     group("RecommendationGroupTest", () {
       setUp(() async {
-        print(await GeigerApi(_storageController).initialGeigerDummyData(
+        // bool value = await GeigerApi(_storageController).initialGeigerDummyData(
+        //     TermsAndConditions(
+        //         ageCompliant: true, agreedPrivacy: true, signedConsent: true));
+      });
+      test("testInitialGeigerDummyData", () async {
+        bool value = await GeigerApi(_storageController).initialGeigerDummyData(
             TermsAndConditions(
-                ageCompliant: true, agreedPrivacy: true, signedConsent: true)));
+                ageCompliant: true, agreedPrivacy: true, signedConsent: true));
+        expect(await value, true);
       });
       // test(("initialGeigerDummyData "), () async {
       //   await GeigerApi(_storageController).initialGeigerDummyData(
