@@ -1,3 +1,5 @@
+##0.2.9
+- Fixed issues with InitialGeigerDummy
 ##0.2.8
 - Breaking change -> intro async/await
 ##0.2.7
