@@ -12,6 +12,8 @@ User _$UserFromJson(Map<String, dynamic> json) => User(
       language: json['language'] as String? ?? "en",
       country: json['country'] as String?,
       supervisor: json['supervisor'] as bool? ?? false,
+      cert: json['cert'] as String?,
+      profAss: json['profAss'] as String?,
       termsAndConditions: TermsAndConditions.fromJson(
           json['termsAndConditions'] as Map<String, dynamic>),
       consent: Consent.fromJson(json['consent'] as Map<String, dynamic>),
@@ -33,6 +35,8 @@ Map<String, dynamic> _$UserToJson(User instance) => <String, dynamic>{
       'language': instance.language,
       'country': instance.country,
       'supervisor': instance.supervisor,
+      'cert': instance.cert,
+      'profAss': instance.profAss,
       'termsAndConditions': instance.termsAndConditions.toJson(),
       'consent': instance.consent.toJson(),
       'deviceOwner': instance.deviceOwner.toJson(),

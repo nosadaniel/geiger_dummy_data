@@ -14,9 +14,9 @@ part 'device.g.dart';
 class Device {
   String? deviceId;
 
-  final String? name;
-  final String? type;
-  final List<Tool>? tools;
+  String? name;
+  String? type;
+  List<Tool>? tools;
 
   Device({this.deviceId, this.name, this.type, this.tools});
 

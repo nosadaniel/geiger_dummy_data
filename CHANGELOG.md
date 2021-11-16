@@ -1,3 +1,5 @@
+##0.3.0
+- support for reactive programming
 ##0.2.9
 - Fixed issues with InitialGeigerDummy
 ##0.2.8

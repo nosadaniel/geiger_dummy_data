@@ -18,16 +18,18 @@ part 'user.g.dart';
 //Equatable makes it easy to compare objects
 class User {
   String? userId;
-  final String? userName;
-  final String language;
-  final String? country;
-  final bool? supervisor;
-  final TermsAndConditions termsAndConditions;
-  final Consent consent;
-  final Device deviceOwner;
+  String? userName;
+  String language;
+  String? country;
+  bool supervisor;
+  String? cert;
+  String? profAss;
+  TermsAndConditions termsAndConditions;
+  Consent consent;
+  Device deviceOwner;
   List<Device>? pairedDevices = <Device>[];
-  final ShareInfo? shareInfo;
-  final Mse? mse;
+  ShareInfo? shareInfo;
+  Mse? mse;
 
   User(
       {this.userId,
@@ -35,6 +37,8 @@ class User {
       this.language: "en",
       this.country,
       this.supervisor: false,
+      this.cert,
+      this.profAss,
       required this.termsAndConditions,
       required this.consent,
       required this.deviceOwner,
@@ -105,6 +109,6 @@ class User {
   @override
   String toString() {
     super.toString();
-    return '{"userId":$userId,"userName":$userName, "language":$language, "owner":$supervisor, "termsAndConditions":$termsAndConditions, "consent":$consent, "deviceOwner":$deviceOwner, "pairedDevices":$pairedDevices, "shareInfo": $shareInfo, "mse":$mse}';
+    return '{"userId":$userId,"userName":$userName, "language":$language, "supervisor":$supervisor,"cert":$cert, "profAss":$profAss, "termsAndConditions":$termsAndConditions, "consent":$consent, "deviceOwner":$deviceOwner, "pairedDevices":$pairedDevices, "shareInfo": $shareInfo, "mse":$mse}';
   }
 }
