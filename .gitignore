@@ -11,3 +11,5 @@
 *.db
 *.idea
 *.sqlite
+/GeigerApi.__MASTERPLUGIN__.state
+testdb

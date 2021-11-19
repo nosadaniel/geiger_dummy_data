@@ -204,13 +204,20 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "2.1.2"
-  geiger_localstorage:
+  geiger_api:
     dependency: "direct main"
+    description:
+      name: geiger_api
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "0.5.0"
+  geiger_localstorage:
+    dependency: transitive
     description:
       name: geiger_localstorage
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "0.6.3"
+    version: "0.6.4"
   glob:
     dependency: transitive
     description:
@@ -386,6 +393,13 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "1.0.1"
+  sorted_list:
+    dependency: transitive
+    description:
+      name: sorted_list
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "1.0.0"
   source_gen:
     dependency: transitive
     description:

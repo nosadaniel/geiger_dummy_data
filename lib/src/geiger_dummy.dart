@@ -2,16 +2,18 @@ library geiger_dummy_data;
 
 import 'dart:async';
 import 'dart:convert';
+import 'dart:math';
 
 import 'package:geiger_localstorage/geiger_localstorage.dart';
 
+import '/src/geiger.dart';
 import '/src/models/geiger_data.dart';
 import '../geiger_dummy_data.dart';
 
-class GeigerApi implements Geiger {
+class GeigerDummy implements Geiger {
   StorageController _storageController;
 
-  GeigerApi(this._storageController);
+  GeigerDummy(this._storageController);
 
   ///<p>implement onBtnPressed function from geiger abstract class</p>
   ///@return a Future of json string
@@ -46,9 +48,9 @@ class GeigerApi implements Geiger {
   @override
   Future<bool> initialGeigerDummyData(
       TermsAndConditions termsAndConditions) async {
-    //UserNode _userNode = UserNode(_storageController);
+    UserNode _userNode = UserNode(_storageController);
     DeviceNode _deviceNode = DeviceNode(_storageController);
-    //ThreatNode _threatNode = ThreatNode(_storageController);
+    ThreatNode _threatNode = ThreatNode(_storageController);
     //set device
     await _deviceNode.setCurrentDeviceInfo(Device());
     //get device
@@ -58,9 +60,9 @@ class GeigerApi implements Geiger {
     if (await _isTermAgreed(
         termsAndConditions: termsAndConditions, device: device)) {
       //device
-      _deviceNode.setCurrentDeviceInfo(Device());
-      /*//set threat
-      _threatNode.setGlobalThreatsNode(
+      await _deviceNode.setCurrentDeviceInfo(Device());
+      //set threat
+      await _threatNode.setGlobalThreatsNode(
           threats: [Threat(name: "phishing"), Threat(name: "Malware")]);
 
       // set random scores
@@ -79,7 +81,7 @@ class GeigerApi implements Geiger {
         aggThreatsScore.add(
             ThreatScore(threat: AggThreats[i], score: AggScores[i].toString()));
       }
-      _userNode.setGeigerScoreAggregate(
+      await _userNode.setGeigerScoreAggregate(
           geigerScoreThreats: GeigerScoreThreats(
               threatScores: aggThreatsScore,
               geigerScore: (random.nextInt(90) + 20).toString()));
@@ -96,7 +98,7 @@ class GeigerApi implements Geiger {
         userThreatsScore.add(ThreatScore(
             threat: userThreats[i], score: userScores[i].toString()));
       }
-      _userNode.setGeigerUserScore(
+      await _userNode.setGeigerUserScore(
           geigerScoreThreats: GeigerScoreThreats(
               threatScores: aggThreatsScore,
               geigerScore: (random.nextInt(90) + 20).toString()));
@@ -126,7 +128,7 @@ class GeigerApi implements Geiger {
         threatWeight.add(ThreatWeight(threat: threats[i], weight: weights[i]));
       }
 
-      RecommendationNode(_storageController)
+      await RecommendationNode(_storageController)
           .setGlobalRecommendationsNode(recommendations: [
         Recommendation(
             recommendationType: "user",
@@ -159,10 +161,9 @@ class GeigerApi implements Geiger {
       ]);
 
       //set userRecommendation
-      _userNode.setUserThreatRecommendation();
+      await _userNode.setUserThreatRecommendation();
       //set deviceRecommendation
-      _deviceNode.setDeviceRecommendation();
-*/
+      await _deviceNode.setDeviceRecommendation();
       return true;
     } else {
       throw Exception("terms and conditions must be checked");

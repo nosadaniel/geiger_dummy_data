@@ -89,15 +89,17 @@ class DeviceNode extends RecommendationNode {
           geigerScore: geigerScoreThreats.geigerScore);
       //print(_node);
     } on StorageException {
-      Node deviceNode = NodeImpl("${currentDevice.deviceId}", ":Devices");
-      _storageController.add(deviceNode);
-      Node giNode = NodeImpl("gi", ":Devices:${currentDevice.deviceId}");
-      _storageController.add(giNode);
-      Node nodeData = NodeImpl("data", ":Devices:${currentDevice.deviceId}:gi");
-      _storageController.add(nodeData);
+      Node deviceNode = NodeImpl(":Devices:${currentDevice.deviceId}", "owner");
+      await _storageController.addOrUpdate(deviceNode);
+      Node giNode = NodeImpl(":Devices:${currentDevice.deviceId}:gi", "owner");
+      await _storageController.addOrUpdate(giNode);
+      Node nodeData =
+          NodeImpl(":Devices:${currentDevice.deviceId}:gi:data", "owner");
+      await _storageController.addOrUpdate(nodeData);
       Node deviceScoreNode = NodeImpl(
-          "GeigerScoreDevice", ":Devices:${currentDevice.deviceId}:gi:data");
-      _storageController.add(deviceScoreNode);
+          ":Devices:${currentDevice.deviceId}:gi:data:GeigerScoreDevice",
+          "owner");
+      await _storageController.addOrUpdate(deviceScoreNode);
       _setDeviceNodeValuesException(language, deviceScoreNode,
           geigerScoreThreats.threatScores, geigerScoreThreats.geigerScore);
     }
@@ -177,8 +179,9 @@ class DeviceNode extends RecommendationNode {
       _storageController.update(_node!);
     } on StorageException {
       Node deviceRecommendationNode = NodeImpl(
-          "recommendations", ":Devices:${currentDevice.deviceId}:gi:data");
-      _storageController.add(deviceRecommendationNode);
+          ":Devices:${currentDevice.deviceId}:gi:data:recommendations",
+          "owner");
+      await _storageController.add(deviceRecommendationNode);
 
       NodeValue threatRecomValue = NodeValueImpl("deviceRecommendations",
           Recommendation.convertToJson(threatRecommendations));
@@ -189,8 +192,8 @@ class DeviceNode extends RecommendationNode {
             Recommendation.convertToJson(threatRecommendations), language);
       }
 
-      deviceRecommendationNode.addOrUpdateValue(threatRecomValue);
-      _storageController.update(deviceRecommendationNode);
+      await deviceRecommendationNode.addOrUpdateValue(threatRecomValue);
+      await _storageController.update(deviceRecommendationNode);
     }
   }
 
@@ -231,9 +234,9 @@ class DeviceNode extends RecommendationNode {
 
       NodeValue implementedRecom = NodeValueImpl("implementedRecommendations",
           Recommendation.convertToJson(implementedRecommendations));
-      _node!.addOrUpdateValue(implementedRecom);
+      await _node!.addOrUpdateValue(implementedRecom);
 
-      _storageController.update(_node!);
+      await _storageController.update(_node!);
       return true;
     } catch (e) {
       log("failed to addOrUpdate implementedRecommendations NodeValue");
@@ -242,9 +245,9 @@ class DeviceNode extends RecommendationNode {
   }
 
   void _setDeviceNodeValues(Locale? language, List<ThreatScore> threatScores,
-      {String geigerScore: "0"}) {
+      {String geigerScore: "0"}) async {
     _geigerScore = NodeValueImpl("GEIGER_score", geigerScore);
-    _node!.addOrUpdateValue(_geigerScore!);
+    await _node!.addOrUpdateValue(_geigerScore!);
     _geigerThreatScores =
         NodeValueImpl("threats_score", ThreatScore.convertToJson(threatScores));
 
@@ -254,18 +257,18 @@ class DeviceNode extends RecommendationNode {
           .setValue(ThreatScore.convertToJson(threatScores), language);
     }
 
-    _node!.addOrUpdateValue(_geigerThreatScores!);
+    await _node!.addOrUpdateValue(_geigerThreatScores!);
     _geigerNumMetrics =
         NodeValueImpl("number_metrics", threatScores.length.toString());
-    _node!.addOrUpdateValue(_geigerNumMetrics!);
+    await _node!.addOrUpdateValue(_geigerNumMetrics!);
 
-    _storageController.update(_node!);
+    await _storageController.update(_node!);
   }
 
   void _setDeviceNodeValuesException(Locale? language, Node deviceScoreNode,
-      List<ThreatScore> threatScores, String geigerScore) {
+      List<ThreatScore> threatScores, String geigerScore) async {
     _geigerScore = NodeValueImpl("GEIGER_score", geigerScore);
-    deviceScoreNode.addOrUpdateValue(_geigerScore!);
+    await deviceScoreNode.addOrUpdateValue(_geigerScore!);
     _geigerThreatScores =
         NodeValueImpl("threats_score", ThreatScore.convertToJson(threatScores));
 
@@ -275,11 +278,11 @@ class DeviceNode extends RecommendationNode {
           .setValue(ThreatScore.convertToJson(threatScores), language);
     }
 
-    deviceScoreNode.addOrUpdateValue(_geigerThreatScores!);
+    await deviceScoreNode.addOrUpdateValue(_geigerThreatScores!);
     _geigerNumMetrics =
         NodeValueImpl("number_metrics", threatScores.length.toString());
-    deviceScoreNode.addOrUpdateValue(_geigerNumMetrics!);
-    _storageController.update(deviceScoreNode);
+    await deviceScoreNode.addOrUpdateValue(_geigerNumMetrics!);
+    await _storageController.update(deviceScoreNode);
   }
 }
 //Todo

@@ -1,3 +1,6 @@
+##0.3.1
+- added geigerApi
+- Fix 
 ##0.3.0
 - support for reactive programming
 ##0.2.9

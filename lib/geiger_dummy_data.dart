@@ -3,13 +3,10 @@ library geiger_dummy_data;
 export '/src/constant/constant.dart';
 export '/src/exceptions/custom_format_exception.dart';
 export '/src/exceptions/custom_invalid_map_key_exception.dart';
-//models
 export '/src/models/geiger_score_threats.dart';
 export 'src/device_node.dart';
 export 'src/geiger.dart';
-export 'src/geiger.dart';
-export 'src/geiger_api.dart';
-export 'src/geiger_api.dart';
+export 'src/geiger_dummy.dart';
 export 'src/models/consent.dart';
 export 'src/models/describe_short_long.dart';
 export 'src/models/device.dart';

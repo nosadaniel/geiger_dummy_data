@@ -85,19 +85,19 @@ class UserNode extends RecommendationNode {
       _setUserNodeValues(language, geigerScoreThreats.threatScores,
           geigerScore: geigerScore);
     } on StorageException {
-      Node userNode = NodeImpl("${currentUser.userId}", ":Users");
-      _storageController.addOrUpdate(userNode);
+      Node userNode = NodeImpl(":Users:${currentUser.userId}", " owner");
+      await _storageController.addOrUpdate(userNode);
 
-      Node giNode = NodeImpl("gi", ":Users:${currentUser.userId}");
-      _storageController.addOrUpdate(giNode);
+      Node giNode = NodeImpl(":Users:${currentUser.userId}:gi", "owner");
+      await _storageController.addOrUpdate(giNode);
 
-      Node nodeData = NodeImpl("data", ":Users:${currentUser.userId}:gi");
-      _storageController.addOrUpdate(nodeData);
+      Node nodeData = NodeImpl(":Users:${currentUser.userId}:gi:data", "owner");
+      await _storageController.addOrUpdate(nodeData);
 
-      Node userScoreNode =
-          NodeImpl("GeigerScoreUser", ":Users:${currentUser.userId}:gi:data");
+      Node userScoreNode = NodeImpl(
+          ":Users:${currentUser.userId}:gi:data:GeigerScoreUser", "owner");
 
-      _storageController.add(userScoreNode);
+      await _storageController.add(userScoreNode);
       _setUserNodeValuesException(language, userScoreNode,
           geigerScoreThreats.threatScores, geigerScoreThreats.geigerScore);
     }
@@ -118,18 +118,18 @@ class UserNode extends RecommendationNode {
       _setUserNodeValues(language, geigerScoreThreats.threatScores,
           geigerScore: geigerScoreThreats.geigerScore);
     } on StorageException {
-      Node userNode = NodeImpl("${currentUser.userId}", ":Users");
-      _storageController.addOrUpdate(userNode);
+      Node userNode = NodeImpl(":Users:${currentUser.userId}", "owner");
+      await _storageController.addOrUpdate(userNode);
 
-      Node giNode = NodeImpl("gi", ":Users:${currentUser.userId}");
-      _storageController.addOrUpdate(giNode);
+      Node giNode = NodeImpl(":Users:${currentUser.userId}:gi", "owner");
+      await _storageController.addOrUpdate(giNode);
 
-      Node nodeData = NodeImpl("data", ":Users:${currentUser.userId}:gi");
-      _storageController.addOrUpdate(nodeData);
+      Node nodeData = NodeImpl(":Users:${currentUser.userId}:gi:data", "owner");
+      await _storageController.addOrUpdate(nodeData);
 
       Node aggScoreNode = NodeImpl(
-          "GeigerScoreAggregate", ":Users:${currentUser.userId}:gi:data");
-      _storageController.add(aggScoreNode);
+          ":Users:${currentUser.userId}:gi:data:GeigerScoreAggregate", "owner");
+      await _storageController.add(aggScoreNode);
 
       _setUserNodeValuesException(language, aggScoreNode,
           geigerScoreThreats.threatScores, geigerScoreThreats.geigerScore);
@@ -245,12 +245,12 @@ class UserNode extends RecommendationNode {
             Recommendation.convertToJson(userRecommendations), language);
       }
 
-      _node!.addOrUpdateValue(threatRecomValue);
-      _storageController.update(_node!);
+      await _node!.addOrUpdateValue(threatRecomValue);
+      await _storageController.update(_node!);
     } on StorageException {
-      Node userRecommendationNode =
-          NodeImpl("recommendations", ":Users:${currentUser.userId}:gi:data");
-      _storageController.add(userRecommendationNode);
+      Node userRecommendationNode = NodeImpl(
+          ":Users:${currentUser.userId}:gi:data:recommendations", "owner");
+      await _storageController.add(userRecommendationNode);
 
       NodeValue threatRecomValue = NodeValueImpl("userRecommendation",
           Recommendation.convertToJson(userRecommendations));
@@ -261,7 +261,7 @@ class UserNode extends RecommendationNode {
             Recommendation.convertToJson(userRecommendations), language);
       }
 
-      userRecommendationNode.addOrUpdateValue(threatRecomValue);
+      await userRecommendationNode.addOrUpdateValue(threatRecomValue);
 
       _storageController.update(userRecommendationNode);
     }
@@ -304,9 +304,9 @@ class UserNode extends RecommendationNode {
 
       NodeValue implementedRecom = NodeValueImpl("implementedRecommendations",
           Recommendation.convertToJson(implementedRecommendations));
-      _node!.addOrUpdateValue(implementedRecom);
+      await _node!.addOrUpdateValue(implementedRecom);
 
-      _storageController.update(_node!);
+      await _storageController.update(_node!);
       return true;
     } catch (e) {
       log("failed to addOrUpdate implementedRecommendations NodeValue");
@@ -315,9 +315,9 @@ class UserNode extends RecommendationNode {
   }
 
   void _setUserNodeValues(Locale? language, List<ThreatScore> threatScores,
-      {String geigerScore: "0"}) {
+      {String geigerScore: "0"}) async {
     _geigerScore = NodeValueImpl("GEIGER_score", geigerScore);
-    _node!.addOrUpdateValue(_geigerScore!);
+    await _node!.addOrUpdateValue(_geigerScore!);
     _geigerThreatScores =
         NodeValueImpl("threats_score", ThreatScore.convertToJson(threatScores));
 
@@ -327,18 +327,18 @@ class UserNode extends RecommendationNode {
           .setValue(ThreatScore.convertToJson(threatScores), language);
     }
 
-    _node!.addOrUpdateValue(_geigerThreatScores!);
+    await _node!.addOrUpdateValue(_geigerThreatScores!);
     _geigerNumMetrics =
         NodeValueImpl("number_metrics", threatScores.length.toString());
-    _node!.addOrUpdateValue(_geigerNumMetrics!);
+    await _node!.addOrUpdateValue(_geigerNumMetrics!);
 
-    _storageController.update(_node!);
+    await _storageController.update(_node!);
   }
 
-  void _setUserNodeValuesException(
-      Locale? language, Node userScoreNode, threatScores, String geigerScore) {
+  void _setUserNodeValuesException(Locale? language, Node userScoreNode,
+      threatScores, String geigerScore) async {
     _geigerScore = NodeValueImpl("GEIGER_score", geigerScore);
-    userScoreNode.addOrUpdateValue(_geigerScore!);
+    await userScoreNode.addOrUpdateValue(_geigerScore!);
     _geigerThreatScores =
         NodeValueImpl("threats_score", ThreatScore.convertToJson(threatScores));
     if (language != null) {
@@ -347,11 +347,11 @@ class UserNode extends RecommendationNode {
           .setValue(ThreatScore.convertToJson(threatScores), language);
     }
 
-    userScoreNode.addOrUpdateValue(_geigerThreatScores!);
+    await userScoreNode.addOrUpdateValue(_geigerThreatScores!);
     _geigerNumMetrics =
         NodeValueImpl("number_metrics", threatScores.length.toString());
-    userScoreNode.addOrUpdateValue(_geigerNumMetrics!);
-    _storageController.update(userScoreNode);
+    await userScoreNode.addOrUpdateValue(_geigerNumMetrics!);
+    await _storageController.update(userScoreNode);
   }
 }
 

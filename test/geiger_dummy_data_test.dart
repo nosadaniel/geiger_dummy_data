@@ -1,15 +1,22 @@
+import 'package:geiger_api/geiger_api.dart';
 import 'package:geiger_dummy_data/geiger_dummy_data.dart';
 import 'package:geiger_dummy_data/src/recommendation_node.dart';
 import 'package:geiger_dummy_data/src/user_node.dart';
 import 'package:geiger_localstorage/geiger_localstorage.dart';
 import 'package:test/test.dart';
 
-void main() {
-  StorageController _storageController =
-      GenericController("test", SqliteMapper("./test.sqlite"));
+void main() async {
+  final GeigerApi? localMaster =
+      await getGeigerApi('', GeigerApi.MASTER_ID, Declaration.doNotShareData);
+  //SimpleEventListner masterListener;
+  final StorageController? _masterController = localMaster!.getStorage();
+  GenericController("test", SqliteMapper("./test.sqlite"));
+
+  // Make sure we start off with a fresh DB
+  await _masterController!.zap();
 
   //GeigerOnBtnPressedTest
-  GeigerApiTest(_storageController).onBtnPressedTest();
+  GeigerCheckTest(_masterController).onBtnPressedTest();
 
   //geigerThreat
   // GeigerThreatTest geigerThreatTest = GeigerThreatTest(_storageController);
@@ -256,33 +263,29 @@ class GeigerRecommendationTest {
   }
 }
 
-class GeigerApiTest {
+class GeigerCheckTest {
   StorageController _storageController;
 
-  GeigerApiTest(this._storageController);
+  GeigerCheckTest(this._storageController);
 
   void onBtnPressedTest() {
-    group("RecommendationGroupTest", () {
-      setUp(() async {
-        // bool value = await GeigerApi(_storageController).initialGeigerDummyData(
-        //     TermsAndConditions(
-        //         ageCompliant: true, agreedPrivacy: true, signedConsent: true));
-      });
-      test("testInitialGeigerDummyData", () async {
-        bool value = await GeigerApi(_storageController).initialGeigerDummyData(
-            TermsAndConditions(
-                ageCompliant: true, agreedPrivacy: true, signedConsent: true));
-        expect(await value, true);
-      });
-      // test(("initialGeigerDummyData "), () async {
-      //   await GeigerApi(_storageController).initialGeigerDummyData(
+    group("GeigerCheckGroupTest", () {
+      // setUp(() async {
+      //   await GeigerCheck(_storageController).initialGeigerDummyData(
       //       TermsAndConditions(
       //           ageCompliant: true, agreedPrivacy: true, signedConsent: true));
       // });
-      // test("getDataFrom OnBtnPressed", () async {
-      //   String result = await GeigerApi(_storageController).onBtnPressed();
-      //   print(result);
-      // });
+      test("testInitialGeigerDummyData", () async {
+        bool value = await GeigerDummy(_storageController)
+            .initialGeigerDummyData(TermsAndConditions(
+                ageCompliant: true, agreedPrivacy: true, signedConsent: true));
+        expect(await value, true);
+      });
+
+      test("getDataFrom OnBtnPressed", () async {
+        String result = await GeigerDummy(_storageController).onBtnPressed();
+        print(result);
+      });
     });
   }
 }

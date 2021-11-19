@@ -1,10 +1,14 @@
+import 'package:geiger_api/geiger_api.dart';
 import 'package:geiger_localstorage/geiger_localstorage.dart';
 
 void main() async {
-  //initialize database
-  StorageController _storageController =
-      GenericController("Example", SqliteMapper("./example.db"));
-
+  final GeigerApi? localMaster =
+      await getGeigerApi('', GeigerApi.MASTER_ID, Declaration.doNotShareData);
+  //SimpleEventListner masterListener;
+  final StorageController? _masterController = localMaster!.getStorage();
+  GenericController("test", SqliteMapper("example.sqlite"));
+  // Make sure we start off with a fresh DB
+  await _masterController!.zap();
   // //set and get threat
   // ThreatNode _geigerThreat = ThreatNode(_storageController);
   // //set and get current user
@@ -67,25 +71,25 @@ void main() async {
     try {
       for (int i = 0; i < threats.length; i++) {
         Node _node =
-            await _storageController.get(':Global:threats:${threatid[i]}');
+            await _masterController.get(':Global:threats:${threatid[i]}');
         //create a NodeValue
         NodeValue threatNodeValueName = NodeValueImpl("name", threats[i]);
         await _node.addOrUpdateValue(threatNodeValueName);
-        await _storageController.update(_node);
+        await _masterController.update(_node);
       }
     } on StorageException {
       //log(":Global:threats not found");
-      Node threatsNode = NodeImpl("threats", ":Global");
-      await _storageController.addOrUpdate(threatsNode);
+      Node threatsNode = NodeImpl(":Global:threats", "nosa");
+      await _masterController.addOrUpdate(threatsNode);
 
       for (int i = 0; i < threats.length; i++) {
-        Node threatIdNode = NodeImpl("${threatid[i]}", ":Global:threats");
+        Node threatIdNode = NodeImpl(":Global:threats:${threatid[i]}", "nosa");
         //create :Global:threats:$threatId
-        await _storageController.addOrUpdate(threatIdNode);
+        await _masterController.addOrUpdate(threatIdNode);
         //create a NodeValue
         NodeValue threatNodeValueName = NodeValueImpl("name", threats[i]);
         await threatIdNode.addOrUpdateValue(threatNodeValueName);
-        await _storageController.update(threatIdNode);
+        await _masterController.update(threatIdNode);
       }
     }
   }
@@ -93,13 +97,13 @@ void main() async {
   Future<List<String>> getThreats({String language: "en"}) async {
     List<String> t = [];
     try {
-      Node _node = await _storageController.get(":Global:threats");
+      Node _node = await _masterController.get(":Global:threats");
 
       //return _node!.getChildNodesCsv();
       for (String threatId
           in await _node.getChildNodesCsv().then((value) => value.split(','))) {
         Node threatNode =
-            await _storageController.get(":Global:threats:$threatId");
+            await _masterController.get(":Global:threats:$threatId");
 
         t.add(await threatNode
             .getValue("name")
@@ -111,9 +115,9 @@ void main() async {
     return t;
   }
 
-  getListThreat() async {
+  Future<List<String>> getListThreat() async {
     await setGlobalThreatsNode();
-    await getThreats();
+    return await getThreats();
   }
 
   // Future<String> getCurrentUserId() async {
@@ -128,7 +132,7 @@ void main() async {
   //   }
   // }
 
-  print("Global Threats: ${getListThreat()}");
+  print("Global Threats: ${await getListThreat()}");
   //print("CurrentUser Id : ${await getCurrentUserId()}");
   // // display terminal threat info
   // print("Threats: ${getThreatInfo()}");

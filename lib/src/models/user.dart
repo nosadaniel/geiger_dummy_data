@@ -109,6 +109,6 @@ class User {
   @override
   String toString() {
     super.toString();
-    return '{"userId":$userId,"userName":$userName, "language":$language, "supervisor":$supervisor,"cert":$cert, "profAss":$profAss, "termsAndConditions":$termsAndConditions, "consent":$consent, "deviceOwner":$deviceOwner, "pairedDevices":$pairedDevices, "shareInfo": $shareInfo, "mse":$mse}';
+    return '{"userId":$userId,"userName":$userName, "language":$language, "country":$country, "supervisor":$supervisor,"cert":$cert, "profAss":$profAss, "termsAndConditions":$termsAndConditions, "consent":$consent, "deviceOwner":$deviceOwner, "pairedDevices":$pairedDevices, "shareInfo": $shareInfo, "mse":$mse}';
   }
 }

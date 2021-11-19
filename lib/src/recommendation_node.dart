@@ -32,14 +32,15 @@ class RecommendationNode {
       }
     } on StorageException {
       //log(":Global:threats not found");
-      Node recommendationsNode = NodeImpl("recommendations", ":Global");
-      _storageController.addOrUpdate(recommendationsNode);
+      Node recommendationsNode = NodeImpl(":Global:recommendations", "owner");
+      await _storageController.addOrUpdate(recommendationsNode);
 
       for (Recommendation recommendation in recommendations) {
         Node recomIdNode = NodeImpl(
-            "${recommendation.recommendationId}", ":Global:recommendations");
+            ":Global:recommendations:${recommendation.recommendationId}",
+            "owner");
         //create :Global:threats:$threatId
-        _storageController.addOrUpdate(recomIdNode);
+        await _storageController.addOrUpdate(recomIdNode);
         //create a NodeValue
         _setThreatsNodeValueException(language, recommendation, recomIdNode);
         //empty threats to avoid duplications
@@ -57,19 +58,19 @@ class RecommendationNode {
           "relatedThreatsWeights",
           ThreatWeight.convertToJson(recommendation.relatedThreatsWeight!));
 
-      _node!.addOrUpdateValue(relatedThreatsWeightNodeValue);
+      await _node!.addOrUpdateValue(relatedThreatsWeightNodeValue);
 
       NodeValue recommendationType = NodeValueImpl(
           "recommendationType", recommendation.recommendationType!);
-      _node!.addOrUpdateValue(recommendationType);
+      await _node!.addOrUpdateValue(recommendationType);
 
       NodeValue short =
           NodeValueImpl("short", recommendation.description.shortDescription);
-      _node!.addOrUpdateValue(short);
+      await _node!.addOrUpdateValue(short);
 
       NodeValue long = NodeValueImpl(
           "long", recommendation.description.longDescription.toString());
-      _node!.addOrUpdateValue(long);
+      await _node!.addOrUpdateValue(long);
 
       if (language != null) {
         relatedThreatsWeightNodeValue.setValue(
@@ -84,37 +85,37 @@ class RecommendationNode {
     } else {
       NodeValue short =
           NodeValueImpl("short", recommendation.description.shortDescription);
-      _node!.addOrUpdateValue(short);
+      await _node!.addOrUpdateValue(short);
 
       NodeValue long = NodeValueImpl(
           "long", recommendation.description.longDescription.toString());
-      _node!.addOrUpdateValue(long);
+      await _node!.addOrUpdateValue(long);
     }
 
-    _storageController.update(_node!);
+    await _storageController.update(_node!);
   }
 
   void _setThreatsNodeValueException(
-      Locale? language, Recommendation recommendation, Node recomIdNode) {
+      Locale? language, Recommendation recommendation, Node recomIdNode) async {
     //create a NodeValue
     if (recommendation.relatedThreatsWeight != null &&
         recommendation.recommendationType != null) {
       NodeValue relatedThreatWeight = NodeValueImpl("relatedThreatsWeights",
           ThreatWeight.convertToJson(recommendation.relatedThreatsWeight!));
 
-      recomIdNode.addOrUpdateValue(relatedThreatWeight);
+      await recomIdNode.addOrUpdateValue(relatedThreatWeight);
 
       NodeValue recommendationType = NodeValueImpl(
           "recommendationType", recommendation.recommendationType!);
-      recomIdNode.addOrUpdateValue(recommendationType);
+      await recomIdNode.addOrUpdateValue(recommendationType);
 
       NodeValue short =
           NodeValueImpl("short", recommendation.description.shortDescription);
-      recomIdNode.addOrUpdateValue(short);
+      await recomIdNode.addOrUpdateValue(short);
 
       NodeValue long = NodeValueImpl(
           "long", recommendation.description.longDescription.toString());
-      recomIdNode.addOrUpdateValue(long);
+      await recomIdNode.addOrUpdateValue(long);
 
       if (language != null) {
         relatedThreatWeight.setValue(
@@ -129,14 +130,14 @@ class RecommendationNode {
     } else {
       NodeValue short =
           NodeValueImpl("short", recommendation.description.shortDescription);
-      recomIdNode.addOrUpdateValue(short);
+      await recomIdNode.addOrUpdateValue(short);
 
       NodeValue long = NodeValueImpl(
           "long", recommendation.description.longDescription.toString());
-      recomIdNode.addOrUpdateValue(long);
+      await recomIdNode.addOrUpdateValue(long);
     }
 
-    _storageController.update(recomIdNode);
+    await _storageController.update(recomIdNode);
   }
 
   ///from return list of recommendations from localStorage
