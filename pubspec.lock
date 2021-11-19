@@ -212,12 +212,12 @@ packages:
     source: hosted
     version: "0.5.0"
   geiger_localstorage:
-    dependency: transitive
+    dependency: "direct main"
     description:
       name: geiger_localstorage
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "0.6.4"
+    version: "0.6.5"
   glob:
     dependency: transitive
     description:
