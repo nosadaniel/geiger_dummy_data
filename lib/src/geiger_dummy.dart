@@ -4,6 +4,7 @@ import 'dart:async';
 import 'dart:convert';
 import 'dart:math';
 
+import 'package:geiger_api/geiger_api.dart';
 import 'package:geiger_localstorage/geiger_localstorage.dart';
 
 import '/src/geiger.dart';
@@ -11,15 +12,23 @@ import '/src/models/geiger_data.dart';
 import '../geiger_dummy_data.dart';
 
 class GeigerDummy implements Geiger {
-  StorageController _storageController;
+  Future<StorageController?> localGeigerApi() async {
+    final GeigerApi? localDummyData =
+        await getGeigerApi('', 'dummyData', Declaration.doNotShareData);
+    //SimpleEventListner masterListener;
 
-  GeigerDummy(this._storageController);
+    final StorageController? _masterController = localDummyData!.getStorage();
+
+    return _masterController;
+  }
 
   ///<p>implement onBtnPressed function from geiger abstract class</p>
   ///@return a Future of json string
   @override
   Future<String> onBtnPressed() async {
-    UserNode _userNode = UserNode(_storageController);
+    StorageController? _storageController = await localGeigerApi();
+
+    UserNode _userNode = UserNode(_storageController!);
     DeviceNode _deviceNode = DeviceNode(_storageController);
     RecommendationNode _recommendationNode =
         RecommendationNode(_storageController);
@@ -48,7 +57,9 @@ class GeigerDummy implements Geiger {
   @override
   Future<bool> initialGeigerDummyData(
       TermsAndConditions termsAndConditions) async {
-    UserNode _userNode = UserNode(_storageController);
+    StorageController? _storageController = await localGeigerApi();
+
+    UserNode _userNode = UserNode(_storageController!);
     DeviceNode _deviceNode = DeviceNode(_storageController);
     ThreatNode _threatNode = ThreatNode(_storageController);
     //set device
@@ -173,10 +184,12 @@ class GeigerDummy implements Geiger {
   Future<bool> _isTermAgreed(
       {required TermsAndConditions termsAndConditions,
       required Device device}) async {
+    StorageController? _storageController = await localGeigerApi();
+
     if (termsAndConditions.agreedPrivacy == true &&
         termsAndConditions.signedConsent == true &&
         termsAndConditions.ageCompliant == true) {
-      await UserNode(_storageController).setUserInfo(User(
+      await UserNode(_storageController!).setUserInfo(User(
           termsAndConditions: termsAndConditions,
           consent: Consent(),
           deviceOwner: device));

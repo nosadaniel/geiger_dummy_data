@@ -2,10 +2,11 @@ import 'package:geiger_api/geiger_api.dart';
 import 'package:geiger_localstorage/geiger_localstorage.dart';
 
 void main() async {
-  final GeigerApi? localMaster =
-      await getGeigerApi('', GeigerApi.MASTER_ID, Declaration.doNotShareData);
+  final GeigerApi? localDummyData =
+      await getGeigerApi('', 'dummyData', Declaration.doNotShareData);
   //SimpleEventListner masterListener;
-  final StorageController? _masterController = localMaster!.getStorage();
+
+  final StorageController? _masterController = localDummyData!.getStorage();
   GenericController("test", SqliteMapper("example.sqlite"));
   // Make sure we start off with a fresh DB
   await _masterController!.zap();

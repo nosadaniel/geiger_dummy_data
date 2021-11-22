@@ -13,3 +13,4 @@
 *.sqlite
 /GeigerApi.__MASTERPLUGIN__.state
 testdb
+/GeigerApi.dummyData.state
