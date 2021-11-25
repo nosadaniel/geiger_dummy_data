@@ -1,3 +1,5 @@
+##0.3.3
+- now a flutter package
 ##0.3.2
 - added bug
 ##0.3.1

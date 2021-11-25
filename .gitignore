@@ -14,4 +14,4 @@
 /GeigerApi.__MASTERPLUGIN__.state
 testdb
 /GeigerApi.dummyData.state
-*.Z
+build/unit_test_assets/NOTICES.Z

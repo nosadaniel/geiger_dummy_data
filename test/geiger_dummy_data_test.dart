@@ -1,32 +1,93 @@
+import 'dart:developer';
+
 import 'package:geiger_dummy_data/geiger_dummy_data.dart';
 import 'package:geiger_dummy_data/src/recommendation_node.dart';
 import 'package:geiger_dummy_data/src/user_node.dart';
 import 'package:geiger_localstorage/geiger_localstorage.dart';
+import 'package:geiger_localstorage/src/visibility.dart' as vis;
 import 'package:test/test.dart';
 
 void main() async {
+  //WidgetsFlutterBinding.ensureInitialized();
+
+  await StorageMapper.initDatabaseExpander();
+  final StorageController _masterController =
+      GenericController("test", DummyMapper("test"));
+  //SimpleEventListner masterListener;
+
   //GeigerOnBtnPressedTest
-  GeigerCheckTest().onBtnPressedTest();
+  //GeigerCheckTest().onBtnPressedTest();
 
-  //geigerThreat
-  // GeigerThreatTest geigerThreatTest = GeigerThreatTest(_storageController);
-  // geigerThreatTest.threatGroupTest();
-  //
-  // //geigerRecommendation
-  // GeigerRecommendationTest geigerRecommendationTest =
-  //     GeigerRecommendationTest(_storageController);
-  // geigerRecommendationTest.recommendationGroupTest();
-  //
+  String nodeDataName = "MI";
+  String geigerOwner = "loung";
+  test("Mi test", () async {
+    Future<Node?> writeToGeigerStorage(String data) async {
+      log('Trying to get the data node');
+      try {
+        log('Found the data node - Going to write the data');
+        Node node = await _masterController.get(':$nodeDataName');
+        await node.addOrUpdateValue(NodeValueImpl('data', '$data'));
+        await _masterController.update(node);
+        return node;
+      } catch (e) {
+        log(e.toString());
+        log('Cannot find the data node - Going to create a new one');
+        try {
+          Node node = NodeImpl(nodeDataName, geigerOwner);
+          node.visibility = vis.Visibility.green;
+          await _masterController.addOrUpdate(node);
+          await node.addOrUpdateValue(NodeValueImpl('data', '$data'));
+          await _masterController.update(node);
+          print(node.parentPath);
+          return node;
+        } catch (e2) {
+          print(e2.toString());
+          log('---> Out of luck');
+        }
+      }
+    }
 
-  // //geigerDeviceTest
-  // GeigerDeviceTest geigerDeviceTest = GeigerDeviceTest(_storageController);
-  // geigerDeviceTest.deviceGroupTest();
-  //
-  // //geigerUserTest
-  // GeigerUserTest geigerUserTest = GeigerUserTest(_storageController);
-  // geigerUserTest.userGroupTest();
-  // //
+    Future<String?> readDataFromGeigerStorage() async {
+      log('Trying to get the data node');
+      try {
+        log('Found the data node - Going to get the data');
+        Node node = await _masterController.get(':$nodeDataName');
+        NodeValue? nValue = await node.getValue('data');
+        if (nValue != null) {
+          return nValue.value;
+        } else {
+          log('Failed to retrieve the node value');
+        }
+      } catch (e) {
+        log('Failed to retrieve the data node');
+        log(e.toString());
+      }
+      return null;
+    }
+
+    print("${await readDataFromGeigerStorage()}");
+    print("${await writeToGeigerStorage("nosa")}");
+  });
 }
+
+//geigerThreat
+// GeigerThreatTest geigerThreatTest = GeigerThreatTest(_storageController);
+// geigerThreatTest.threatGroupTest();
+//
+// //geigerRecommendation
+// GeigerRecommendationTest geigerRecommendationTest =
+//     GeigerRecommendationTest(_storageController);
+// geigerRecommendationTest.recommendationGroupTest();
+//
+
+// //geigerDeviceTest
+// GeigerDeviceTest geigerDeviceTest = GeigerDeviceTest(_storageController);
+// geigerDeviceTest.deviceGroupTest();
+//
+// //geigerUserTest
+// GeigerUserTest geigerUserTest = GeigerUserTest(_storageController);
+// geigerUserTest.userGroupTest();
+// //
 
 class GeigerThreatTest {
   StorageController _storageController;
@@ -256,11 +317,9 @@ class GeigerRecommendationTest {
 class GeigerCheckTest {
   void onBtnPressedTest() {
     group("GeigerCheckGroupTest", () {
-      // setUp(() async {
-      //   await GeigerCheck(_storageController).initialGeigerDummyData(
-      //       TermsAndConditions(
-      //           ageCompliant: true, agreedPrivacy: true, signedConsent: true));
-      // });
+      setUp(() async {
+        await GeigerDummy().initStorage();
+      });
       test("testInitialGeigerDummyData", () async {
         bool value = await GeigerDummy().initialGeigerDummyData(
             TermsAndConditions(
@@ -273,5 +332,6 @@ class GeigerCheckTest {
         print(result);
       });
     });
+    test("MI", () {});
   }
 }
