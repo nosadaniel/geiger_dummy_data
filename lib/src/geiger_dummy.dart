@@ -4,7 +4,6 @@ import 'dart:async';
 import 'dart:convert';
 import 'dart:math';
 
-import 'package:geiger_api/geiger_api.dart';
 import 'package:geiger_localstorage/geiger_localstorage.dart';
 
 import '/src/geiger.dart';
@@ -12,24 +11,30 @@ import '/src/models/geiger_data.dart';
 import '../geiger_dummy_data.dart';
 
 class GeigerDummy implements Geiger {
-  StorageController? _storageController;
+  late StorageController _storageController;
+
+  // GeigerDummy(this.storageController);
 
   Future<void> initStorage() async {
-    final GeigerApi? localDummyData =
-        await getGeigerApi('', GeigerApi.masterId, Declaration.doNotShareData);
-    //SimpleEventListner masterListener;
-
-    _storageController = (await localDummyData!.getStorage())!;
+    //await StorageMapper.initDatabaseExpander();
+    _storageController = await GenericController("test", DummyMapper("test"));
   }
+
+  // Future<void> initStorage() async {
+  //   // final GeigerApi? localDummyData =
+  //   //     await getGeigerApi('', GeigerApi.masterId, Declaration.doNotShareData);
+  //   //await StorageMapper.initDatabaseExpander();
+  //   _storageController = await GenericController("test", DummyMapper("test"));
+  // }
 
   ///<p>implement onBtnPressed function from geiger abstract class</p>
   ///@return a Future of json string
   @override
   Future<String> onBtnPressed() async {
-    UserNode _userNode = UserNode(_storageController!);
-    DeviceNode _deviceNode = DeviceNode(_storageController!);
+    UserNode _userNode = UserNode(_storageController);
+    DeviceNode _deviceNode = DeviceNode(_storageController);
     RecommendationNode _recommendationNode =
-        RecommendationNode(_storageController!);
+        RecommendationNode(_storageController);
 
     List<GeigerScoreThreats> geigerScoreThreats = [];
 
@@ -56,11 +61,10 @@ class GeigerDummy implements Geiger {
   Future<bool> initialGeigerDummyData(
       TermsAndConditions termsAndConditions) async {
     //clear database
-    await _storageController!.zap();
 
-    UserNode _userNode = UserNode(_storageController!);
-    DeviceNode _deviceNode = DeviceNode(_storageController!);
-    ThreatNode _threatNode = ThreatNode(_storageController!);
+    UserNode _userNode = await UserNode(_storageController);
+    DeviceNode _deviceNode = await DeviceNode(_storageController);
+    ThreatNode _threatNode = await ThreatNode(_storageController);
     //set device
     await _deviceNode.setCurrentDeviceInfo(Device());
     //get device
@@ -138,7 +142,7 @@ class GeigerDummy implements Geiger {
         threatWeight.add(ThreatWeight(threat: threats[i], weight: weights[i]));
       }
 
-      await RecommendationNode(_storageController!)
+      await RecommendationNode(_storageController)
           .setGlobalRecommendationsNode(recommendations: [
         Recommendation(
             recommendationType: "user",
@@ -186,11 +190,11 @@ class GeigerDummy implements Geiger {
     if (termsAndConditions.agreedPrivacy == true &&
         termsAndConditions.signedConsent == true &&
         termsAndConditions.ageCompliant == true) {
-      await UserNode(_storageController!).setUserInfo(User(
+      await UserNode(_storageController).setUserInfo(User(
           termsAndConditions: termsAndConditions,
           consent: Consent(),
           deviceOwner: device));
-      print("UserDetails : ${await UserNode(_storageController!).getUserInfo}");
+      print("UserDetails : ${await UserNode(_storageController).getUserInfo}");
       return true;
     }
     return false;
