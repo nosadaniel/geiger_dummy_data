@@ -1,3 +1,5 @@
+##0.3.4
+- fixed issues with geigerApi
 ##0.3.3
 - now a flutter package
 ##0.3.2

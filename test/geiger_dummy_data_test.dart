@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:flutter_test/flutter_test.dart';
 import 'package:geiger_dummy_data/geiger_dummy_data.dart';
 import 'package:geiger_dummy_data/src/recommendation_node.dart';
@@ -7,63 +9,66 @@ import 'package:geiger_localstorage/geiger_localstorage.dart';
 void main() async {
   //WidgetsFlutterBinding.ensureInitialized();
 
-  // StorageController _masterController =
-  //     await GenericController("tes", DummyMapper("w"));
+  StorageController _masterController =
+      await GenericController("tes", DummyMapper("w"));
 
   //GeigerOnBtnPressedTest
 
-  GeigerDummyTest().onBtnPressedTest();
+  //GeigerDummyTest().onBtnPressedTest();
+  // GeigerDummy g = GeigerDummy();
+  // GeigerApi api = await g.initGeigerApi();
+  // StorageController? _masterController = await api.getStorage();
 
-  // String nodeDataName = "MI";
-  // String geigerOwner = "loung";
-  // test("Mi test", () async {
-  //   Future<Node?> writeToGeigerStorage(String data) async {
-  //     log('Trying to get the data node');
-  //     try {
-  //       log('Found the data node - Going to write the data');
-  //       Node node = await _masterController.get(':$nodeDataName');
-  //       await node.addOrUpdateValue(NodeValueImpl('data', '$data'));
-  //       await _masterController.update(node);
-  //       return node;
-  //     } catch (e) {
-  //       log(e.toString());
-  //       log('Cannot find the data node - Going to create a new one');
-  //       try {
-  //         Node node = NodeImpl(nodeDataName, geigerOwner);
-  //         node.visibility = Visibility.green;
-  //         await _masterController.addOrUpdate(node);
-  //         await node.addOrUpdateValue(NodeValueImpl('data', '$data'));
-  //         await _masterController.update(node);
-  //         print(node.parentPath);
-  //         return node;
-  //       } catch (e2) {
-  //         print(e2.toString());
-  //         log('---> Out of luck');
-  //       }
-  //     }
-  //   }
-  //
-  //   Future<String?> readDataFromGeigerStorage() async {
-  //     log('Trying to get the data node');
-  //     try {
-  //       log('Found the data node - Going to get the data');
-  //       Node node = await _masterController.get(':$nodeDataName');
-  //       NodeValue? nValue = await node.getValue('data');
-  //       if (nValue != null) {
-  //         return nValue.value;
-  //       } else {
-  //         log('Failed to retrieve the node value');
-  //       }
-  //     } catch (e) {
-  //       log('Failed to retrieve the data node');
-  //       log(e.toString());
-  //     }
-  //     return null;
-  //   }
-  //
-  //   print("${await readDataFromGeigerStorage()}");
-  //   print("${await writeToGeigerStorage("nosa")}");
-  // });
+  String nodeDataName = "MI";
+  String geigerOwner = "loung";
+  test("Mi test", () async {
+    Future<Node?> writeToGeigerStorage(String data) async {
+      log('Trying to get the data node');
+      try {
+        log('Found the data node - Going to write the data');
+        Node node = await _masterController.get(':$nodeDataName');
+        await node.addOrUpdateValue(NodeValueImpl('data', '$data'));
+        await _masterController.update(node);
+        return node;
+      } catch (e) {
+        log(e.toString());
+        log('Cannot find the data node - Going to create a new one');
+        try {
+          Node node = NodeImpl(nodeDataName, geigerOwner);
+          node.visibility = Visibility.green;
+          await _masterController.addOrUpdate(node);
+          await node.addOrUpdateValue(NodeValueImpl('data', '$data'));
+          await _masterController.update(node);
+          print(node.parentPath);
+          return node;
+        } catch (e2) {
+          print(e2.toString());
+          log('---> Out of luck');
+        }
+      }
+    }
+
+    Future<String?> readDataFromGeigerStorage() async {
+      log('Trying to get the data node');
+      try {
+        log('Found the data node - Going to get the data');
+        Node node = await _masterController.get(':$nodeDataName');
+        NodeValue? nValue = await node.getValue('data');
+        if (nValue != null) {
+          return nValue.value;
+        } else {
+          log('Failed to retrieve the node value');
+        }
+      } catch (e) {
+        log('Failed to retrieve the data node');
+        log(e.toString());
+      }
+      return null;
+    }
+
+    print("${await readDataFromGeigerStorage()}");
+    print("${await writeToGeigerStorage("nosa")}");
+  });
 }
 
 //geigerThreat

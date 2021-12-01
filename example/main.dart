@@ -5,9 +5,10 @@ void main() async {
   final GeigerApi? localDummyData =
       await getGeigerApi('', 'dummyData', Declaration.doNotShareData);
   //SimpleEventListner masterListener;
-
+  await StorageMapper.initDatabaseExpander();
   final StorageController? _masterController = localDummyData!.getStorage();
-  GenericController("test", SqliteMapper("example.sqlite"));
+
+  //GenericController("test", SqliteMapper("example.sqlite"));
   // Make sure we start off with a fresh DB
   await _masterController!.zap();
   // //set and get threat

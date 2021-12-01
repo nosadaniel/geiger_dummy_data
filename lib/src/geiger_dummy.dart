@@ -4,6 +4,7 @@ import 'dart:async';
 import 'dart:convert';
 import 'dart:math';
 
+import 'package:geiger_api/geiger_api.dart';
 import 'package:geiger_localstorage/geiger_localstorage.dart';
 
 import '/src/geiger.dart';
@@ -15,9 +16,20 @@ class GeigerDummy implements Geiger {
 
   // GeigerDummy(this.storageController);
 
+  Future<GeigerApi> initGeigerApi() async {
+    flushGeigerApiCache();
+    //*****************************************master**********************
+    GeigerApi localMaster =
+        (await getGeigerApi("", GeigerApi.masterId, Declaration.doShareData))!;
+    //clear existing state
+    await localMaster.zapState();
+    return localMaster;
+  }
+
   Future<void> initStorage() async {
-    //await StorageMapper.initDatabaseExpander();
-    _storageController = await GenericController("test", DummyMapper("test"));
+    final GeigerApi _localGeigerApi = await initGeigerApi();
+
+    _storageController = _localGeigerApi.getStorage()!;
   }
 
   // Future<void> initStorage() async {
