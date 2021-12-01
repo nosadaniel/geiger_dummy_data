@@ -32,6 +32,10 @@ class GeigerDummy implements Geiger {
     _storageController = _localGeigerApi.getStorage()!;
   }
 
+  Future<StorageController> getStorageController() async {
+    return await _storageController;
+  }
+
   // Future<void> initStorage() async {
   //   // final GeigerApi? localDummyData =
   //   //     await getGeigerApi('', GeigerApi.masterId, Declaration.doNotShareData);
