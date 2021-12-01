@@ -1,3 +1,5 @@
+##0.3.5
+- add getStorageController method
 ##0.3.4
 - fixed issues with geigerApi
 ##0.3.3
