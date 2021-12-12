@@ -1,11 +1,12 @@
 library geiger_dummy_data;
 
+import 'package:geiger_dummy_data/src/models/geiger_recommendation.dart';
 import 'package:geiger_localstorage/geiger_localstorage.dart';
 import 'package:intl/locale.dart';
 
+import '../geiger_dummy_data.dart';
 import '../src/models/describe_short_long.dart';
 import '../src/models/recommendation.dart';
-import '../src/models/threat_weight.dart';
 
 /// <p>Grant access to methods relating recommendation.</p>
 /// @param storageController
@@ -20,168 +21,128 @@ class RecommendationNode {
   /// @Param list of recommendation object
 
   Future<void> setGlobalRecommendationsNode(
-      {Locale? language, required List<Recommendation> recommendations}) async {
-    try {
-      for (Recommendation recommendation in recommendations) {
-        _node = await _storageController
+      {Locale? language,
+      required List<Threat> relatedThreat,
+      required List<Recommendations> recommendations}) async {
+    Node? node;
+    Node? recomIdNode;
+    NodeValue? nodeValue1;
+    NodeValue? nodeValue2;
+    NodeValue? nodeValue3;
+    NodeValue? nodeValue4;
+
+    Node _node = NodeImpl(":Global:recommendations", "owner");
+    _storageController.addOrUpdate(_node);
+
+    for (Recommendations recommendation in recommendations) {
+      try {
+        recomIdNode = await _storageController
             .get(':Global:recommendations:${recommendation.recommendationId}');
+      } on StorageException {
+        nodeValue1 =
+            NodeValueImpl("relatedThreat", Threat.convertToJson(relatedThreat));
 
-        //create a NodeValue
-        _setThreatsNodeValue(language, recommendation);
-        //empty threats to avoid duplications
-      }
-    } on StorageException {
-      //log(":Global:threats not found");
-      Node recommendationsNode = NodeImpl(":Global:recommendations", "owner");
-      await _storageController.addOrUpdate(recommendationsNode);
-
-      for (Recommendation recommendation in recommendations) {
-        Node recomIdNode = NodeImpl(
+        recomIdNode = NodeImpl(
             ":Global:recommendations:${recommendation.recommendationId}",
             "owner");
-        //create :Global:threats:$threatId
-        await _storageController.addOrUpdate(recomIdNode);
-        //create a NodeValue
-        _setThreatsNodeValueException(language, recommendation, recomIdNode);
-        //empty threats to avoid duplications
 
+        nodeValue2 = NodeValueImpl(
+            "recommendationType", recommendation.recommendationType!);
+
+        nodeValue3 =
+            NodeValueImpl("short", recommendation.description.shortDescription);
+
+        nodeValue4 = NodeValueImpl(
+            "long", recommendation.description.longDescription.toString());
       }
+      await recomIdNode.addOrUpdateValue(nodeValue1!);
+      await recomIdNode.addOrUpdateValue(nodeValue2!);
+
+      await recomIdNode.addOrUpdateValue(nodeValue3!);
+
+      await recomIdNode.addOrUpdateValue(nodeValue4!);
+      await _storageController.addOrUpdate(recomIdNode);
+      print(recomIdNode);
     }
   }
 
   Future<void> _setThreatsNodeValue(
-      Locale? language, Recommendation recommendation) async {
+      Locale? language, Recommendations recommendation, Threat threat) async {
     //create a NodeValue
-    if (recommendation.relatedThreatsWeight != null &&
-        recommendation.recommendationType != null) {
-      NodeValue relatedThreatsWeightNodeValue = NodeValueImpl(
-          "relatedThreatsWeights",
-          ThreatWeight.convertToJson(recommendation.relatedThreatsWeight!));
 
-      await _node!.addOrUpdateValue(relatedThreatsWeightNodeValue);
+    NodeValue relatedThreat =
+        NodeValueImpl("relatedThreat", Threat.convertThreatToJson(threat));
+    await _node!.addOrUpdateValue(relatedThreat);
 
-      NodeValue recommendationType = NodeValueImpl(
-          "recommendationType", recommendation.recommendationType!);
-      await _node!.addOrUpdateValue(recommendationType);
+    NodeValue recommendationType =
+        NodeValueImpl("recommendationType", recommendation.recommendationType!);
+    await _node!.addOrUpdateValue(recommendationType);
 
-      NodeValue short =
-          NodeValueImpl("short", recommendation.description.shortDescription);
-      await _node!.addOrUpdateValue(short);
+    NodeValue short =
+        NodeValueImpl("short", recommendation.description.shortDescription);
+    await _node!.addOrUpdateValue(short);
 
-      NodeValue long = NodeValueImpl(
-          "long", recommendation.description.longDescription.toString());
-      await _node!.addOrUpdateValue(long);
-
-      if (language != null) {
-        relatedThreatsWeightNodeValue.setValue(
-            ThreatWeight.convertToJson(recommendation.relatedThreatsWeight!),
-            language);
-        recommendationType.setValue(
-            recommendation.recommendationType!, language);
-        short.setValue(recommendation.description.shortDescription, language);
-        long.setValue(
-            recommendation.description.longDescription.toString(), language);
-      }
-    } else {
-      NodeValue short =
-          NodeValueImpl("short", recommendation.description.shortDescription);
-      await _node!.addOrUpdateValue(short);
-
-      NodeValue long = NodeValueImpl(
-          "long", recommendation.description.longDescription.toString());
-      await _node!.addOrUpdateValue(long);
-    }
-
+    NodeValue long = NodeValueImpl(
+        "long", recommendation.description.longDescription.toString());
+    await _node!.addOrUpdateValue(long);
     await _storageController.update(_node!);
   }
 
-  void _setThreatsNodeValueException(
-      Locale? language, Recommendation recommendation, Node recomIdNode) async {
+  void _setThreatsNodeValueException(Locale? language,
+      Recommendations recommendation, Node recomIdNode, Threat threat) async {
     //create a NodeValue
-    if (recommendation.relatedThreatsWeight != null &&
-        recommendation.recommendationType != null) {
-      NodeValue relatedThreatWeight = NodeValueImpl("relatedThreatsWeights",
-          ThreatWeight.convertToJson(recommendation.relatedThreatsWeight!));
 
-      await recomIdNode.addOrUpdateValue(relatedThreatWeight);
+    NodeValue relatedThreat =
+        NodeValueImpl("relatedThreat", Threat.convertThreatToJson(threat));
+    await recomIdNode.addOrUpdateValue(relatedThreat);
 
-      NodeValue recommendationType = NodeValueImpl(
-          "recommendationType", recommendation.recommendationType!);
-      await recomIdNode.addOrUpdateValue(recommendationType);
+    NodeValue recommendationType =
+        NodeValueImpl("recommendationType", recommendation.recommendationType!);
+    await recomIdNode.addOrUpdateValue(recommendationType);
 
-      NodeValue short =
-          NodeValueImpl("short", recommendation.description.shortDescription);
-      await recomIdNode.addOrUpdateValue(short);
+    NodeValue short =
+        NodeValueImpl("short", recommendation.description.shortDescription);
+    await recomIdNode.addOrUpdateValue(short);
 
-      NodeValue long = NodeValueImpl(
-          "long", recommendation.description.longDescription.toString());
-      await recomIdNode.addOrUpdateValue(long);
-
-      if (language != null) {
-        relatedThreatWeight.setValue(
-            ThreatWeight.convertToJson(recommendation.relatedThreatsWeight!),
-            language);
-        recommendationType.setValue(
-            recommendation.recommendationType!, language);
-        short.setValue(recommendation.description.shortDescription, language);
-        long.setValue(
-            recommendation.description.longDescription.toString(), language);
-      }
-    } else {
-      NodeValue short =
-          NodeValueImpl("short", recommendation.description.shortDescription);
-      await recomIdNode.addOrUpdateValue(short);
-
-      NodeValue long = NodeValueImpl(
-          "long", recommendation.description.longDescription.toString());
-      await recomIdNode.addOrUpdateValue(long);
-    }
-
-    await _storageController.update(recomIdNode);
+    NodeValue long = NodeValueImpl(
+        "long", recommendation.description.longDescription.toString());
+    await recomIdNode.addOrUpdateValue(long);
   }
 
   ///from return list of recommendations from localStorage
-  Future<List<Recommendation>> get getRecommendations async {
-    List<Recommendation> r = [];
-
+  Future<List<GeigerRecommendation>> get getRecommendations async {
+    List<Recommendations> r = [];
+    List<GeigerRecommendation> gR = [];
     _node = await _storageController.get(":Global:recommendations");
+    print(_node);
     for (String recId
         in await _node!.getChildNodesCsv().then((value) => value.split(','))) {
       Node recNode =
           await _storageController.get(":Global:recommendations:$recId");
+      print(recNode);
+      String json = await recNode
+          .getValue("relatedThreat")
+          .then((value) => value!.getValue("en")!);
 
-      if (await recNode.getValue("recommendationType") != null &&
-          await recNode.getValue("relatedThreatsWeights") != null) {
-        r.add(Recommendation(
-          recommendationId: recId,
-          recommendationType: await recNode
-              .getValue("recommendationType")
-              .then((value) => value!.getValue("en")!),
-          relatedThreatsWeight: ThreatWeight.convertFromJson(await recNode
-              .getValue("relatedThreatsWeights")
-              .then((value) => value!.getValue("en")!)),
-          description: DescriptionShortLong(
-              shortDescription: await recNode
-                  .getValue("short")
-                  .then((value) => value!.getValue("en")!),
-              longDescription: await recNode
-                  .getValue("long")
-                  .then((value) => value!.getValue("en")!)),
-        ));
-      } else {
-        r.add(Recommendation(
-          recommendationId: recId,
-          description: DescriptionShortLong(
-              shortDescription: await recNode
-                  .getValue("short")
-                  .then((value) => value!.getValue("en")!),
-              longDescription: await recNode
-                  .getValue("long")
-                  .then((value) => value!.getValue("en")!)),
-        ));
+      List<Threat> threats = Threat.convertFromJson(json);
+      r.add(Recommendations(
+        recommendationId: recId,
+        recommendationType: await recNode
+            .getValue("recommendationType")
+            .then((value) => value!.getValue("en")!),
+        description: DescriptionShortLong(
+            shortDescription: await recNode
+                .getValue("short")
+                .then((value) => value!.getValue("en")!),
+            longDescription: await recNode
+                .getValue("long")
+                .then((value) => value!.getValue("en")!)),
+      ));
+      for (Threat threat in threats) {
+        gR.add(GeigerRecommendation(threat: threat, recommendations: r));
       }
     }
-    return r;
+    return gR;
   }
 
   // a problem
@@ -210,45 +171,11 @@ class RecommendationNode {
   /// @param option language as string
   /// @param recommendationType as string
   /// @return list of Recommendation object
-  Future<List<Recommendation>> getThreatRecommendation(
-      {String language: "en", required String recommendationType}) async {
-    List<Recommendation> r = [];
-    try {
-      _node = await _storageController.get(":Global:recommendations");
-      for (String recId in await _node!
-          .getChildNodesCsv()
-          .then((value) => value.split(","))) {
-        Node recNode =
-            await _storageController.get(":Global:recommendations:$recId");
-        DescriptionShortLong descriptionShortLong = DescriptionShortLong(
-            shortDescription: await recNode
-                .getValue("short")
-                .then((value) => value!.getValue(language)!),
-            longDescription: await recNode
-                .getValue("long")
-                .then((value) => value!.getValue(language)!));
+  Future<GeigerRecommendation> getGeigerRecommendation(
+      {required Threat threat, required List<Recommendations> r}) async {
+    GeigerRecommendation gR;
 
-        if (await recNode.getValue("recommendationType") != null &&
-            await recNode.getValue("relatedThreatsWeights") != null) {
-          List<ThreatWeight> relatedThreatsWeight =
-              ThreatWeight.convertFromJson(await recNode
-                  .getValue("relatedThreatsWeights")
-                  .then((value) => value!.getValue(language)!));
-          String type = await recNode
-              .getValue("recommendationType")
-              .then((value) => value!.getValue(language)!);
-          if (type == recommendationType) {
-            r.add(Recommendation(
-                recommendationId: recId,
-                description: descriptionShortLong,
-                relatedThreatsWeight: relatedThreatsWeight,
-                recommendationType: type));
-          }
-        }
-      }
-      return r;
-    } on StorageException {
-      throw Exception("Node not Found");
-    }
+    gR = GeigerRecommendation(threat: threat, recommendations: r);
+    return gR;
   }
 }

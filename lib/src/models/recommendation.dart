@@ -8,39 +8,36 @@ import 'package:json_annotation/json_annotation.dart';
 import '/src/constant/constant.dart';
 import '/src/exceptions/custom_format_exception.dart';
 import '/src/exceptions/custom_invalid_map_key_exception.dart';
-import '/src/models/threat_weight.dart';
 import 'describe_short_long.dart';
 
 part 'recommendation.g.dart';
 
 @JsonSerializable(explicitToJson: true)
-class Recommendation extends Equatable {
+class Recommendations extends Equatable {
   final String? recommendationId;
   final String? recommendationType;
-  final List<ThreatWeight>? relatedThreatsWeight;
   final DescriptionShortLong description;
 
-  Recommendation(
+  Recommendations(
       {String? recommendationId,
       this.recommendationType,
-      this.relatedThreatsWeight,
       required this.description})
       : recommendationId = recommendationId ?? GeigerConstant.uuid;
 
-  factory Recommendation.fromJson(Map<String, dynamic> json) {
+  factory Recommendations.fromJson(Map<String, dynamic> json) {
     try {
-      return _$RecommendationFromJson(json);
+      return _$RecommendationsFromJson(json);
     } catch (e) {
       throw CustomInvalidMapKeyException(message: e);
     }
   }
 
   Map<String, dynamic> toJson() {
-    return _$RecommendationToJson(this);
+    return _$RecommendationsToJson(this);
   }
 
   /// convert from recommendations List to RecommendationJson
-  static String convertToJson(List<Recommendation> recommendations) {
+  static String convertToJson(List<Recommendations> recommendations) {
     try {
       List<Map<String, dynamic>> jsonData = recommendations
           .map((recommendation) => recommendation.toJson())
@@ -54,12 +51,12 @@ class Recommendation extends Equatable {
   }
 
   /// converts RecommendationJson to List<Recommendation>
-  static List<Recommendation> convertFromJSon(String recommendationJson) {
+  static List<Recommendations> convertFromJSon(String recommendationJson) {
     try {
       List<dynamic> jsonData = jsonDecode(recommendationJson);
       return jsonData
-          .map(
-              (recommendationMap) => Recommendation.fromJson(recommendationMap))
+          .map((recommendationMap) =>
+              Recommendations.fromJson(recommendationMap))
           .toList();
     } on FormatException {
       throw CustomFormatException(
@@ -71,10 +68,10 @@ class Recommendation extends Equatable {
   @override
   String toString() {
     super.toString();
-    return '{"recommendationId":$recommendationId,"recommendationType":$recommendationType,"relatedThreatsWeight":$relatedThreatsWeight,"description":$description}';
+    return '{"recommendationId":$recommendationId,"recommendationType":$recommendationType,"description":$description}';
   }
 
   @override
   List<Object?> get props =>
-      [recommendationId, recommendationType, relatedThreatsWeight, description];
+      [recommendationId, recommendationType, description];
 }

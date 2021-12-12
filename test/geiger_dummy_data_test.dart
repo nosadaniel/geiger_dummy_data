@@ -14,7 +14,7 @@ void main() async {
 
   //GeigerOnBtnPressedTest
 
-  //GeigerDummyTest().onBtnPressedTest();
+  GeigerDummyTest(_masterController).onBtnPressedTest();
   // GeigerDummy g = GeigerDummy();
   // GeigerApi api = await g.initGeigerApi();
   // StorageController? _masterController = await api.getStorage();
@@ -316,29 +316,32 @@ class GeigerRecommendationTest {
 }
 
 class GeigerDummyTest {
-  // StorageController storageController;
-  // GeigerCheckTest(this.storageController);
+  GeigerDummyTest(this.storageController);
+  StorageController storageController;
   GeigerDummy geigerDummy = GeigerDummy();
 
   void onBtnPressedTest() {
     group("GeigerCheckGroupTest", () {
       setUp(() async {
-        await geigerDummy.initStorage();
-        await geigerDummy.initialGeigerDummyData(TermsAndConditions(
-            ageCompliant: true, agreedPrivacy: true, signedConsent: true));
+        // await geigerDummy.initDummyDataStorage();
+        // await geigerDummy.initialGeigerDummyData(
+        //   TermsAndConditions(
+        //       ageCompliant: true, agreedPrivacy: true, signedConsent: true),
+        // );
 
         //expect(await value, true);
       });
 
-      // test("testInitialGeigerDummyData", () async {
-      //   bool value = await GeigerDummy().initialGeigerDummyData(
-      //       TermsAndConditions(
-      //           ageCompliant: true, agreedPrivacy: true, signedConsent: true));
-      //   expect(await value, true);
-      // });
+      test("testInitialGeigerDummyData", () async {
+        bool value = await GeigerDummy().initialGeigerDummyData(
+            TermsAndConditions(
+                ageCompliant: true, agreedPrivacy: true, signedConsent: true),
+            storageController);
+        expect(await value, true);
+      });
 
       test("getDataFrom OnBtnPressed", () async {
-        String result = await geigerDummy.onBtnPressed();
+        String result = await geigerDummy.onBtnPressed(storageController);
         print(result);
       });
     });

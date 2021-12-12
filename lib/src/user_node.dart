@@ -227,83 +227,57 @@ class UserNode extends RecommendationNode {
   /// @param threat object
   ///
   ///
-  Future<void> setUserThreatRecommendation({Locale? language}) async {
-    User currentUser = await getUserInfo;
-
-    List<Recommendation> userRecommendations =
-        await getThreatRecommendation(recommendationType: "user");
-    try {
-      _node = await _storageController
-          .get(":Users:${currentUser.userId}:gi:data:recommendations");
-
-      NodeValue threatRecomValue = NodeValueImpl("userRecommendation",
-          Recommendation.convertToJson(userRecommendations));
-
-      if (language != null) {
-        //translations
-        threatRecomValue.setValue(
-            Recommendation.convertToJson(userRecommendations), language);
-      }
-
-      await _node!.addOrUpdateValue(threatRecomValue);
-      await _storageController.update(_node!);
-    } on StorageException {
-      Node userRecommendationNode = NodeImpl(
-          ":Users:${currentUser.userId}:gi:data:recommendations", "owner");
-      await _storageController.add(userRecommendationNode);
-
-      NodeValue threatRecomValue = NodeValueImpl("userRecommendation",
-          Recommendation.convertToJson(userRecommendations));
-
-      if (language != null) {
-        //translations
-        threatRecomValue.setValue(
-            Recommendation.convertToJson(userRecommendations), language);
-      }
-
-      await userRecommendationNode.addOrUpdateValue(threatRecomValue);
-
-      _storageController.update(userRecommendationNode);
-    }
-  }
-
-  ///<p>get UserRecommendation from :user path</p>
-  ///@param option language as string
-  ///@param threat object
-  ///@return list of threatRecommendation object
-  Future<List<Recommendation>> getUserRecommendation({
-    String language: "en",
-  }) async {
-    User currentUser = await getUserInfo;
-
-    try {
-      _node = await _storageController
-          .get(":Users:${currentUser.userId}:gi:data:recommendations");
-      String userRecommendations = await _node!
-          .getValue("userRecommendation")
-          .then((value) => value!.getValue(language)!);
-
-      return Recommendation.convertFromJSon(userRecommendations);
-    } on StorageException {
-      throw Exception("NODE NOT FOUND");
-    }
-  }
-
-  ///<p> set user ImplementedRecommendation
-  ///@param recommendation as Recommendation
-  ///@return bool
+  // Future<void> setUserThreatRecommendation({Locale? language}) async {
+  //   User currentUser = await getUserInfo;
+  //
+  //   List<Recommendations> userRecommendations =
+  //       await getThreatRecommendation(recommendationType: "user");
+  //   try {
+  //     _node = await _storageController
+  //         .get(":Users:${currentUser.userId}:gi:data:recommendations");
+  //
+  //     NodeValue threatRecomValue = NodeValueImpl("userRecommendation",
+  //         Recommendations.convertToJson(userRecommendations));
+  //
+  //     if (language != null) {
+  //       //translations
+  //       threatRecomValue.setValue(
+  //           Recommendations.convertToJson(userRecommendations), language);
+  //     }
+  //
+  //     await _node!.addOrUpdateValue(threatRecomValue);
+  //     await _storageController.update(_node!);
+  //   } on StorageException {
+  //     Node userRecommendationNode = NodeImpl(
+  //         ":Users:${currentUser.userId}:gi:data:recommendations", "owner");
+  //     await _storageController.add(userRecommendationNode);
+  //
+  //     NodeValue threatRecomValue = NodeValueImpl("userRecommendation",
+  //         Recommendations.convertToJson(userRecommendations));
+  //
+  //     if (language != null) {
+  //       //translations
+  //       threatRecomValue.setValue(
+  //           Recommendations.convertToJson(userRecommendations), language);
+  //     }
+  //
+  //     await userRecommendationNode.addOrUpdateValue(threatRecomValue);
+  //
+  //     _storageController.update(userRecommendationNode);
+  //   }
+  // }
   Future<bool> setUserImplementedRecommendation(
-      {required Recommendation recommendation}) async {
+      {required Recommendations recommendation}) async {
     User currentUser = await getUserInfo;
 
-    List<Recommendation> implementedRecommendations = [];
+    List<Recommendations> implementedRecommendations = [];
     try {
       _node = await _storageController
           .get(":Users:${currentUser.userId}:gi:data:GeigerScoreUser");
       implementedRecommendations.add(recommendation);
 
       NodeValue implementedRecom = NodeValueImpl("implementedRecommendations",
-          Recommendation.convertToJson(implementedRecommendations));
+          Recommendations.convertToJson(implementedRecommendations));
       await _node!.addOrUpdateValue(implementedRecom);
 
       await _storageController.update(_node!);

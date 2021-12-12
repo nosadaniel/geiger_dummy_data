@@ -154,78 +154,31 @@ class DeviceNode extends RecommendationNode {
     }
   }
 
-  /// <p>get DeviceRecommendation from recommendation node and set in :device node</p>
-  /// @param optional language as locale
-  /// @param threat object
-  Future<void> setDeviceRecommendation({Locale? language}) async {
-    Device currentDevice = await getDeviceInfo;
-
-    List<Recommendation> threatRecommendations =
-        await getThreatRecommendation(recommendationType: "device");
-    try {
-      _node = await _storageController
-          .get(":Devices:${currentDevice.deviceId}:gi:data:recommendations");
-
-      NodeValue threatRecomValue = NodeValueImpl("deviceRecommendation",
-          Recommendation.convertToJson(threatRecommendations));
-
-      if (language != null) {
-        //translations
-        threatRecomValue.setValue(
-            Recommendation.convertToJson(threatRecommendations), language);
-      }
-
-      _node!.addOrUpdateValue(threatRecomValue);
-      _storageController.update(_node!);
-    } on StorageException {
-      Node deviceRecommendationNode = NodeImpl(
-          ":Devices:${currentDevice.deviceId}:gi:data:recommendations",
-          "owner");
-      await _storageController.add(deviceRecommendationNode);
-
-      NodeValue threatRecomValue = NodeValueImpl("deviceRecommendations",
-          Recommendation.convertToJson(threatRecommendations));
-
-      if (language != null) {
-        //translations
-        threatRecomValue.setValue(
-            Recommendation.convertToJson(threatRecommendations), language);
-      }
-
-      await deviceRecommendationNode.addOrUpdateValue(threatRecomValue);
-      await _storageController.update(deviceRecommendationNode);
-    }
-  }
-
-  ///<p>get deviceRecommendation from :device node</p>
-  ///@param option language as string
-  ///@param threat object
-  ///@return list of threatRecommendation object
-  Future<List<Recommendation>> getDeviceThreatRecommendation(
-      {String language: "en"}) async {
-    Device currentDevice = await getDeviceInfo;
-
-    try {
-      _node = await _storageController
-          .get(":Devices:${currentDevice.deviceId}:gi:data:recommendations");
-      String threatRecommendations = await _node!
-          .getValue("deviceRecommendations")
-          .then((value) => value!.getValue(language).toString());
-
-      return Recommendation.convertFromJSon(threatRecommendations);
-    } on StorageException {
-      throw Exception("NODE NOT FOUND");
-    }
-  }
+  // Future<List<Recommendations>> getDeviceThreatRecommendation(
+  //     {String language: "en"}) async {
+  //   Device currentDevice = await getDeviceInfo;
+  //
+  //   try {
+  //     _node = await _storageController
+  //         .get(":Devices:${currentDevice.deviceId}:gi:data:recommendations");
+  //     String threatRecommendations = await _node!
+  //         .getValue("deviceRecommendations")
+  //         .then((value) => value!.getValue(language).toString());
+  //
+  //     return Recommendations.convertFromJSon(threatRecommendations);
+  //   } on StorageException {
+  //     throw Exception("NODE NOT FOUND");
+  //   }
+  // }
 
   ///<p> set device ImplementedRecommendation
   ///@param recommendationId as string
   ///@return bool
   Future<bool> setDeviceImplementedRecommendation(
-      {required Recommendation recommendation}) async {
+      {required Recommendations recommendation}) async {
     Device currentDevice = await getDeviceInfo;
 
-    List<Recommendation> implementedRecommendations = [];
+    List<Recommendations> implementedRecommendations = [];
 
     try {
       _node = await _storageController
@@ -233,7 +186,7 @@ class DeviceNode extends RecommendationNode {
       implementedRecommendations.add(recommendation);
 
       NodeValue implementedRecom = NodeValueImpl("implementedRecommendations",
-          Recommendation.convertToJson(implementedRecommendations));
+          Recommendations.convertToJson(implementedRecommendations));
       await _node!.addOrUpdateValue(implementedRecom);
 
       await _storageController.update(_node!);

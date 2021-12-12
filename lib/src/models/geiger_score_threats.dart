@@ -1,13 +1,13 @@
+import 'package:equatable/equatable.dart';
 import 'package:geiger_dummy_data/geiger_dummy_data.dart';
 import 'package:json_annotation/json_annotation.dart';
-import 'package:equatable/equatable.dart';
 
 part 'geiger_score_threats.g.dart';
 
 @JsonSerializable(explicitToJson: true)
 class GeigerScoreThreats extends Equatable {
-  final List<ThreatScore> threatScores;
-  final String geigerScore;
+  List<ThreatScore> threatScores;
+  String geigerScore;
 
   GeigerScoreThreats({required this.threatScores, required this.geigerScore});
 

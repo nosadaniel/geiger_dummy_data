@@ -1,11 +1,12 @@
 library geiger_dummy_data;
 
 import 'dart:convert';
-import '/src/exceptions/custom_invalid_map_key_exception.dart';
+
+import 'package:equatable/equatable.dart';
+import 'package:json_annotation/json_annotation.dart';
 
 import '/src/exceptions/custom_format_exception.dart';
-import 'package:json_annotation/json_annotation.dart';
-import 'package:equatable/equatable.dart';
+import '/src/exceptions/custom_invalid_map_key_exception.dart';
 import '../constant/constant.dart';
 
 part 'threat.g.dart';
@@ -51,6 +52,29 @@ class Threat extends Equatable {
       throw CustomFormatException(
           message:
               '\n that is the wrong format for Threat \n $threatJson \n right String format [{"threatId":"value","name":"value"}] \n Note: threatId is optional');
+    }
+  }
+
+  /// convert from User to UserJson
+  static String convertThreatToJson(Threat threat) {
+    try {
+      var jsonData = jsonEncode(threat);
+      return jsonData;
+    } on FormatException {
+      throw CustomFormatException(
+          message:
+              '\n that is the wrong format for Threat \n $threat\n right String format [{"threatId":"value","name":"value"}] \n Note: threatId is optional');
+    }
+  }
+
+  static Threat convertUserFromJson(String json) {
+    try {
+      var jsonData = jsonDecode(json);
+      return Threat.fromJson(jsonData);
+    } on FormatException {
+      throw CustomFormatException(
+          message:
+              '\n that is the wrong format for Threat \n $json\n right String format [{"threatId":"value","name":"value"}] \n Note: threatId is optional');
     }
   }
 
