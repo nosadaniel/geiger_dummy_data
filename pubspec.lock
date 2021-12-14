@@ -227,14 +227,14 @@ packages:
       name: geiger_api
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "0.5.4"
+    version: "0.5.5"
   geiger_localstorage:
-    dependency: "direct main"
+    dependency: transitive
     description:
       name: geiger_localstorage
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "0.6.15"
+    version: "0.6.17"
   glob:
     dependency: transitive
     description:

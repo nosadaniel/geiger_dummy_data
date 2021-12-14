@@ -19,14 +19,14 @@ void main() async {
   // GeigerApi api = await g.initGeigerApi();
   // StorageController? _masterController = await api.getStorage();
 
-  String nodeDataName = "MI";
+  String nodeDataName = ":MI";
   String geigerOwner = "loung";
   test("Mi test", () async {
     Future<Node?> writeToGeigerStorage(String data) async {
       log('Trying to get the data node');
       try {
         log('Found the data node - Going to write the data');
-        Node node = await _masterController.get(':$nodeDataName');
+        Node node = await _masterController.get('$nodeDataName');
         await node.addOrUpdateValue(NodeValueImpl('data', '$data'));
         await _masterController.update(node);
         return node;

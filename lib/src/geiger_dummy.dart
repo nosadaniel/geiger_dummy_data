@@ -7,6 +7,7 @@ import 'dart:math';
 import 'package:geiger_api/geiger_api.dart';
 import 'package:geiger_dummy_data/src/models/geiger_recommendation.dart';
 import 'package:geiger_localstorage/geiger_localstorage.dart';
+import 'package:intl/locale.dart';
 
 import '/src/geiger.dart';
 import '/src/models/geiger_data.dart';
@@ -183,6 +184,65 @@ class GeigerDummy implements Geiger {
                 longDescription:
                     'Complete the Password Safety lesson. Learn how to use strong and unique passwords.'))
       ]);
+      await RecommendationNode(_storageController).setGlobalRecommendationsNode(
+          language: Locale.parse("nl-nl"),
+          relatedThreat: t,
+          recommendations: [
+            Recommendations(
+                recommendationType: "user",
+                description: DescriptionShortLong(
+                    shortDescription: 'Recognize phishing mails',
+                    longDescription:
+                        'Improve your ability to recognize phishing mails. Choose at least one email in the cyberrange app and judge wether it is a phishing mail or not.')),
+            Recommendations(
+                recommendationType: "device",
+                description: DescriptionShortLong(
+                    shortDescription: 'Password Manager',
+                    longDescription:
+                        'Learn how to implement a password manager which offers a secure storage of passwords')),
+            Recommendations(
+                recommendationType: "device",
+                description: DescriptionShortLong(
+                    shortDescription: 'Activate Device Report',
+                    longDescription:
+                        'The Kaspersky Mobile Security Device Report allows to assess the vulnerabilities and threats affecting the device and provides a report with information about:')),
+            Recommendations(
+                recommendationType: "user",
+                description: DescriptionShortLong(
+                    shortDescription: 'Strong passwords',
+                    longDescription:
+                        'Complete the Password Safety lesson. Learn how to use strong and unique passwords.'))
+          ]);
+      //multiple language
+      await RecommendationNode(_storageController).setGlobalRecommendationsNode(
+          language: Locale.parse("de-ch"),
+          relatedThreat: t,
+          recommendations: [
+            Recommendations(
+                recommendationType: "user",
+                description: DescriptionShortLong(
+                    shortDescription: 'Recognize phishing mails',
+                    longDescription:
+                        'Improve your ability to recognize phishing mails. Choose at least one email in the cyberrange app and judge wether it is a phishing mail or not.')),
+            Recommendations(
+                recommendationType: "device",
+                description: DescriptionShortLong(
+                    shortDescription: 'Password Manager',
+                    longDescription:
+                        'Learn how to implement a password manager which offers a secure storage of passwords')),
+            Recommendations(
+                recommendationType: "device",
+                description: DescriptionShortLong(
+                    shortDescription: 'Activate Device Report',
+                    longDescription:
+                        'The Kaspersky Mobile Security Device Report allows to assess the vulnerabilities and threats affecting the device and provides a report with information about:')),
+            Recommendations(
+                recommendationType: "user",
+                description: DescriptionShortLong(
+                    shortDescription: 'Strong passwords',
+                    longDescription:
+                        'Complete the Password Safety lesson. Learn how to use strong and unique passwords.'))
+          ]);
 
       return true;
     } else {

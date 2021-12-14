@@ -20,93 +20,160 @@ class RecommendationNode {
   /// @param optional language locale object
   /// @Param list of recommendation object
 
+  // Future<void> setGlobalRecommendationsNode(
+  //     {Locale? language,
+  //     required List<Threat> relatedThreat,
+  //     required List<Recommendations> recommendations}) async {
+  //   Node? recomIdNode;
+  //   NodeValue? nodeValue1;
+  //   NodeValue? nodeValue2;
+  //   NodeValue? nodeValue3;
+  //   NodeValue? nodeValue4;
+  //
+  //   Node _node;
+  //   try {
+  //     _node = await _storageController.get(":Global:recommendations");
+  //   } catch (e, s) {
+  //     _node = NodeImpl(":Global:recommendations", "owner");
+  //     _storageController.addOrUpdate(_node);
+  //   }
+  //
+  //   for (Recommendations recommendation in recommendations) {
+  //     try {
+  //       recomIdNode = await _storageController
+  //           .get(':Global:recommendations:${recommendation.recommendationId}');
+  //       if (language != null) {
+  //         nodeValue1 = await recomIdNode.getValue("relatedThreat");
+  //         nodeValue1!.setValue(Threat.convertToJson(relatedThreat), language);
+  //         nodeValue2 = await recomIdNode.getValue("recommendationType");
+  //         nodeValue2!.setValue(recommendation.recommendationType!, language);
+  //         nodeValue3 = await recomIdNode.getValue("short");
+  //         nodeValue3!
+  //             .setValue(recommendation.description.shortDescription, language);
+  //         nodeValue4 = await recomIdNode.getValue("long");
+  //         nodeValue4!
+  //             .setValue(recommendation.description.longDescription!, language);
+  //       }
+  //     } on StorageException {
+  //       recomIdNode = NodeImpl(
+  //           ":Global:recommendations:${recommendation.recommendationId}",
+  //           "owner");
+  //
+  //       nodeValue1 =
+  //           NodeValueImpl("relatedThreat", Threat.convertToJson(relatedThreat));
+  //
+  //       nodeValue2 = NodeValueImpl(
+  //           "recommendationType", recommendation.recommendationType!);
+  //
+  //       nodeValue3 =
+  //           NodeValueImpl("short", recommendation.description.shortDescription);
+  //
+  //       nodeValue4 =
+  //           NodeValueImpl("long", recommendation.description.longDescription!);
+  //     }
+  //     await recomIdNode.addOrUpdateValue(nodeValue1!);
+  //     await recomIdNode.addOrUpdateValue(nodeValue2!);
+  //
+  //     await recomIdNode.addOrUpdateValue(nodeValue3!);
+  //
+  //     await recomIdNode.addOrUpdateValue(nodeValue4!);
+  //     await _storageController.addOrUpdate(recomIdNode);
+  //   }
+  //
+  //   print(recomIdNode);
+  // }
+
   Future<void> setGlobalRecommendationsNode(
       {Locale? language,
       required List<Threat> relatedThreat,
       required List<Recommendations> recommendations}) async {
-    Node? node;
-    Node? recomIdNode;
-    NodeValue? nodeValue1;
-    NodeValue? nodeValue2;
-    NodeValue? nodeValue3;
-    NodeValue? nodeValue4;
-
-    Node _node = NodeImpl(":Global:recommendations", "owner");
-    _storageController.addOrUpdate(_node);
-
-    for (Recommendations recommendation in recommendations) {
-      try {
-        recomIdNode = await _storageController
+    try {
+      for (Recommendations recommendation in recommendations) {
+        _node = await _storageController
             .get(':Global:recommendations:${recommendation.recommendationId}');
-      } on StorageException {
-        nodeValue1 =
-            NodeValueImpl("relatedThreat", Threat.convertToJson(relatedThreat));
 
-        recomIdNode = NodeImpl(
+        //create a NodeValue
+        _setThreatsNodeValue(language, recommendation, relatedThreat);
+        //empty threats to avoid duplications
+      }
+    } on StorageException {
+      //log(":Global:threats not found");
+      Node recommendationsNode = NodeImpl(":Global:recommendations", "owner");
+      await _storageController.addOrUpdate(recommendationsNode);
+
+      for (Recommendations recommendation in recommendations) {
+        Node recomIdNode = NodeImpl(
             ":Global:recommendations:${recommendation.recommendationId}",
             "owner");
+        //create :Global:threats:$threatId
+        await _storageController.addOrUpdate(recomIdNode);
+        //create a NodeValue
+        _setThreatsNodeValueException(
+            language, recommendation, recomIdNode, relatedThreat);
+        //empty threats to avoid duplications
 
-        nodeValue2 = NodeValueImpl(
-            "recommendationType", recommendation.recommendationType!);
-
-        nodeValue3 =
-            NodeValueImpl("short", recommendation.description.shortDescription);
-
-        nodeValue4 = NodeValueImpl(
-            "long", recommendation.description.longDescription.toString());
       }
-      await recomIdNode.addOrUpdateValue(nodeValue1!);
-      await recomIdNode.addOrUpdateValue(nodeValue2!);
-
-      await recomIdNode.addOrUpdateValue(nodeValue3!);
-
-      await recomIdNode.addOrUpdateValue(nodeValue4!);
-      await _storageController.addOrUpdate(recomIdNode);
-      print(recomIdNode);
     }
   }
 
-  Future<void> _setThreatsNodeValue(
-      Locale? language, Recommendations recommendation, Threat threat) async {
+  Future<void> _setThreatsNodeValue(Locale? language,
+      Recommendations recommendation, List<Threat> relatedThreat) async {
     //create a NodeValue
+    NodeValue nodeValue1 =
+        NodeValueImpl("relatedThreat", Threat.convertToJson(relatedThreat));
 
-    NodeValue relatedThreat =
-        NodeValueImpl("relatedThreat", Threat.convertThreatToJson(threat));
-    await _node!.addOrUpdateValue(relatedThreat);
-
-    NodeValue recommendationType =
+    NodeValue nodeValue2 =
         NodeValueImpl("recommendationType", recommendation.recommendationType!);
-    await _node!.addOrUpdateValue(recommendationType);
 
-    NodeValue short =
+    NodeValue nodeValue3 =
         NodeValueImpl("short", recommendation.description.shortDescription);
-    await _node!.addOrUpdateValue(short);
 
-    NodeValue long = NodeValueImpl(
-        "long", recommendation.description.longDescription.toString());
-    await _node!.addOrUpdateValue(long);
+    NodeValue nodeValue4 =
+        NodeValueImpl("long", recommendation.description.longDescription!);
+
+    if (language != null) {
+      nodeValue1.setValue(Threat.convertToJson(relatedThreat), language);
+      nodeValue2.setValue(recommendation.recommendationType!, language);
+      nodeValue3.setValue(
+          recommendation.description.shortDescription, language);
+      nodeValue4.setValue(
+          recommendation.description.longDescription.toString(), language);
+    }
     await _storageController.update(_node!);
   }
 
-  void _setThreatsNodeValueException(Locale? language,
-      Recommendations recommendation, Node recomIdNode, Threat threat) async {
+  void _setThreatsNodeValueException(
+      Locale? language,
+      Recommendations recommendation,
+      Node recomIdNode,
+      List<Threat> relatedThreat) async {
     //create a NodeValue
+    //create a NodeValue
+    NodeValue nodeValue1 =
+        NodeValueImpl("relatedThreat", Threat.convertToJson(relatedThreat));
 
-    NodeValue relatedThreat =
-        NodeValueImpl("relatedThreat", Threat.convertThreatToJson(threat));
-    await recomIdNode.addOrUpdateValue(relatedThreat);
-
-    NodeValue recommendationType =
+    NodeValue nodeValue2 =
         NodeValueImpl("recommendationType", recommendation.recommendationType!);
-    await recomIdNode.addOrUpdateValue(recommendationType);
 
-    NodeValue short =
+    NodeValue nodeValue3 =
         NodeValueImpl("short", recommendation.description.shortDescription);
-    await recomIdNode.addOrUpdateValue(short);
 
-    NodeValue long = NodeValueImpl(
-        "long", recommendation.description.longDescription.toString());
-    await recomIdNode.addOrUpdateValue(long);
+    NodeValue nodeValue4 =
+        NodeValueImpl("long", recommendation.description.longDescription!);
+
+    if (language != null) {
+      nodeValue1.setValue(Threat.convertToJson(relatedThreat), language);
+      nodeValue2.setValue(recommendation.recommendationType!, language);
+      nodeValue3.setValue(
+          recommendation.description.shortDescription, language);
+      nodeValue4.setValue(
+          recommendation.description.longDescription.toString(), language);
+    }
+    await recomIdNode.addOrUpdateValue(nodeValue1);
+    await recomIdNode.addOrUpdateValue(nodeValue2);
+    await recomIdNode.addOrUpdateValue(nodeValue3);
+    await recomIdNode.addOrUpdateValue(nodeValue4);
+    await _storageController.addOrUpdate(recomIdNode);
   }
 
   ///from return list of recommendations from localStorage
