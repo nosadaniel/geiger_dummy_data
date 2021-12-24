@@ -14,7 +14,7 @@ jobs:
       - name: -> Setup Flutter environment
         uses: subosito/flutter-action@4389e6cbc6cb8a4b18c628ff96ff90be0e926aa8
         with:
-         channel: master
+         channel: stable
       - run: flutter doctor -v
 
        # Checkout gallery code and get packages.
