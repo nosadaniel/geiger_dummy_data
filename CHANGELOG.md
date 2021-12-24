@@ -1,3 +1,5 @@
+##0.3.6
+- refactor alot of stuff
 ##0.3.5
 - add getStorageController method
 ##0.3.4
