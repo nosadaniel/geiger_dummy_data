@@ -6,10 +6,6 @@ import 'package:geiger_localstorage/geiger_localstorage.dart';
 import 'package:intl/locale.dart';
 
 import '../geiger_dummy_data.dart';
-import '../src/models/device.dart';
-import '../src/models/threat_score.dart';
-import '../src/recommendation_node.dart';
-import 'models/geiger_score_threats.dart';
 
 /// <p>Grant access to methods relating device.</p>
 /// @param storageController

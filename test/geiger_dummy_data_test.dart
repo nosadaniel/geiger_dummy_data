@@ -2,8 +2,6 @@ import 'dart:developer';
 
 import 'package:flutter_test/flutter_test.dart';
 import 'package:geiger_dummy_data/geiger_dummy_data.dart';
-import 'package:geiger_dummy_data/src/recommendation_node.dart';
-import 'package:geiger_dummy_data/src/user_node.dart';
 import 'package:geiger_localstorage/geiger_localstorage.dart';
 
 void main() async {

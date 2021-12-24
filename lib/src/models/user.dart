@@ -7,11 +7,6 @@ import 'package:geiger_dummy_data/src/models/mse.dart';
 import 'package:geiger_dummy_data/src/models/share_info.dart';
 import 'package:json_annotation/json_annotation.dart';
 
-import '/src/exceptions/custom_format_exception.dart';
-import '/src/exceptions/custom_invalid_map_key_exception.dart';
-import '/src/models/consent.dart';
-import '/src/models/terms_and_conditions.dart';
-
 part 'user.g.dart';
 
 @JsonSerializable(explicitToJson: true)

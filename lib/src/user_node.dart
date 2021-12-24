@@ -3,13 +3,8 @@ library geiger_dummy_mapper;
 import 'dart:developer';
 
 import 'package:geiger_dummy_data/geiger_dummy_data.dart';
-import 'package:geiger_dummy_data/src/models/geiger_score_threats.dart';
 import 'package:geiger_localstorage/geiger_localstorage.dart';
 import 'package:intl/locale.dart';
-
-import '../src/models/threat_score.dart';
-import '../src/models/user.dart';
-import '../src/recommendation_node.dart';
 
 /// <p>Grant access to methods relating user.</p>
 /// @param storageController

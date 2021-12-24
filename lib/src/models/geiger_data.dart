@@ -2,9 +2,6 @@ import 'package:equatable/equatable.dart';
 import 'package:geiger_dummy_data/geiger_dummy_data.dart';
 import 'package:json_annotation/json_annotation.dart';
 
-import 'geiger_recommendation.dart';
-import 'geiger_score_threats.dart';
-
 part 'geiger_data.g.dart';
 
 @JsonSerializable(explicitToJson: true)

@@ -1,11 +1,10 @@
-import 'package:equatable/equatable.dart';
 import 'package:geiger_dummy_data/geiger_dummy_data.dart';
 import 'package:json_annotation/json_annotation.dart';
 
 part 'geiger_score_threats.g.dart';
 
 @JsonSerializable(explicitToJson: true)
-class GeigerScoreThreats extends Equatable {
+class GeigerScoreThreats {
   List<ThreatScore> threatScores;
   String geigerScore;
 
@@ -18,8 +17,4 @@ class GeigerScoreThreats extends Equatable {
   Map<String, dynamic> toJson() {
     return _$GeigerScoreThreatsToJson(this);
   }
-
-  @override
-  // TODO: implement props
-  List<Object?> get props => [threatScores, geigerScore];
 }

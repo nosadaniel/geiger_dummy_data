@@ -1,12 +1,9 @@
 library geiger_dummy_data;
 
-import 'package:geiger_dummy_data/src/models/geiger_recommendation.dart';
 import 'package:geiger_localstorage/geiger_localstorage.dart';
 import 'package:intl/locale.dart';
 
 import '../geiger_dummy_data.dart';
-import '../src/models/describe_short_long.dart';
-import '../src/models/recommendation.dart';
 
 /// <p>Grant access to methods relating recommendation.</p>
 /// @param storageController

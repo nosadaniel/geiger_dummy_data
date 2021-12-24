@@ -5,12 +5,9 @@ import 'dart:convert';
 import 'dart:math';
 
 import 'package:geiger_api/geiger_api.dart';
-import 'package:geiger_dummy_data/src/models/geiger_recommendation.dart';
 import 'package:geiger_localstorage/geiger_localstorage.dart';
 import 'package:intl/locale.dart';
 
-import '/src/geiger.dart';
-import '/src/models/geiger_data.dart';
 import '../geiger_dummy_data.dart';
 
 class GeigerDummy implements Geiger {
