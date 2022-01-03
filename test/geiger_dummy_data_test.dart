@@ -331,17 +331,15 @@ class GeigerDummyTest {
       });
 
       test("testInitialGeigerDummyData", () async {
-        bool value = await GeigerDummy().initialGeigerDummyData(
-            TermsAndConditions(
-                ageCompliant: true, agreedPrivacy: true, signedConsent: true),
-            storageController);
+        bool value =
+            await GeigerDummy().initialGeigerDummyData(storageController);
         expect(await value, true);
       });
 
-      test("getDataFrom OnBtnPressed", () async {
-        String result = await geigerDummy.onBtnPressed(storageController);
-        print(result);
-      });
+      // test("getDataFrom OnBtnPressed", () async {
+      //   String result = await geigerDummy.storeData(storageController);
+      //   print(result);
+      // });
     });
     test("MI", () {});
   }

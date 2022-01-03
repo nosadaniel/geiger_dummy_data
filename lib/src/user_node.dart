@@ -72,25 +72,25 @@ class UserNode extends RecommendationNode {
       {Locale? language,
       required GeigerScoreThreats geigerScoreThreats,
       String geigerScore: "0"}) async {
-    User currentUser = await getUserInfo;
+    String currentUser = await _getCurrentUserId;
 
     try {
       _node = await _storageController
-          .get(":Users:${currentUser.userId}:gi:data:GeigerScoreUser");
+          .get(":Users:${currentUser}:gi:data:GeigerScoreUser");
       _setUserNodeValues(language, geigerScoreThreats.threatScores,
           geigerScore: geigerScore);
     } on StorageException {
-      Node userNode = NodeImpl(":Users:${currentUser.userId}", " owner");
+      Node userNode = NodeImpl(":Users:${currentUser}", " owner");
       await _storageController.addOrUpdate(userNode);
 
-      Node giNode = NodeImpl(":Users:${currentUser.userId}:gi", "owner");
+      Node giNode = NodeImpl(":Users:${currentUser}:gi", "owner");
       await _storageController.addOrUpdate(giNode);
 
-      Node nodeData = NodeImpl(":Users:${currentUser.userId}:gi:data", "owner");
+      Node nodeData = NodeImpl(":Users:${currentUser}:gi:data", "owner");
       await _storageController.addOrUpdate(nodeData);
 
-      Node userScoreNode = NodeImpl(
-          ":Users:${currentUser.userId}:gi:data:GeigerScoreUser", "owner");
+      Node userScoreNode =
+          NodeImpl(":Users:${currentUser}:gi:data:GeigerScoreUser", "owner");
 
       await _storageController.add(userScoreNode);
       _setUserNodeValuesException(language, userScoreNode,
@@ -105,25 +105,25 @@ class UserNode extends RecommendationNode {
   Future<void> setGeigerScoreAggregate(
       {Locale? language,
       required GeigerScoreThreats geigerScoreThreats}) async {
-    User currentUser = await getUserInfo;
+    String currentUser = await _getCurrentUserId;
 
     try {
       _node = await _storageController
-          .get(":Users:${currentUser.userId}:gi:data:GeigerScoreAggregate");
+          .get(":Users:${currentUser}:gi:data:GeigerScoreAggregate");
       _setUserNodeValues(language, geigerScoreThreats.threatScores,
           geigerScore: geigerScoreThreats.geigerScore);
     } on StorageException {
-      Node userNode = NodeImpl(":Users:${currentUser.userId}", "owner");
+      Node userNode = NodeImpl(":Users:${currentUser}", "owner");
       await _storageController.addOrUpdate(userNode);
 
-      Node giNode = NodeImpl(":Users:${currentUser.userId}:gi", "owner");
+      Node giNode = NodeImpl(":Users:${currentUser}:gi", "owner");
       await _storageController.addOrUpdate(giNode);
 
-      Node nodeData = NodeImpl(":Users:${currentUser.userId}:gi:data", "owner");
+      Node nodeData = NodeImpl(":Users:${currentUser}:gi:data", "owner");
       await _storageController.addOrUpdate(nodeData);
 
       Node aggScoreNode = NodeImpl(
-          ":Users:${currentUser.userId}:gi:data:GeigerScoreAggregate", "owner");
+          ":Users:${currentUser}:gi:data:GeigerScoreAggregate", "owner");
       await _storageController.add(aggScoreNode);
 
       _setUserNodeValuesException(language, aggScoreNode,
