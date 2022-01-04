@@ -11,7 +11,7 @@ import 'package:intl/locale.dart';
 import '../geiger_dummy_data.dart';
 
 class GeigerDummy implements Geiger {
-  // GeigerDummy(this.storageController);
+  late StorageController _storageController;
 
   Future<GeigerApi> _initGeigerApi() async {
     //flushGeigerApiCache();
@@ -28,8 +28,7 @@ class GeigerDummy implements Geiger {
     GeigerApi _localGeigerApi = await _initGeigerApi();
     //for testing uncomment this
 
-    StorageController _storageController =
-        (await _localGeigerApi.getStorage())!;
+    _storageController = (await _localGeigerApi.getStorage())!;
     // StorageController _storageController =
     //     GenericController("test", DummyMapper("testdb"));
   }
@@ -37,7 +36,7 @@ class GeigerDummy implements Geiger {
   ///<p>implement onBtnPressed function from geiger abstract class</p>
   ///@return a Future of json string
   @override
-  Future<String> storeData(StorageController _storageController) async {
+  Future<String> storeData() async {
     UserNode _userNode = UserNode(_storageController);
     DeviceNode _deviceNode = DeviceNode(_storageController);
     RecommendationNode _recommendationNode =
@@ -69,8 +68,7 @@ class GeigerDummy implements Geiger {
   ///@param TermsAndCondition object
   ///@return a Future void
   @override
-  Future<bool> initialGeigerDummyData(
-      StorageController _storageController) async {
+  Future<bool> initialGeigerDummyData() async {
     //clear database
 
     UserNode _userNode = await UserNode(_storageController);
