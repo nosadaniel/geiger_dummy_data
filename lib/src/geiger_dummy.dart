@@ -68,22 +68,12 @@ class GeigerDummy implements Geiger {
   ///@param TermsAndCondition object
   ///@return a Future void
   @override
-  Future<bool> initialGeigerDummyData() async {
+  Future<void> initialGeigerDummyData() async {
     //clear database
 
     UserNode _userNode = await UserNode(_storageController);
     DeviceNode _deviceNode = await DeviceNode(_storageController);
     ThreatNode _threatNode = await ThreatNode(_storageController);
-    //set device
-    await _deviceNode.setCurrentDeviceInfo(Device());
-    //get device
-    Device device = await _deviceNode.getDeviceInfo;
-    print("Device Details: $device");
-
-    //device
-    await _deviceNode.setCurrentDeviceInfo(Device());
-
-    //set userInfo
 
     //set threat
     await _threatNode.setGlobalThreatsNode(
@@ -240,8 +230,6 @@ class GeigerDummy implements Geiger {
                   longDescription:
                       'Complete the Password Safety lesson. Learn how to use strong and unique passwords.'))
         ]);
-
-    return true;
   }
 
   Future<bool> _isTermAgreed(StorageController _storageController,

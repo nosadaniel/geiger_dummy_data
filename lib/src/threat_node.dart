@@ -29,12 +29,12 @@ class ThreatNode {
       }
     } on StorageException {
       //log(":Global:threats not found");
-      Node threatsNode = NodeImpl(":Global:threats", "owner");
+      Node threatsNode = NodeImpl(":Global:threats", "dummy-owner");
       await _storageController.addOrUpdate(threatsNode);
 
       for (Threat threat in threats) {
         Node threatIdNode =
-            NodeImpl(":Global:threats:${threat.threatId}", "owner");
+            NodeImpl(":Global:threats:${threat.threatId}", "dummy-owner");
         //create :Global:threats:$threatId
         await _storageController.addOrUpdate(threatIdNode);
         //create a NodeValue

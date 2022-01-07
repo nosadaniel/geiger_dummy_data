@@ -156,11 +156,11 @@ class UserNode extends RecommendationNode {
   /// @return list of threatScore object from GeigerScoreUser
   Future<GeigerScoreThreats> getGeigerScoreUserThreatScores(
       {String language: "en"}) async {
-    User currentUser = await getUserInfo;
+    String currentUser = await _getCurrentUserId;
 
     try {
       _node = await _storageController
-          .get(":Users:${currentUser.userId}:gi:data:GeigerScoreUser");
+          .get(":Users:${currentUser}:gi:data:GeigerScoreUser");
 
       String geigerScore = await _node!
           .getValue("GEIGER_score")
@@ -184,10 +184,10 @@ class UserNode extends RecommendationNode {
   /// @return list of threatScore object from GeigerScoreAggregate
   Future<GeigerScoreThreats> getGeigerScoreAggregateThreatScore(
       {String language: "en"}) async {
-    User currentUser = await getUserInfo;
+    String currentUser = await _getCurrentUserId;
 
     _node = await _storageController
-        .get(":Users:${currentUser.userId}:gi:data:GeigerScoreAggregate");
+        .get(":Users:${currentUser}:gi:data:GeigerScoreAggregate");
 
     String geigerScore = await _node!
         .getValue("GEIGER_score")

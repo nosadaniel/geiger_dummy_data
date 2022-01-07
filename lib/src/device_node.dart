@@ -76,25 +76,23 @@ class DeviceNode extends RecommendationNode {
   void setGeigerScoreDevice(
       {Locale? language,
       required GeigerScoreThreats geigerScoreThreats}) async {
-    Device currentDevice = await getDeviceInfo;
+    String currentDevice = await _getCurrentDeviceId;
 
     try {
       _node = await _storageController
-          .get(":Devices:${currentDevice.deviceId}:gi:data:GeigerScoreDevice");
+          .get(":Devices:$currentDevice:gi:data:GeigerScoreDevice");
       _setDeviceNodeValues(language, geigerScoreThreats.threatScores,
           geigerScore: geigerScoreThreats.geigerScore);
       //print(_node);
     } on StorageException {
-      Node deviceNode = NodeImpl(":Devices:${currentDevice.deviceId}", "owner");
+      Node deviceNode = NodeImpl(":Devices:$currentDevice", "owner");
       await _storageController.addOrUpdate(deviceNode);
-      Node giNode = NodeImpl(":Devices:${currentDevice.deviceId}:gi", "owner");
+      Node giNode = NodeImpl(":Devices:$currentDevice:gi", "owner");
       await _storageController.addOrUpdate(giNode);
-      Node nodeData =
-          NodeImpl(":Devices:${currentDevice.deviceId}:gi:data", "owner");
+      Node nodeData = NodeImpl(":Devices:$currentDevice:gi:data", "owner");
       await _storageController.addOrUpdate(nodeData);
       Node deviceScoreNode = NodeImpl(
-          ":Devices:${currentDevice.deviceId}:gi:data:GeigerScoreDevice",
-          "owner");
+          ":Devices:$currentDevice:gi:data:GeigerScoreDevice", "owner");
       await _storageController.addOrUpdate(deviceScoreNode);
       _setDeviceNodeValuesException(language, deviceScoreNode,
           geigerScoreThreats.threatScores, geigerScoreThreats.geigerScore);
@@ -127,11 +125,11 @@ class DeviceNode extends RecommendationNode {
   /// @throw node not found on StorageException
   Future<GeigerScoreThreats> getGeigerScoreDeviceThreatScores(
       {String language: "en"}) async {
-    Device currentDevice = await getDeviceInfo;
+    String currentDevice = await _getCurrentDeviceId;
 
     try {
       _node = await _storageController
-          .get(":Devices:${currentDevice.deviceId}:gi:data:GeigerScoreDevice");
+          .get(":Devices:${currentDevice}:gi:data:GeigerScoreDevice");
       String geigerScore = await _node!
           .getValue("GEIGER_score")
           .then((value) => value!.getValue(language).toString());

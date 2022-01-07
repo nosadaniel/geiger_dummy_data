@@ -331,15 +331,14 @@
 //       });
 //
 //       test("testInitialGeigerDummyData", () async {
-//         bool value =
-//             await GeigerDummy().initialGeigerDummyData(storageController);
-//         expect(await value, true);
+//         await GeigerDummy().initialGeigerDummyData(storageController);
+//         //expect(await value, true);
 //       });
 //
-//       // test("getDataFrom OnBtnPressed", () async {
-//       //   String result = await geigerDummy.storeData(storageController);
-//       //   print(result);
-//       // });
+//       test("getDataFrom OnBtnPressed", () async {
+//         String result = await geigerDummy.storeData(storageController);
+//         print(result);
+//       });
 //     });
 //     test("MI", () {});
 //   }
